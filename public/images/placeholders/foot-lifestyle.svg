@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="footbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAF7F0"/>
+      <stop offset="100%" style="stop-color:#EFE6D6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#footbg)" rx="24"/>
+  <!-- Foot silhouette simplified -->
+  <ellipse cx="340" cy="270" rx="90" ry="50" fill="#164E4A" opacity="0.1" transform="rotate(-10 340 270)"/>
+  <ellipse cx="370" cy="265" rx="80" ry="42" fill="#0F766E" opacity="0.15" transform="rotate(-10 370 265)"/>
+  <!-- Toes -->
+  <circle cx="290" cy="235" r="12" fill="#0F766E" opacity="0.2"/>
+  <circle cx="310" cy="228" r="13" fill="#0F766E" opacity="0.2"/>
+  <circle cx="332" cy="225" r="13" fill="#0F766E" opacity="0.2"/>
+  <circle cx="354" cy="228" r="12" fill="#0F766E" opacity="0.2"/>
+  <circle cx="373" cy="234" r="10" fill="#0F766E" opacity="0.2"/>
+  <!-- Sparkles / freshness -->
+  <text x="450" y="210" font-size="22" fill="#D99A2B">&</text>
+  <text x="240" y="310" font-size="16" fill="#0F766E" opacity="0.7">&</text>
+  <text x="480" y="300" font-size="14" fill="#0F766E" opacity="0.5">&</text>
+  <!-- Text -->
+  <text x="400" y="360" font-family="sans-serif" font-size="22" font-weight="bold" fill="#164E4A" text-anchor="middle">1,DJF E1*'-JF HEF*94JF</text>
+  <text x="400" y="390" font-family="sans-serif" font-size="14" fill="#647067" text-anchor="middle">(.'. 'D4() H2J* 4,1) 'D4'J  #7D3 (JH1</text>
+</svg>

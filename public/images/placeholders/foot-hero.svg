@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <rect width="600" height="600" fill="#EFE6D6" rx="24"/>
+  <!-- Spray bottle -->
+  <rect x="230" y="110" width="130" height="300" fill="#164E4A" rx="16"/>
+  <rect x="340" y="140" width="60" height="25" fill="#0F766E" rx="8"/>
+  <rect x="390" y="148" width="35" height="8" fill="#0F766E" rx="3"/>
+  <!-- Spray particles -->
+  <circle cx="440" cy="140" r="4" fill="#0F766E" opacity="0.6"/>
+  <circle cx="460" cy="130" r="3" fill="#0F766E" opacity="0.4"/>
+  <circle cx="450" cy="120" r="2.5" fill="#0F766E" opacity="0.3"/>
+  <circle cx="470" cy="145" r="2" fill="#0F766E" opacity="0.3"/>
+  <!-- Label -->
+  <rect x="245" y="200" width="100" height="90" fill="#FAF7F0" opacity="0.15" rx="8"/>
+  <text x="295" y="230" font-family="sans-serif" font-size="10" fill="#FAF7F0" text-anchor="middle" font-weight="bold">(.'. 'D4()</text>
+  <text x="295" y="248" font-family="sans-serif" font-size="10" fill="#FAF7F0" text-anchor="middle">H2J* 4,1) 'D4'J</text>
+  <!-- Alum crystal decoration -->
+  <polygon points="160,180 190,210 160,240 130,210" fill="#D99A2B" opacity="0.3"/>
+  <polygon points="420,380 450,410 420,440 390,410" fill="#0F766E" opacity="0.3"/>
+  <!-- Bottom text -->
+  <text x="300" y="490" font-family="sans-serif" font-size="16" font-weight="bold" fill="#164E4A" text-anchor="middle">(.'. 'F*9'4 'DB/EJF</text>
+  <text x="300" y="515" font-family="sans-serif" font-size="12" fill="#647067" text-anchor="middle">#7D3 (JH1</text>
+</svg>

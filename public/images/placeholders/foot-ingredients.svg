@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <rect width="600" height="400" fill="#FAF7F0" rx="24"/>
+  <!-- Alum -->
+  <polygon points="150,140 190,185 150,230 110,185" fill="#164E4A" opacity="0.15"/>
+  <polygon points="150,155 182,185 150,215 118,185" fill="#0F766E" opacity="0.25"/>
+  <text x="150" y="270" font-family="sans-serif" font-size="12" fill="#164E4A" text-anchor="middle" font-weight="bold">4() 7(J9J)</text>
+  <text x="150" y="288" font-family="sans-serif" font-size="10" fill="#647067" text-anchor="middle">Alum</text>
+  <!-- Tea tree -->
+  <ellipse cx="300" cy="185" rx="55" ry="55" fill="#0F766E" opacity="0.12"/>
+  <path d="M 300 145 L 280 180 L 260 175 L 290 210 L 270 205 L 300 235 L 330 205 L 310 210 L 340 175 L 320 180 Z" fill="#0F766E" opacity="0.5"/>
+  <text x="300" y="270" font-family="sans-serif" font-size="12" fill="#164E4A" text-anchor="middle" font-weight="bold">2J* 4,1) 'D4'J</text>
+  <text x="300" y="288" font-family="sans-serif" font-size="10" fill="#647067" text-anchor="middle">Tea Tree Oil</text>
+  <!-- Water drops -->
+  <path d="M 450 145 C 450 145 430 170 430 185 C 430 195 439 205 450 205 C 461 205 470 195 470 185 C 470 170 450 145 450 145 Z" fill="#D99A2B" opacity="0.4"/>
+  <text x="450" y="270" font-family="sans-serif" font-size="12" fill="#164E4A" text-anchor="middle" font-weight="bold">E'! EFBI</text>
+  <text x="450" y="288" font-family="sans-serif" font-size="10" fill="#647067" text-anchor="middle">Purified Water</text>
+  <text x="300" y="360" font-family="sans-serif" font-size="14" font-weight="bold" fill="#164E4A" text-anchor="middle">ECHF'* 7(J9J) 100%</text>
+</svg>
