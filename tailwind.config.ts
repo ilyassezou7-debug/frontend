@@ -6,15 +6,19 @@ const config: Config = {
     extend: {
       colors: {
         teal: {
-          DEFAULT: "#0F766E",
-          dark: "#164E4A",
-          hover: "#115E59",
+          DEFAULT: "#0E5C4A",
+          dark: "#0A3F33",
+          hover: "#0C4F3F",
         },
-        saffron: "#D99A2B",
-        ivory: "#FAF7F0",
-        sand: "#EFE6D6",
-        charcoal: "#1F2933",
-        muted: "#647067",
+        saffron: {
+          DEFAULT: "#B8862F",
+          dark: "#8C6420",
+        },
+        ivory: "#F7F5EF",
+        sand: "#EAE3D2",
+        mist: "#EAF2EE",
+        charcoal: "#102622",
+        muted: "#5B6B65",
         "border-soft": "#E5DED1",
       },
       fontFamily: {

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Shield, Truck, Package, Phone, Leaf, ChevronDown } from "lucide-react";
 import { SITE_CONFIG } from "@/config/site";
+import BrandMark from "@/components/layout/BrandMark";
 
 const iconMap = {
   shield: Shield,
@@ -15,16 +16,24 @@ export default function Footer() {
     <footer className="bg-teal-dark text-ivory">
       {/* Brand Top Section */}
       <div className="border-b border-teal/30">
-        <div className="container-max py-10 flex flex-col items-center justify-center text-center">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mb-2 sm:mb-4">
-            <div className="w-16 h-16 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-teal to-teal-dark border border-teal/50 flex items-center justify-center shadow-xl mb-2 sm:mb-0">
-              <span className="text-ivory font-bold text-3xl sm:text-2xl font-display">A</span>
-            </div>
+        <div className="container-max py-12 flex flex-col items-center justify-center text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mb-5">
+            <BrandMark size={64} variant="dark" />
             <div className="flex flex-col items-center sm:items-start text-center sm:text-start">
-              <p className="font-bold text-3xl sm:text-2xl font-display text-white tracking-wide">أطلس بيور</p>
-              <p className="text-sm font-medium text-saffron tracking-[0.2em] uppercase mt-1">Atlas Pure</p>
+              <p className="font-bold text-3xl sm:text-2xl font-display text-white tracking-wide">
+                أطلس بيور
+              </p>
+              <p className="text-xs font-semibold text-saffron tracking-[0.25em] uppercase mt-1">
+                AtlasPure · Pharma-Botanic Care
+              </p>
             </div>
           </div>
+          <p className="max-w-2xl text-ivory/75 text-sm leading-relaxed">
+            {SITE_CONFIG.brandShortDescription}
+          </p>
+          <p className="mt-4 text-saffron text-xs italic tracking-wide">
+            « {SITE_CONFIG.tagline} »
+          </p>
         </div>
       </div>
 

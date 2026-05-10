@@ -11,8 +11,8 @@ html {
 
 body {
   font-family: 'Noto Sans Arabic', sans-serif;
-  background: #FAF7F0;
-  color: #1F2933;
+  background: #F7F5EF;
+  color: #102622;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -27,22 +27,41 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #EFE6D6;
+  background: #EAE3D2;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0F766E;
+  background: #0E5C4A;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #115E59;
+  background: #0C4F3F;
 }
 
 /* Focus ring */
 *:focus-visible {
-  outline: 2px solid #0F766E;
+  outline: 2px solid #0E5C4A;
   outline-offset: 2px;
+}
+
+/* Apothecary divider — thin gold line for premium section breaks */
+.divider-gold {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #B8862F;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.divider-gold::before,
+.divider-gold::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #B8862F, transparent);
 }
 
 /* Smooth transitions */

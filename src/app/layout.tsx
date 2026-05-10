@@ -30,19 +30,22 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: `${SITE_CONFIG.name} | عناية طبيعية بثقة`,
+    default: `${SITE_CONFIG.name} | عناية صيدلانية نباتية مغربية`,
     template: `%s | ${SITE_CONFIG.name}`,
   },
   description:
-    "أطلس بيور – منتجات عناية شخصية طبيعية من المغرب. قطرات نفس منتعش، بخاخ القدمين، سيروم الأظافر. الدفع عند الاستلام، توصيل مجاني لجميع مدن المغرب.",
+    "أطلس بيور – علامة مغربية للعناية الصيدلانية النباتية. تركيبات من إعداد صيادلة، مصادق عليها (ONSSA)، ضمان 30 يوم، الدفع عند الاستلام، وتوصيل مجاني لجميع مدن المغرب.",
   keywords: [
-    "عناية شخصية",
-    "منتجات طبيعية",
-    "المغرب",
+    "عناية صيدلانية",
+    "منتجات نباتية مغربية",
+    "ONSSA",
+    "صيدلانية",
+    "أطلس بيور",
+    "AtlasPure",
     "الدفع عند الاستلام",
     "رائحة الفم",
     "رائحة القدمين",
-    "الأظافر",
+    "فطريات الأظافر",
   ],
   metadataBase: new URL(SITE_CONFIG.siteUrl),
   openGraph: {
@@ -50,15 +53,15 @@ export const metadata: Metadata = {
     locale: "ar_MA",
     url: SITE_CONFIG.siteUrl,
     siteName: SITE_CONFIG.name,
-    title: `${SITE_CONFIG.name} | عناية طبيعية بثقة`,
+    title: `${SITE_CONFIG.name} | ${SITE_CONFIG.tagline}`,
     description:
-      "منتجات عناية شخصية طبيعية للمرأة المغربية. الدفع عند الاستلام، توصيل مجاني.",
+      "تركيبات نباتية مدروسة من إعداد صيادلة، مصادق عليها رسمياً. الدفع عند الاستلام، توصيل مجاني، ضمان 30 يوم.",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_CONFIG.name} | عناية طبيعية بثقة`,
+    title: `${SITE_CONFIG.name} | ${SITE_CONFIG.tagline}`,
     description:
-      "منتجات عناية شخصية طبيعية للمرأة المغربية. الدفع عند الاستلام، توصيل مجاني.",
+      "علامة مغربية للعناية الصيدلانية النباتية. تركيبات مدروسة، الدفع عند الاستلام.",
   },
   robots: {
     index: true,

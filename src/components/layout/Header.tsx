@@ -7,6 +7,7 @@ import { useCartStore } from "@/store/cart-store";
 import { useCheckoutStore } from "@/store/checkout-store";
 import CartDrawer from "@/components/cart/CartDrawer";
 import CheckoutFlow from "@/components/checkout/CheckoutFlow";
+import BrandMark from "@/components/layout/BrandMark";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -35,14 +36,14 @@ export default function Header() {
           <div className="flex items-center justify-between h-16">
             {/* Brand - Right side (RTL) */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-full bg-teal flex items-center justify-center flex-shrink-0 group-hover:bg-teal-hover transition-colors">
-                <span className="text-ivory font-bold text-lg font-display">A</span>
-              </div>
+              <BrandMark size={42} className="group-hover:scale-105 transition-transform" />
               <div className="leading-tight">
                 <p className="font-bold text-lg text-charcoal font-display leading-none">
                   أطلس بيور
                 </p>
-                <p className="text-xs text-muted tracking-wide">Atlas Pure</p>
+                <p className="text-[10px] text-saffron font-semibold tracking-[0.2em] uppercase mt-1">
+                  Pharma · Botanic
+                </p>
               </div>
             </Link>
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, FlaskConical, BadgeCheck, Lock } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
 import TrustBadges from "@/components/ui/TrustBadges";
 import FAQAccordion from "@/components/ui/FAQAccordion";
@@ -19,13 +19,17 @@ export default function ProductsPage() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-ivory to-sand section-padding">
-        <div className="container-max text-center">
-          <h1 className="font-display font-bold text-4xl md:text-5xl text-charcoal mb-4">
-            اختاري العناية المناسبة
+      <section className="bg-gradient-to-br from-ivory via-mist/40 to-sand section-padding">
+        <div className="container-max text-center max-w-2xl">
+          <p className="divider-gold mb-4 max-w-xs mx-auto">
+            <span>تركيباتنا</span>
+          </p>
+          <h1 className="font-display font-bold text-4xl md:text-5xl text-charcoal mb-4 leading-tight">
+            ثلاث تركيبات صيدلانية.{" "}
+            <span className="text-teal">حل واحد لكل مشكل.</span>
           </h1>
-          <p className="text-lg text-muted max-w-2xl mx-auto">
-            ثلاثة منتجات لثلاث مشاكل شائعة – مكونات طبيعية بسيطة، بثمن معقول.
+          <p className="text-lg text-muted">
+            كل منتج مصمم بمشاركة صيادلة لهدف واحد دقيق – بلا تشتيت، بلا حشو، بنتائج مضمونة.
           </p>
         </div>
       </section>
@@ -44,32 +48,46 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      {/* Why Atlas Pure */}
+      {/* Why AtlasPure */}
       <section className="section-padding bg-white">
         <div className="container-max">
-          <div className="text-center mb-10">
-            <h2 className="font-display font-bold text-3xl text-charcoal mb-3">
-              لماذا أطلس بيور؟
+          <div className="text-center mb-12 max-w-2xl mx-auto">
+            <p className="divider-gold mb-4 max-w-xs mx-auto">
+              <span>الفرق ديالنا</span>
+            </p>
+            <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal mb-3">
+              علاش أطلس بيور؟
             </h2>
+            <p className="text-muted leading-relaxed">
+              الفرق بيناتنا وبين الباقي ماشي فالشعارات – بل فالبروتوكول.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
               {
-                title: "مكونات طبيعية",
-                desc: "كل مكون معروف ومستعمل تقليدياً. ما فيهاش مواد اصطناعية.",
+                icon: FlaskConical,
+                title: "تركيبة من إعداد صيادلة",
+                desc: "كل منتج مصمم بمشاركة صيادلة وخبراء فالنباتات الطبية – بلا حشو ولا مواد كيميائية مجهولة.",
               },
               {
-                title: "بثمن معقول",
-                desc: "عناية حقيقية بثمن في متناول الجميع. الجودة ما خاصهاش تكون غالية.",
+                icon: BadgeCheck,
+                title: "مصادق عليها رسمياً",
+                desc: "جميع تركيباتنا مصادق عليها من الهيئة العامة للغداء والدواء المغربية (ONSSA).",
               },
               {
-                title: "دفع عند الاستلام",
-                desc: "ما كتحتاجيش بطاقة بنكية. خلصي فقط ملي توصلك السلعة.",
+                icon: Lock,
+                title: "خصوصية تامة",
+                desc: "تغليف محترم بلا إشهار خارجي، توصيل مباشر، الدفع نقداً عند الاستلام.",
               },
             ].map((item) => (
-              <div key={item.title} className="text-center space-y-3 p-6">
-                <CheckCircle2 className="w-10 h-10 text-teal mx-auto" />
-                <h3 className="font-bold text-xl text-charcoal font-display">
+              <div
+                key={item.title}
+                className="bg-ivory rounded-2xl p-6 border border-border-soft hover:border-teal/40 hover:shadow-md transition-all text-center"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-teal/10 text-teal flex items-center justify-center mx-auto mb-4">
+                  <item.icon className="w-7 h-7" />
+                </div>
+                <h3 className="font-bold text-xl text-charcoal font-display mb-2">
                   {item.title}
                 </h3>
                 <p className="text-muted text-sm leading-relaxed">{item.desc}</p>
@@ -98,11 +116,12 @@ export default function ProductsPage() {
       {/* COD reassurance */}
       <section className="section-padding bg-teal-dark text-ivory">
         <div className="container-max text-center max-w-2xl">
-          <h2 className="font-display font-bold text-3xl mb-4">
+          <CheckCircle2 className="w-12 h-12 text-saffron mx-auto mb-4" />
+          <h2 className="font-display font-bold text-3xl md:text-4xl mb-4">
             ماعنديكش ما تخسريه
           </h2>
           <p className="text-ivory/80 text-lg leading-relaxed">
-            الطلب مجاني. التوصيل مجاني. والدفع فقط ملي توصلك السلعة في يدك. هاد هو وعدنا معاك.
+            الطلب مجاني. التوصيل مجاني. والدفع فقط ملي توصلك السلعة فيدك. ضمان 30 يوم باش ترجعي فلوسك إلا ما لقيتيش الفرق. هاد هو وعدنا معاك.
           </p>
         </div>
       </section>
