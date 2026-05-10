@@ -3,7 +3,15 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CheckCircle2, ShoppingBag, ArrowLeft } from "lucide-react";
+import {
+  CheckCircle2,
+  ShoppingBag,
+  ArrowLeft,
+  Sparkles,
+  Clock,
+  CalendarCheck,
+  Lightbulb,
+} from "lucide-react";
 import type { Product } from "@/types/product";
 import type { OfferId } from "@/types/product";
 import OfferSelector from "@/components/product/OfferSelector";
@@ -280,40 +288,123 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         </div>
       </section>
 
-      {/* How to use (Image Left, Text Right) */}
-      <section className="section-padding bg-sand">
+      {/* How to use – step-by-step + timeline + tips */}
+      <section className="section-padding bg-gradient-to-b from-sand to-ivory">
         <div className="container-max">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            {/* Image Left */}
-            <div className="relative aspect-square max-w-sm mx-auto w-full order-2 md:order-1">
-              <div className="absolute inset-0 bg-teal/10 rounded-2xl -rotate-3" />
-              <Image
-                src="/images/placeholders/how-to-use.svg"
-                alt={`طريقة استعمال ${product.shortName}`}
-                fill
-                className="object-cover rounded-2xl p-2 bg-white opacity-40"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-10 pointer-events-none">
-                <div className="bg-white/85 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-white/50 max-w-[85%]">
-                  <p className="text-charcoal font-bold text-sm leading-relaxed">
-                    صورة توضح طريقة الاستعمال الصحيحة للمنتج بخطوات بسيطة.
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 bg-teal/10 text-teal text-sm font-semibold px-3 py-1.5 rounded-full mb-4">
+              <Sparkles className="w-4 h-4" />
+              طريقة الاستعمال
+            </div>
+            <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal mb-3">
+              ساهلة وبسيطة في 3 خطوات فقط
+            </h2>
+            <p className="text-muted leading-relaxed">
+              ما تحتاجي حتى خبرة – فدقائق غادي تكوني عارفة كيفاش تستعملي{" "}
+              {product.shortName} باش تحصلي على أحسن نتيجة.
+            </p>
+
+            {/* Frequency badge */}
+            <div className="inline-flex items-center gap-2 bg-white border border-border-soft rounded-full px-4 py-2 mt-5 shadow-sm">
+              <Clock className="w-4 h-4 text-saffron" />
+              <span className="text-sm text-charcoal">
+                <span className="text-muted">معدل الاستعمال:</span>{" "}
+                <span className="font-bold">{product.usageFrequency}</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+            {product.howToUseSteps.map((step, i) => (
+              <div
+                key={i}
+                className="relative bg-white rounded-2xl p-6 shadow-sm border border-border-soft hover:shadow-md hover:border-teal/30 transition-all"
+              >
+                <div className="absolute -top-4 right-6 w-10 h-10 rounded-full bg-teal text-white font-bold text-lg flex items-center justify-center shadow-md ring-4 ring-ivory">
+                  {i + 1}
+                </div>
+                <div className="pt-3">
+                  <h3 className="font-display font-bold text-lg text-charcoal mb-2">
+                    {step.title}
+                  </h3>
+                  <p className="text-muted leading-relaxed text-sm">
+                    {step.description}
                   </p>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {/* Timeline + Tips */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            {/* Timeline */}
+            <div className="lg:col-span-3 bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-border-soft">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-teal/10 flex items-center justify-center flex-shrink-0">
+                  <CalendarCheck className="w-5 h-5 text-teal" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-xl text-charcoal">
+                    شنو غادي تحسي بيه؟
+                  </h3>
+                  <p className="text-xs text-muted">
+                    نتائج حقيقية متوقعة مع الاستعمال المنتظم
+                  </p>
+                </div>
+              </div>
+
+              <ol className="relative space-y-5 pr-6 border-r-2 border-dashed border-teal/20">
+                {product.expectedTimeline.map((item, i) => (
+                  <li key={i} className="relative">
+                    <span className="absolute -right-[33px] top-1 w-5 h-5 rounded-full bg-white border-2 border-teal flex items-center justify-center">
+                      <span className="w-2 h-2 rounded-full bg-teal" />
+                    </span>
+                    <p className="font-bold text-saffron text-sm mb-1">
+                      {item.when}
+                    </p>
+                    <p className="text-charcoal leading-relaxed">
+                      {item.result}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+
+              <div className="mt-6 pt-5 border-t border-border-soft flex items-start gap-3 text-sm">
+                <CheckCircle2 className="w-5 h-5 text-teal flex-shrink-0 mt-0.5" />
+                <p className="text-muted leading-relaxed">
+                  <span className="font-semibold text-charcoal">
+                    ضمان استرجاع الأموال 30 يوم
+                  </span>{" "}
+                  – إلا ما لقيتيش الفرق، كنرجعو ليك الفلوس بلا أي أسئلة.
+                </p>
+              </div>
             </div>
-            {/* Text Right */}
-            <div className="space-y-5 order-1 md:order-2">
-              <h2 className="font-display font-bold text-3xl text-charcoal mb-4">
-                كيفاش تستعملي بكل سهولة
-              </h2>
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-teal/10">
-                <p className="text-charcoal leading-relaxed text-lg">{product.howToUse}</p>
+
+            {/* Tips */}
+            <div className="lg:col-span-2 bg-charcoal text-ivory rounded-2xl p-6 md:p-8 shadow-sm">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-xl bg-saffron/20 flex items-center justify-center flex-shrink-0">
+                  <Lightbulb className="w-5 h-5 text-saffron" />
+                </div>
+                <h3 className="font-display font-bold text-xl">
+                  نصائح للحصول على أفضل نتيجة
+                </h3>
               </div>
-              <div className="flex items-center gap-3 text-sm text-muted mt-4">
-                <CheckCircle2 className="w-4 h-4 text-saffron" />
-                <span>نتيجة مضمونة مع الاستعمال اليومي المنتظم</span>
-              </div>
+
+              <ul className="space-y-4">
+                {product.usageTips.map((tip, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-saffron/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Sparkles className="w-3.5 h-3.5 text-saffron" />
+                    </div>
+                    <p className="text-ivory/90 leading-relaxed text-sm">
+                      {tip}
+                    </p>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

@@ -26,6 +26,10 @@ export interface Product {
   painSection: string;
   ingredientCopy: string;
   howToUse: string;
+  howToUseSteps: { title: string; description: string }[];
+  usageFrequency: string;
+  expectedTimeline: { when: string; result: string }[];
+  usageTips: string[];
   offerNudge: string;
   ingredients: string[];
   images: {
