@@ -72,7 +72,7 @@ export default function AboutPage() {
       </section>
 
       {/* Manifesto */}
-      <section className="section-padding bg-white">
+      <section className="section-padding bg-white content-auto">
         <div className="container-max max-w-3xl">
           <div className="prose-custom space-y-6 text-charcoal leading-relaxed text-lg">
             <p>
@@ -93,7 +93,7 @@ export default function AboutPage() {
       </section>
 
       {/* 4 Pillars */}
-      <section className="section-padding bg-mist/40">
+      <section className="section-padding bg-mist/40 content-auto">
         <div className="container-max">
           <div className="text-center mb-12 max-w-2xl mx-auto">
             <p className="divider-gold mb-4 max-w-xs mx-auto">
@@ -133,7 +133,7 @@ export default function AboutPage() {
       </section>
 
       {/* Atlas + Pure name story */}
-      <section className="section-padding bg-white">
+      <section className="section-padding bg-white content-auto">
         <div className="container-max max-w-4xl">
           <p className="divider-gold mb-4 max-w-xs mx-auto">
             <span>قصة الاسم</span>
@@ -174,7 +174,7 @@ export default function AboutPage() {
       </section>
 
       {/* Promise / commitment */}
-      <section className="section-padding bg-teal-dark text-ivory">
+      <section className="section-padding bg-teal-dark text-ivory content-auto">
         <div className="container-max max-w-4xl">
           <div className="text-center mb-10">
             <Sparkles className="w-10 h-10 text-saffron mx-auto mb-4" />

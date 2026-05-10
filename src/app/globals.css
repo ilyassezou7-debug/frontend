@@ -65,15 +65,19 @@ body {
 }
 
 /* Smooth transitions */
-* {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
+/* Removed global transition on * as it causes severe scroll performance issues */
+/* Use Tailwind classes like transition-all or transition-colors where needed instead */
 
 /* Override transition for elements that should not animate */
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+@layer utilities {
+  .content-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 500px;
+  }
 }
 
 @layer components {

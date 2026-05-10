@@ -158,7 +158,7 @@ export default function HomePage() {
       <TrustBadges />
 
       {/* Authority & Science Section */}
-      <section className="section-padding bg-white border-y border-border-soft">
+      <section className="section-padding bg-white border-y border-border-soft content-auto">
         <div className="container-max">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <p className="divider-gold mb-4">
@@ -193,7 +193,7 @@ export default function HomePage() {
       </section>
 
       {/* Problem-aware section */}
-      <section className="section-padding bg-mist/40">
+      <section className="section-padding bg-mist/40 content-auto">
         <div className="container-max">
           <div className="text-center mb-12 max-w-2xl mx-auto">
             <p className="divider-gold mb-4">
@@ -233,7 +233,7 @@ export default function HomePage() {
       </section>
 
       {/* Bestsellers */}
-      <section className="section-padding bg-white">
+      <section className="section-padding bg-white content-auto">
         <div className="container-max">
           <div className="text-center mb-12">
             <p className="divider-gold mb-4 max-w-xs mx-auto">
@@ -255,7 +255,7 @@ export default function HomePage() {
       </section>
 
       {/* Brand authority — botanicals */}
-      <section className="section-padding bg-teal-dark text-ivory relative overflow-hidden">
+      <section className="section-padding bg-teal-dark text-ivory relative overflow-hidden content-auto">
         <div
           className="absolute inset-0 opacity-[0.05] pointer-events-none"
           style={{
@@ -328,7 +328,7 @@ export default function HomePage() {
       </section>
 
       {/* Social proof */}
-      <section className="section-padding bg-ivory">
+      <section className="section-padding bg-ivory content-auto">
         <div className="container-max">
           <div className="text-center mb-10">
             <p className="divider-gold mb-4 max-w-xs mx-auto">
@@ -357,7 +357,7 @@ export default function HomePage() {
       </section>
 
       {/* How COD works */}
-      <section className="section-padding bg-white">
+      <section className="section-padding bg-white content-auto">
         <div className="container-max">
           <div className="text-center mb-12">
             <p className="divider-gold mb-4 max-w-xs mx-auto">
@@ -390,7 +390,7 @@ export default function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section className="section-padding bg-ivory">
+      <section className="section-padding bg-ivory content-auto">
         <div className="container-max max-w-3xl">
           <div className="text-center mb-10">
             <p className="divider-gold mb-4 max-w-xs mx-auto">

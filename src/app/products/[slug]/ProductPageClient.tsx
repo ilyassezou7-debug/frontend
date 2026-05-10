@@ -214,33 +214,41 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       </section>
 
       {/* ───────── PAIN POINTS ───────── */}
-      <PainPointsList
-        title="فاهمين الإحساس ديالك"
-        intro={product.painSection}
-        points={product.painPoints}
-        image={product.images.lifestyle}
-        imageAlt={`معاناة ${product.shortName}`}
-      />
+      <div className="content-auto">
+        <PainPointsList
+          title="فاهمين الإحساس ديالك"
+          intro={product.painSection}
+          points={product.painPoints}
+          image={product.images.lifestyle}
+          imageAlt={`معاناة ${product.shortName}`}
+        />
+      </div>
 
       {/* ───────── BENEFITS / TRANSFORMATION ───────── */}
-      <BenefitsGrid
-        benefits={product.benefits}
-        productShortName={product.shortName}
-      />
+      <div className="content-auto">
+        <BenefitsGrid
+          benefits={product.benefits}
+          productShortName={product.shortName}
+        />
+      </div>
 
       {/* ───────── INGREDIENTS DEEP DIVE ───────── */}
-      <IngredientsSection
-        intro={product.ingredientCopy}
-        ingredients={product.ingredientDetails}
-        image={product.images.ingredients}
-        imageAlt={`مكونات ${product.shortName}`}
-      />
+      <div className="content-auto">
+        <IngredientsSection
+          intro={product.ingredientCopy}
+          ingredients={product.ingredientDetails}
+          image={product.images.ingredients}
+          imageAlt={`مكونات ${product.shortName}`}
+        />
+      </div>
 
       {/* ───────── ANTI-CLAIMS STRIP ───────── */}
-      <AntiClaimStrip claims={product.antiClaims} />
+      <div className="content-auto">
+        <AntiClaimStrip claims={product.antiClaims} />
+      </div>
 
       {/* ───────── HOW TO USE ───────── */}
-      <section className="section-padding bg-gradient-to-b from-sand to-ivory">
+      <section className="section-padding bg-gradient-to-b from-sand to-ivory content-auto">
         <div className="container-max">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-10">
@@ -359,19 +367,25 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       </section>
 
       {/* ───────── COMPARISON TABLE ───────── */}
-      <ComparisonTable rows={product.comparison} />
+      <div className="content-auto">
+        <ComparisonTable rows={product.comparison} />
+      </div>
 
       {/* ───────── REVIEWS ───────── */}
-      <ReviewsBlock
-        reviews={product.reviews}
-        ratingCount={product.ratingCount}
-      />
+      <div className="content-auto">
+        <ReviewsBlock
+          reviews={product.reviews}
+          ratingCount={product.ratingCount}
+        />
+      </div>
 
       {/* ───────── GOLDEN GUARANTEE SEAL ───────── */}
-      <GoldenGuaranteeSeal customText={product.guaranteeText} />
+      <div className="content-auto">
+        <GoldenGuaranteeSeal customText={product.guaranteeText} />
+      </div>
 
       {/* ───────── PRODUCT-SPECIFIC FAQ ───────── */}
-      <section className="section-padding bg-ivory">
+      <section className="section-padding bg-ivory content-auto">
         <div className="container-max max-w-3xl">
           <div className="text-center mb-10">
             <p className="divider-gold mb-4 max-w-xs mx-auto">
@@ -389,14 +403,18 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       </section>
 
       {/* ───────── BUNDLE CROSS-SELL ───────── */}
-      <BundleCrossSell primary={product} others={crossSellProducts} />
+      <div className="content-auto">
+        <BundleCrossSell primary={product} others={crossSellProducts} />
+      </div>
 
       {/* ───────── FINAL CTA ───────── */}
-      <FinalCTA
-        productShortName={product.shortName}
-        ratingCount={product.ratingCount}
-        targetId={OFFER_BLOCK_ID}
-      />
+      <div className="content-auto">
+        <FinalCTA
+          productShortName={product.shortName}
+          ratingCount={product.ratingCount}
+          targetId={OFFER_BLOCK_ID}
+        />
+      </div>
 
       {/* ───────── STICKY BUY BAR (mobile + desktop) ───────── */}
       <StickyBuyBar
