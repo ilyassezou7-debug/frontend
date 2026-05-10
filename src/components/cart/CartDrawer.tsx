@@ -32,14 +32,8 @@ export default function CartDrawer({
 
   const total = getTotal();
 
-  // Prevent body scroll when open
-  useEffect(() => {
-    if (isOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
+  // Radix UI Dialog automatically handles body scroll locking, 
+  // so we don't need manual overflow manipulation here.
 
   function handleQuantityChange(
     productId: string,
@@ -66,7 +60,10 @@ export default function CartDrawer({
     const eventId = generateEventId();
     trackInitiateCheckout(total, eventId);
     onClose();
-    onCheckout();
+    // Delay opening checkout modal slightly to allow cart drawer to start closing smoothly
+    setTimeout(() => {
+      onCheckout();
+    }, 150);
   }
 
   // Cross-sell products: items not in cart
