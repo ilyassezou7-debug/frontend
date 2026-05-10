@@ -139,7 +139,7 @@ export default function ThankYouClient() {
             تم استلام طلبيتك
           </p>
           <h1 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl mb-3 leading-tight">
-            تبارك الله {customerFirstName} 🎉
+            مبروك عليك {customerFirstName} 🎉
           </h1>
           <p className="text-base sm:text-lg text-ivory/85 leading-relaxed max-w-xl mx-auto">
             طلبيتك توصلات بنجاح فأطلس بيور.
