@@ -2,34 +2,46 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
   CheckCircle2,
   ShoppingBag,
-  ArrowLeft,
   Sparkles,
   Clock,
   CalendarCheck,
   Lightbulb,
+  ShieldCheck,
+  Truck,
+  Banknote,
+  BadgeCheck,
 } from "lucide-react";
 import type { Product } from "@/types/product";
 import type { OfferId } from "@/types/product";
 import OfferSelector from "@/components/product/OfferSelector";
-import ReviewCard from "@/components/product/ReviewCard";
-import StickyMobileCTA from "@/components/product/StickyMobileCTA";
-import TrustBadges from "@/components/ui/TrustBadges";
-import FAQAccordion from "@/components/ui/FAQAccordion";
+import StickyBuyBar from "@/components/product/StickyBuyBar";
 import StarRating from "@/components/ui/StarRating";
+import FAQAccordion from "@/components/ui/FAQAccordion";
+
+import PainPointsList from "@/components/product/sections/PainPointsList";
+import BenefitsGrid from "@/components/product/sections/BenefitsGrid";
+import IngredientsSection from "@/components/product/sections/IngredientsSection";
+import AntiClaimStrip from "@/components/product/sections/AntiClaimStrip";
+import ComparisonTable from "@/components/product/sections/ComparisonTable";
+import ReviewsBlock from "@/components/product/sections/ReviewsBlock";
+import GoldenGuaranteeSeal from "@/components/product/sections/GoldenGuaranteeSeal";
+import BundleCrossSell from "@/components/product/sections/BundleCrossSell";
+import FinalCTA from "@/components/product/sections/FinalCTA";
+
 import { useCartStore } from "@/store/cart-store";
 import { formatMAD } from "@/lib/money";
 import { trackViewContent, trackAddToCart } from "@/lib/tracking";
 import { generateEventId } from "@/lib/event-id";
-import { SITE_CONFIG } from "@/config/site";
 import { PRODUCTS } from "@/config/products";
 
 interface ProductPageClientProps {
   product: Product;
 }
+
+const OFFER_BLOCK_ID = "offer-block";
 
 export default function ProductPageClient({ product }: ProductPageClientProps) {
   const [selectedOffer, setSelectedOffer] = useState<OfferId>("two");
@@ -60,58 +72,73 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   const crossSellProducts = product.crossSellPriority
     .map((id) => PRODUCTS.find((p) => p.id === id))
     .filter(Boolean)
-    .slice(0, 2);
+    .slice(0, 2) as Product[];
 
   return (
-    <div>
-      {/* Hero / Offer Block */}
-      <section className="section-padding bg-gradient-to-br from-ivory to-sand">
+    <div className="pb-24 sm:pb-28">
+      {/* ───────── HERO + OFFER ───────── */}
+      <section
+        id={OFFER_BLOCK_ID}
+        className="section-padding bg-gradient-to-br from-ivory via-mist/30 to-sand scroll-mt-20 md:scroll-mt-24"
+      >
         <div className="container-max">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-            {/* Product Image */}
-            <div className="relative aspect-square max-w-lg mx-auto w-full">
-              <div className="absolute inset-0 bg-teal/5 rounded-3xl" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
+            {/* Product Image — fills column on desktop */}
+            <div className="relative aspect-square w-full">
+              <div className="absolute inset-0 bg-white rounded-3xl shadow-md border border-border-soft" />
+              <div className="absolute inset-3 rounded-2xl border border-saffron/30" />
               <Image
                 src={product.images.hero}
                 alt={product.displayName}
                 fill
                 priority
-                className="object-contain p-6 rounded-3xl opacity-40"
+                className="object-contain p-8 sm:p-12 rounded-3xl opacity-30"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-              
-              {/* Image content placeholder description */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-10 pointer-events-none">
-                <div className="bg-white/85 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-white/50 max-w-[85%]">
-                  <p className="text-charcoal font-bold text-sm leading-relaxed">
-                    {product.id === "breath_drops" && "صورة جذابة لقطرات النفس مع أوراق النعناع والقرنفل في خلفية نقية توحي بالانتعاش والثقة."}
-                    {product.id === "foot_spray" && "صورة لبخاخ القدمين مع لمسات من زيت شجرة الشاي والشبة، في بيئة مريحة توحي بالنظافة."}
-                    {product.id === "nail_serum" && "صورة لسيروم الأظافر تبرز نقاء السيروم مع مكونات طبيعية كالثوم وخل التفاح."}
-                  </p>
-                </div>
+              {/* Floating badges */}
+              <div className="absolute top-4 left-4 bg-saffron text-white text-[10px] sm:text-[11px] font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
+                <BadgeCheck className="w-3.5 h-3.5" />
+                ONSSA
+              </div>
+              <div className="absolute bottom-4 right-4 bg-teal text-white text-[10px] sm:text-[11px] font-bold tracking-wide px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
+                100% طبيعي
               </div>
             </div>
 
             {/* Product Info */}
             <div className="space-y-5">
               <div>
-                <h1 className="font-display font-bold text-3xl md:text-4xl text-charcoal leading-tight mb-2">
-                  {product.displayName}
+                {/* Hero Promise — the headline that lands at top of viewport when sticky CTA is tapped */}
+                <h1 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl text-charcoal leading-[1.2] mb-3">
+                  {product.heroPromise}
                 </h1>
                 <div className="flex items-center gap-2 mb-3">
                   <StarRating rating={4.8} />
                   <span className="text-sm text-muted">
-                    ({product.reviews.length} تقييم)
+                    <span className="font-bold text-charcoal">4.8/5</span> · من{" "}
+                    <span className="tabular-nums font-bold text-charcoal">
+                      {product.ratingCount}+
+                    </span>{" "}
+                    تقييم زبونة
                   </span>
                 </div>
-                <p className="text-lg text-muted leading-relaxed">
+                <p className="text-base md:text-lg text-muted leading-relaxed">
                   {product.headline}
                 </p>
               </div>
 
-              <p className="text-sm text-muted leading-relaxed">
-                {product.subheading}
-              </p>
+              {/* Quick benefits chips */}
+              <div className="flex flex-wrap gap-2">
+                {product.benefits.slice(0, 3).map((b) => (
+                  <span
+                    key={b.title}
+                    className="inline-flex items-center gap-1.5 bg-white border border-teal/20 text-teal text-xs font-semibold px-3 py-1.5 rounded-full"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    {b.title}
+                  </span>
+                ))}
+              </div>
 
               {/* Offer Selector */}
               <div>
@@ -126,12 +153,12 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               </div>
 
               {/* Offer nudge */}
-              <p className="text-sm text-saffron font-medium bg-saffron/10 rounded-xl px-4 py-2">
+              <p className="text-sm text-saffron font-semibold bg-saffron/10 rounded-xl px-4 py-3 border border-saffron/20 leading-relaxed">
                 ⚡ {product.offerNudge}
               </p>
 
-              {/* Desktop CTA */}
-              <div className="hidden md:block">
+              {/* Desktop CTA + inline trust micro-strip */}
+              <div className="hidden md:block space-y-3">
                 <button
                   onClick={handleAddToCart}
                   className="btn-primary w-full flex items-center justify-center gap-2 text-base"
@@ -139,67 +166,46 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   <ShoppingBag className="w-5 h-5" />
                   أضيفي للسلة – {formatMAD(offer.price)}
                 </button>
+                <div className="flex items-center justify-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-muted">
+                  <span className="inline-flex items-center gap-1">
+                    <Banknote className="w-3.5 h-3.5 text-teal" />
+                    الدفع عند الاستلام
+                  </span>
+                  <span className="text-border-soft">•</span>
+                  <span className="inline-flex items-center gap-1">
+                    <Truck className="w-3.5 h-3.5 text-teal" />
+                    توصيل مجاني
+                  </span>
+                  <span className="text-border-soft">•</span>
+                  <span className="inline-flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-teal" />
+                    ضمان 30 يوم
+                  </span>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Trust badges */}
-      <TrustBadges />
-
-      {/* Authority & Science Section (Maroc SFDA & Warranty) - Text Left, Image Right */}
-      <section className="section-padding bg-white border-b border-sand">
-        <div className="container-max">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            {/* Text Left */}
-            <div className="space-y-5">
-              <div className="inline-flex items-center gap-2 bg-saffron/10 text-saffron-dark text-sm font-semibold px-3 py-1.5 rounded-full">
-                <CheckCircle2 className="w-4 h-4" />
-                جودة مضمونة 100%
-              </div>
-              <h2 className="font-display font-bold text-3xl text-charcoal">
-                مصادق عليه علمياً وآمن للاستعمال
-              </h2>
-              <p className="text-muted leading-relaxed text-lg">
-                منتجاتنا خاضعة لمعايير الجودة الصارمة ومصادق عليها من الهيئة العامة للغداء والدواء المغربية. كنستعملو غير المكونات الطبيعية اللي ثبتت الفعالية ديالها علمياً، باش نعطيوك نتيجة حقيقية بلا أضرار جانبية.
-              </p>
-              <ul className="space-y-3 mt-4">
-                <li className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-5 h-5 text-teal" />
-                  </div>
-                  <span className="font-medium text-charcoal">مصادق عليها من الهيئة العامة للغداء والدواء المغربية</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-5 h-5 text-teal" />
-                  </div>
-                  <span className="font-medium text-charcoal">ضمان استرجاع الأموال لمدة 30 يوم (30 Days Warranty)</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-5 h-5 text-teal" />
-                  </div>
-                  <span className="font-medium text-charcoal">مكونات طبيعية 100% خالية من المواد الكيميائية الضارة</span>
-                </li>
-              </ul>
-            </div>
-            {/* Image Right */}
-            <div className="relative aspect-square max-w-sm mx-auto w-full">
-              <div className="absolute inset-0 bg-teal/10 rounded-3xl transform -rotate-3" />
-              <Image
-                src="/images/placeholders/science-proof.svg"
-                alt="مصادق عليه علمياً"
-                fill
-                className="object-contain p-6 rounded-3xl opacity-40"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-10 pointer-events-none">
-                <div className="bg-white/85 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-white/50 max-w-[85%]">
-                  <p className="text-charcoal font-bold text-sm leading-relaxed">
-                    صورة تختم بمصادقة أو شهادة طبية (مثل شعار ONSSA) لتعزيز الثقة.
-                  </p>
+              {/* Mobile CTA */}
+              <div className="md:hidden space-y-3">
+                <button
+                  onClick={handleAddToCart}
+                  className="btn-primary w-full flex items-center justify-center gap-2 text-base"
+                >
+                  <ShoppingBag className="w-5 h-5" />
+                  أضيفي للسلة – {formatMAD(offer.price)}
+                </button>
+                <div className="flex items-center justify-between gap-2 text-[10px] text-muted">
+                  <span className="inline-flex items-center gap-1">
+                    <Banknote className="w-3.5 h-3.5 text-teal" />
+                    دفع COD
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <Truck className="w-3.5 h-3.5 text-teal" />
+                    توصيل مجاني
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-teal" />
+                    ضمان 30 يوم
+                  </span>
                 </div>
               </div>
             </div>
@@ -207,105 +213,47 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         </div>
       </section>
 
-      {/* Pain section (Image Left, Text Right) */}
-      <section className="section-padding bg-sand">
-        <div className="container-max">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            {/* Image Left */}
-            <div className="relative aspect-square max-w-sm mx-auto w-full order-2 md:order-1">
-              <div className="absolute inset-0 bg-white rounded-3xl shadow-sm transform rotate-3" />
-              <Image
-                src={product.images.lifestyle}
-                alt={`معاناة ${product.shortName}`}
-                fill
-                className="object-cover rounded-3xl p-2 opacity-40"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-10 pointer-events-none">
-                <div className="bg-white/85 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-white/50 max-w-[85%]">
-                  <p className="text-charcoal font-bold text-sm leading-relaxed">
-                    صورة تعبيرية لامرأة تبرز الراحة، الثقة، والأنوثة بعد التخلص من المشكل.
-                  </p>
-                </div>
-              </div>
-            </div>
-            {/* Text Right */}
-            <div className="space-y-5 order-1 md:order-2">
-              <h2 className="font-display font-bold text-3xl text-charcoal mb-4">
-                فاهمين الإحساس ديالك كمرأة مغربية
-              </h2>
-              <p className="text-muted leading-relaxed text-lg">
-                {product.painSection}
-              </p>
-              <p className="text-charcoal font-medium mt-4 border-r-4 border-teal pr-4 py-2 bg-white/50 rounded-l-lg">
-                &quot;ماشي بوحدك اللي كتعاني من هاد المشكل.. الآلاف من النساء المغربيات جربو وارتاحو أخيراً.&quot;
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ───────── PAIN POINTS ───────── */}
+      <PainPointsList
+        title="فاهمين الإحساس ديالك"
+        intro={product.painSection}
+        points={product.painPoints}
+        image={product.images.lifestyle}
+        imageAlt={`معاناة ${product.shortName}`}
+      />
 
-      {/* Ingredients (Text Left, Image Right) */}
-      <section className="section-padding bg-white">
-        <div className="container-max">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            {/* Text Left */}
-            <div className="space-y-5">
-              <h2 className="font-display font-bold text-3xl text-charcoal">
-                قوة الطبيعة في مكوناتنا
-              </h2>
-              <p className="text-muted leading-relaxed text-lg">
-                {product.ingredientCopy}
-              </p>
-              <div className="grid grid-cols-2 gap-4 mt-6">
-                {product.ingredients.map((ing) => (
-                  <div key={ing} className="flex items-center gap-3 bg-sand p-3 rounded-xl">
-                    <CheckCircle2 className="w-5 h-5 text-teal flex-shrink-0" />
-                    <span className="font-medium text-charcoal text-sm">{ing}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Image Right */}
-            <div className="relative aspect-square max-w-sm mx-auto w-full">
-              <div className="absolute inset-0 bg-teal/5 rounded-full scale-105" />
-              <Image
-                src={product.images.ingredients}
-                alt={`مكونات ${product.shortName}`}
-                fill
-                className="object-contain rounded-full opacity-40"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-10 pointer-events-none">
-                <div className="bg-white/85 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-white/50 max-w-[85%]">
-                  <p className="text-charcoal font-bold text-sm leading-relaxed">
-                    صورة تسلط الضوء بوضوح على المكونات الطبيعية للمنتج ({product.ingredients.slice(0, 2).join(" و")}).
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ───────── BENEFITS / TRANSFORMATION ───────── */}
+      <BenefitsGrid
+        benefits={product.benefits}
+        productShortName={product.shortName}
+      />
 
-      {/* How to use – step-by-step + timeline + tips */}
+      {/* ───────── INGREDIENTS DEEP DIVE ───────── */}
+      <IngredientsSection
+        intro={product.ingredientCopy}
+        ingredients={product.ingredientDetails}
+        image={product.images.ingredients}
+        imageAlt={`مكونات ${product.shortName}`}
+      />
+
+      {/* ───────── ANTI-CLAIMS STRIP ───────── */}
+      <AntiClaimStrip claims={product.antiClaims} />
+
+      {/* ───────── HOW TO USE ───────── */}
       <section className="section-padding bg-gradient-to-b from-sand to-ivory">
         <div className="container-max">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-2 bg-teal/10 text-teal text-sm font-semibold px-3 py-1.5 rounded-full mb-4">
-              <Sparkles className="w-4 h-4" />
-              طريقة الاستعمال
-            </div>
-            <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal mb-3">
-              ساهلة وبسيطة في 3 خطوات فقط
+            <p className="divider-gold mb-4 max-w-xs mx-auto">
+              <span>طريقة الاستعمال</span>
+            </p>
+            <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal mb-3 leading-tight">
+              ساهلة وبسيطة فـ 3 خطوات فقط
             </h2>
             <p className="text-muted leading-relaxed">
               ما تحتاجي حتى خبرة – فدقائق غادي تكوني عارفة كيفاش تستعملي{" "}
               {product.shortName} باش تحصلي على أحسن نتيجة.
             </p>
-
-            {/* Frequency badge */}
             <div className="inline-flex items-center gap-2 bg-white border border-border-soft rounded-full px-4 py-2 mt-5 shadow-sm">
               <Clock className="w-4 h-4 text-saffron" />
               <span className="text-sm text-charcoal">
@@ -350,7 +298,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                     شنو غادي تحسي بيه؟
                   </h3>
                   <p className="text-xs text-muted">
-                    نتائج حقيقية متوقعة مع الاستعمال المنتظم
+                    نتائج محسوسة من أول استعمال – وكتزيد مع الوقت
                   </p>
                 </div>
               </div>
@@ -410,121 +358,52 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         </div>
       </section>
 
-      {/* Reviews */}
-      <section className="section-padding bg-ivory">
-        <div className="container-max">
-          <h2 className="font-display font-bold text-2xl text-charcoal mb-6">
-            تقييمات الزبونات
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {product.reviews.map((review, i) => (
-              <ReviewCard key={i} review={review} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ───────── COMPARISON TABLE ───────── */}
+      <ComparisonTable rows={product.comparison} />
 
-      {/* Trust & Guarantee Section */}
-      <section className="section-padding bg-teal-dark text-ivory">
-        <div className="container-max text-center max-w-3xl">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-full mb-6">
-            <CheckCircle2 className="w-8 h-8 text-saffron" />
-          </div>
-          <h2 className="font-display font-bold text-3xl mb-4">
-            التزامنا معاك – راحتك وثقتك هي الأهم
-          </h2>
-          <p className="text-ivory/80 text-lg leading-relaxed mb-8">
-            في أطلس بيور، كنضمنو ليك تجربة تسوق مريحة وآمنة 100%. التوصيل سريع، والدفع ما كيكون حتى تستلمي الطلبية ديالك. فريقنا ديما معاك باش يجاوب على استفساراتك.
-          </p>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
-            <div className="bg-white/5 rounded-2xl p-5 border border-white/10 flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-4">
-                <CheckCircle2 className="w-6 h-6 text-saffron" />
-              </div>
-              <h3 className="font-bold text-lg mb-2">توصيل سريع ومجاني</h3>
-              <p className="text-sm text-ivory/70 leading-relaxed">توصيل مجاني لجميع مدن المغرب في مدة لا تتجاوز 2-5 أيام عمل.</p>
-            </div>
-            
-            <div className="bg-white/5 rounded-2xl p-5 border border-white/10 flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-4">
-                <CheckCircle2 className="w-6 h-6 text-saffron" />
-              </div>
-              <h3 className="font-bold text-lg mb-2">الدفع عند الاستلام</h3>
-              <p className="text-sm text-ivory/70 leading-relaxed">ما كتخلصي والو دابا، الدفع كيكون نقداً يد في يد ملي توصلك الأمانة.</p>
-            </div>
-            
-            <div className="bg-white/5 rounded-2xl p-5 border border-white/10 flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-4">
-                <CheckCircle2 className="w-6 h-6 text-saffron" />
-              </div>
-              <h3 className="font-bold text-lg mb-2">تأكيد سريع للطلبية</h3>
-              <p className="text-sm text-ivory/70 leading-relaxed">غادي نتواصلو معاك هاتفياً لتأكيد الطلب ونبقاو معاك حتى الاستلام براحة تامة.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ───────── REVIEWS ───────── */}
+      <ReviewsBlock
+        reviews={product.reviews}
+        ratingCount={product.ratingCount}
+      />
 
-      {/* Cross-sell */}
-      {crossSellProducts.length > 0 && (
-        <section className="section-padding bg-white">
-          <div className="container-max">
-            <h2 className="font-display font-bold text-2xl text-charcoal mb-6">
-              كملي روتينك
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
-              {crossSellProducts.map(
-                (p) =>
-                  p && (
-                    <div key={p.id} className="card p-4">
-                      <div className="flex gap-4 items-center mb-3">
-                        <div className="relative w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden bg-sand">
-                          <Image
-                            src={p.images.hero}
-                            alt={p.shortName}
-                            fill
-                            className="object-cover"
-                            sizes="64px"
-                          />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-charcoal text-sm">
-                            {p.shortName}
-                          </p>
-                          <p className="text-xs text-muted mt-0.5">
-                            {product.crossSellText[p.id]}
-                          </p>
-                        </div>
-                      </div>
-                      <Link
-                        href={`/products/${p.slug}`}
-                        className="flex items-center justify-between text-teal text-sm font-semibold hover:gap-2 transition-all"
-                      >
-                        <span>من {formatMAD(199)}</span>
-                        <span className="flex items-center gap-1">
-                          اكتشفي <ArrowLeft className="w-4 h-4" />
-                        </span>
-                      </Link>
-                    </div>
-                  )
-              )}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* ───────── GOLDEN GUARANTEE SEAL ───────── */}
+      <GoldenGuaranteeSeal customText={product.guaranteeText} />
 
-      {/* FAQ */}
+      {/* ───────── PRODUCT-SPECIFIC FAQ ───────── */}
       <section className="section-padding bg-ivory">
         <div className="container-max max-w-3xl">
-          <h2 className="font-display font-bold text-2xl text-charcoal mb-6">
-            أسئلة شائعة
-          </h2>
-          <FAQAccordion items={SITE_CONFIG.faq} />
+          <div className="text-center mb-10">
+            <p className="divider-gold mb-4 max-w-xs mx-auto">
+              <span>أسئلة شائعة</span>
+            </p>
+            <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal mb-3">
+              كل ما تحتاجي تعرفي على {product.shortName}
+            </h2>
+            <p className="text-muted">
+              جوابات صريحة على الأسئلة اللي كتسولها زبوناتنا قبل الطلب.
+            </p>
+          </div>
+          <FAQAccordion items={product.productFaqs} />
         </div>
       </section>
 
-      {/* Sticky mobile CTA */}
-      <StickyMobileCTA product={product} selectedOffer={selectedOffer} />
+      {/* ───────── BUNDLE CROSS-SELL ───────── */}
+      <BundleCrossSell primary={product} others={crossSellProducts} />
+
+      {/* ───────── FINAL CTA ───────── */}
+      <FinalCTA
+        productShortName={product.shortName}
+        ratingCount={product.ratingCount}
+        targetId={OFFER_BLOCK_ID}
+      />
+
+      {/* ───────── STICKY BUY BAR (mobile + desktop) ───────── */}
+      <StickyBuyBar
+        product={product}
+        selectedOffer={selectedOffer}
+        targetId={OFFER_BLOCK_ID}
+      />
     </div>
   );
 }
