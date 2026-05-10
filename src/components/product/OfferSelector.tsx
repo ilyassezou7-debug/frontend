@@ -11,6 +11,7 @@ import {
   Banknote,
   Flame,
   Crown,
+  Zap,
 } from "lucide-react";
 
 interface OfferSelectorProps {
@@ -33,11 +34,11 @@ interface OfferMeta {
 const META: Record<string, OfferMeta> = {
   one: {
     title: "علبة واحدة",
-    subtitle: "30 يوم • شهر كامل",
+    subtitle: "كافية لـ 30 يوم استعمال",
   },
   two: {
     title: "علبتين",
-    subtitle: "شهر النتيجة + شهر التثبيت",
+    subtitle: "كافية لـ 60 يوم • بلا انقطاع",
     ribbon: "الأكثر اختياراً",
     ribbonIcon: <Flame className="w-3 h-3" />,
     ribbonClass: "bg-teal text-white",
@@ -45,7 +46,7 @@ const META: Record<string, OfferMeta> = {
   },
   three: {
     title: "ثلاث علب — البروتوكول الكامل",
-    subtitle: "نتيجة + تثبيت + هدية",
+    subtitle: "كافية لـ 90 يوم + قطعة هدية",
     ribbon: "الأكثر توفيراً",
     ribbonIcon: <Crown className="w-3 h-3" />,
     ribbonClass:
@@ -61,6 +62,21 @@ export default function OfferSelector({
 }: OfferSelectorProps) {
   return (
     <div className="space-y-3 pt-2">
+      {/* Universal speed promise — applies to ALL packs */}
+      <div className="flex items-center gap-2 bg-gradient-to-l from-emerald-50 to-emerald-50/50 border border-emerald-200/60 rounded-xl px-3 py-2">
+        <div className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+          <Zap className="w-4 h-4 text-emerald-700" strokeWidth={2.5} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[12px] sm:text-[13px] font-bold text-emerald-800 leading-tight">
+            نتائج محسوسة من أول أسبوع استعمال
+          </p>
+          <p className="text-[10px] sm:text-[11px] text-emerald-700/80 leading-tight mt-0.5">
+            كل علبة عندها نفس الفعالية – الكمية كتضمن لك الاستمرارية بلا انقطاع
+          </p>
+        </div>
+      </div>
+
       {offers.map((offer) => {
         const isSelected = selected === offer.offerId;
         const meta = META[offer.offerId] ?? {
