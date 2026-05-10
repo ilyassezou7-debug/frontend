@@ -8,6 +8,10 @@ export const SITE_CONFIG = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://atlaspure.shop",
   apiUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.atlaspure.shop",
   phone: "",
+  /** Phone the confirmation call comes from. Shown on the thank-you page so the customer recognizes the number. */
+  confirmationPhone: "+212 6 00 00 00 00",
+  /** WhatsApp number used for support / contact actions (international format, no +/spaces). */
+  whatsapp: "212600000000",
   email: "support@atlaspure.shop",
   brandShortDescription:
     "أطلس بيور علامة مغربية للعناية الصيدلانية النباتية، تقدم تركيبات مدروسة من قلب جبال الأطلس لمشاكل اليومية اللي ما كتنهضرش عليها بصوت عالي – بأمان، خصوصية، ونتائج مضمونة.",
