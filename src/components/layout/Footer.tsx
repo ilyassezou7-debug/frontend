@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Shield, Truck, Package, Phone, Leaf, ChevronDown } from "lucide-react";
 import { SITE_CONFIG } from "@/config/site";
-import BrandMark from "@/components/layout/BrandMark";
+import Image from "next/image";
 
 const iconMap = {
   shield: Shield,
@@ -18,7 +18,13 @@ export default function Footer() {
       <div className="border-b border-teal/30">
         <div className="container-max py-12 flex flex-col items-center justify-center text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mb-5">
-            <BrandMark size={64} variant="dark" />
+            <Image 
+              src="/logo.png" 
+              alt="Atlas Pure Logo" 
+              width={64} 
+              height={64} 
+              className="object-contain"
+            />
             <div className="flex flex-col items-center sm:items-start text-center sm:text-start">
               <p className="font-bold text-3xl sm:text-2xl font-display text-white tracking-wide">
                 أطلس بيور

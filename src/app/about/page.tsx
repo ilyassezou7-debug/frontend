@@ -11,7 +11,7 @@ import {
   BadgeCheck,
   Sparkles,
 } from "lucide-react";
-import BrandMark from "@/components/layout/BrandMark";
+import Image from "next/image";
 import { SITE_CONFIG } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -50,7 +50,13 @@ export default function AboutPage() {
       <section className="section-padding bg-gradient-to-br from-ivory via-mist/40 to-sand">
         <div className="container-max max-w-3xl text-center">
           <div className="flex justify-center mb-6">
-            <BrandMark size={80} />
+            <Image 
+              src="/logo.png" 
+              alt="Atlas Pure Logo" 
+              width={80} 
+              height={80} 
+              className="object-contain"
+            />
           </div>
           <p className="divider-gold mb-4 max-w-xs mx-auto">
             <span>من نحن</span>

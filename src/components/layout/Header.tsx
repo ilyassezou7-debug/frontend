@@ -7,7 +7,7 @@ import { useCartStore } from "@/store/cart-store";
 import { useCheckoutStore } from "@/store/checkout-store";
 import CartDrawer from "@/components/cart/CartDrawer";
 import CheckoutFlow from "@/components/checkout/CheckoutFlow";
-import BrandMark from "@/components/layout/BrandMark";
+import Image from "next/image";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -36,7 +36,13 @@ export default function Header() {
           <div className="flex items-center justify-between h-16">
             {/* Brand - Right side (RTL) */}
             <Link href="/" className="flex items-center gap-3 group">
-              <BrandMark size={42} className="group-hover:scale-105 transition-transform" />
+              <Image 
+                src="/logo.png" 
+                alt="Atlas Pure Logo" 
+                width={42} 
+                height={42} 
+                className="group-hover:scale-105 transition-transform object-contain"
+              />
               <div className="leading-tight">
                 <p className="font-bold text-lg text-charcoal font-display leading-none">
                   أطلس بيور
