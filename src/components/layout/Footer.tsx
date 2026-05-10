@@ -23,9 +23,6 @@ export default function Footer() {
               <p className="font-bold text-3xl sm:text-2xl font-display text-white tracking-wide">
                 أطلس بيور
               </p>
-              <p className="text-xs font-semibold text-saffron tracking-[0.25em] uppercase mt-1">
-                AtlasPure · Pharma-Botanic Care
-              </p>
             </div>
           </div>
           <p className="max-w-2xl text-ivory/75 text-sm leading-relaxed">

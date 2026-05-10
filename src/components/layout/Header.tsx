@@ -41,9 +41,6 @@ export default function Header() {
                 <p className="font-bold text-lg text-charcoal font-display leading-none">
                   أطلس بيور
                 </p>
-                <p className="text-[10px] text-saffron font-semibold tracking-[0.2em] uppercase mt-1">
-                  Pharma · Botanic
-                </p>
               </div>
             </Link>
 

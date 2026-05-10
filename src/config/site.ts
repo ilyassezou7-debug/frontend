@@ -2,7 +2,7 @@ export const SITE_CONFIG = {
   name: "أطلس بيور",
   nameEn: "AtlasPure",
   tagline: "دواء الطبيعة. بمعايير الصيدلية.",
-  taglineEn: "Pharma-Botanic Care",
+  taglineEn: "",
   category: "عناية صيدلانية نباتية",
   domain: "atlaspure.shop",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://atlaspure.shop",
