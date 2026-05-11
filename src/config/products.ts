@@ -369,9 +369,9 @@ export const PRODUCTS: Product[] = [
     offerNudge:
       "من أول رشة كتحسي بالجفاف – جربيه وارجعي فلوسك إلا ما عجبكش.",
     images: {
-      hero: "/images/placeholders/foot-hero.svg",
-      ingredients: "/images/placeholders/foot-ingredients.svg",
-      lifestyle: "/images/placeholders/foot-lifestyle.svg",
+      hero: "/images/products/foot-spray/hero.webp",
+      ingredients: "/images/products/foot-spray/ingredients.webp",
+      lifestyle: "/images/products/foot-spray/lifestyle.webp",
     },
     offers: [
       { offerId: "one", quantity: 1, price: 199, label: "تجربة أولى" },
