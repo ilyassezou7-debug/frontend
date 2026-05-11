@@ -19,7 +19,6 @@ import {
 import type { Product } from "@/types/product";
 import type { OfferId } from "@/types/product";
 import OfferSelector from "@/components/product/OfferSelector";
-import StickyBuyBar from "@/components/product/StickyBuyBar";
 import BackToOrderFAB from "@/components/product/BackToOrderFAB";
 import StarRating from "@/components/ui/StarRating";
 import FAQAccordion from "@/components/ui/FAQAccordion";
@@ -596,13 +595,6 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           targetId={OFFER_BLOCK_ID}
         />
       </div>
-
-      {/* ───────── STICKY BUY BAR (mobile + desktop) ───────── */}
-      <StickyBuyBar
-        product={product}
-        selectedOffer={selectedOffer}
-        targetId={OFFER_BLOCK_ID}
-      />
 
       {/* ───────── SIDE "BACK TO ORDER" FAB ─────────
           A small floating pill on the side that the customer can tap while
