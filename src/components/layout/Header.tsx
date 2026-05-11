@@ -35,7 +35,43 @@ export default function Header() {
       <header className="sticky top-0 bg-white shadow-sm border-b border-border-soft z-50">
         <div className="container-max">
           <div className="flex items-center justify-between h-16 sm:h-20">
-            {/* Right side (RTL start) — Cart & Mobile Menu */}
+            {/* Right side (RTL start) — Brand Logo */}
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center gap-2.5 group">
+                <Image
+                  src="/logo.png"
+                  alt="Atlas Pure Logo"
+                  width={44}
+                  height={44}
+                  className="group-hover:scale-105 transition-transform object-contain"
+                />
+                <div className="leading-tight text-right">
+                  <p className="font-bold text-lg sm:text-xl text-charcoal font-display leading-none tracking-wide">
+                    أطلس بيور
+                  </p>
+                  <p className="text-[9px] sm:text-[10px] font-bold text-saffron tracking-[0.15em] mt-1 uppercase">
+                    Atlas Pure
+                  </p>
+                </div>
+              </Link>
+            </div>
+
+            {/* Center — Desktop Nav */}
+            <div className="hidden md:flex items-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+              <nav className="flex items-center gap-6 lg:gap-8">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-charcoal hover:text-teal font-bold transition-colors text-[15px]"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            {/* Left side (RTL end) — Cart & Mobile Menu */}
             <div className="flex items-center gap-3 sm:gap-4">
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
@@ -66,42 +102,6 @@ export default function Header() {
                   )}
                 </div>
               </button>
-            </div>
-
-            {/* Center — Desktop Nav */}
-            <div className="hidden md:flex items-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-              <nav className="flex items-center gap-6 lg:gap-8">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-charcoal hover:text-teal font-bold transition-colors text-[15px]"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-
-            {/* Left side (RTL end) — Brand Logo */}
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center gap-2.5 group">
-                <Image
-                  src="/logo.png"
-                  alt="Atlas Pure Logo"
-                  width={44}
-                  height={44}
-                  className="group-hover:scale-105 transition-transform object-contain"
-                />
-                <div className="leading-tight text-left">
-                  <p className="font-bold text-lg sm:text-xl text-charcoal font-display leading-none tracking-wide">
-                    أطلس بيور
-                  </p>
-                  <p className="text-[9px] sm:text-[10px] font-bold text-saffron tracking-[0.15em] mt-1 uppercase">
-                    Atlas Pure
-                  </p>
-                </div>
-              </Link>
             </div>
           </div>
 
