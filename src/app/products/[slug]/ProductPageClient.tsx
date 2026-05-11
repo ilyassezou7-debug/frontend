@@ -90,7 +90,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 The frame evokes a museum/apothecary display case (ivory + saffron
                 accents + layered shadow), with the ONSSA certification seal as the
                 focal trust signal. */}
-            <div className="relative aspect-square max-w-lg lg:max-w-xl mx-auto md:mx-0 w-full">
+            <div className="relative aspect-square max-w-md mx-auto md:max-w-none w-full">
               {/* Soft ambient halo behind the frame (premium feel, no perf cost) */}
               <div
                 aria-hidden="true"
@@ -213,13 +213,13 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             </div>
 
             {/* Product Info */}
-            <div className="space-y-6 lg:space-y-8">
+            <div className="space-y-5 lg:space-y-6">
               <div>
                 {/* Hero Promise — the headline that lands at top of viewport when sticky CTA is tapped */}
-                <h1 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] text-charcoal leading-[1.15] mb-4">
+                <h1 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-charcoal leading-[1.15] mb-3 lg:mb-4">
                   {product.heroPromise}
                 </h1>
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-3 lg:mb-4">
                   <StarRating rating={4.8} />
                   <span className="text-sm md:text-base text-muted">
                     <span className="font-bold text-charcoal">4.8/5</span> · من{" "}
@@ -229,7 +229,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                     تقييم زبونة
                   </span>
                 </div>
-                <p className="text-lg md:text-xl text-muted leading-relaxed">
+                <p className="text-base lg:text-lg text-muted leading-relaxed">
                   {product.headline}
                 </p>
               </div>
@@ -355,7 +355,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
                 <button
                   onClick={handleAddToCart}
-                  className="w-full flex items-center justify-center gap-3 bg-teal hover:bg-teal-hover text-ivory font-bold text-lg md:text-xl px-8 py-5 rounded-2xl shadow-xl shadow-teal/20 active:scale-[0.98] transition-all min-h-[64px]"
+                  className="w-full flex items-center justify-center gap-2.5 bg-teal hover:bg-teal-hover text-ivory font-bold text-lg px-6 py-4 md:py-5 rounded-2xl shadow-xl shadow-teal/20 active:scale-[0.98] transition-all min-h-[60px] md:min-h-[64px]"
                 >
                   <ShoppingBag className="w-6 h-6" />
                   <span>أكدي طلبك الآن</span>
