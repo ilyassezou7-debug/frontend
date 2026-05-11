@@ -82,8 +82,10 @@ export default function RootLayout({
     >
       <body className="font-arabic">
         <PixelProvider>
-          <AnnouncementBar />
-          <Header />
+          <div className="sticky top-0 z-50 w-full flex flex-col">
+            <Header />
+            <AnnouncementBar />
+          </div>
           <main>{children}</main>
           <Footer />
         </PixelProvider>
