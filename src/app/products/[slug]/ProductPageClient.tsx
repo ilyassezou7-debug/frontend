@@ -81,16 +81,16 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       {/* ───────── HERO + OFFER ───────── */}
       <section
         id={OFFER_BLOCK_ID}
-        className="section-padding bg-gradient-to-br from-ivory via-mist/30 to-sand scroll-mt-28 md:scroll-mt-32"
+        className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-ivory via-mist/30 to-sand scroll-mt-28 md:scroll-mt-32"
       >
         <div className="container-max">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
             {/* ───────── PRODUCT IMAGE — Pharma-apothecary frame ─────────
                 Mobile-first hero: this is the first thing the customer sees on a phone.
                 The frame evokes a museum/apothecary display case (ivory + saffron
                 accents + layered shadow), with the ONSSA certification seal as the
                 focal trust signal. */}
-            <div className="relative w-full">
+            <div className="relative aspect-square max-w-lg lg:max-w-xl mx-auto md:mx-0 w-full">
               {/* Soft ambient halo behind the frame (premium feel, no perf cost) */}
               <div
                 aria-hidden="true"
@@ -213,15 +213,15 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             </div>
 
             {/* Product Info */}
-            <div className="space-y-5">
+            <div className="space-y-6 lg:space-y-8">
               <div>
                 {/* Hero Promise — the headline that lands at top of viewport when sticky CTA is tapped */}
-                <h1 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl text-charcoal leading-[1.2] mb-3">
+                <h1 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] text-charcoal leading-[1.15] mb-4">
                   {product.heroPromise}
                 </h1>
-                <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-2 mb-4">
                   <StarRating rating={4.8} />
-                  <span className="text-sm text-muted">
+                  <span className="text-sm md:text-base text-muted">
                     <span className="font-bold text-charcoal">4.8/5</span> · من{" "}
                     <span className="tabular-nums font-bold text-charcoal">
                       {product.ratingCount}+
@@ -229,19 +229,19 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                     تقييم زبونة
                   </span>
                 </div>
-                <p className="text-base md:text-lg text-muted leading-relaxed">
+                <p className="text-lg md:text-xl text-muted leading-relaxed">
                   {product.headline}
                 </p>
               </div>
 
               {/* Quick benefits chips */}
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {product.benefits.slice(0, 3).map((b) => (
                   <span
                     key={b.title}
-                    className="inline-flex items-center gap-1.5 bg-white border border-teal/20 text-teal text-xs font-semibold px-3 py-1.5 rounded-full"
+                    className="inline-flex items-center gap-2 bg-white border border-teal/20 text-teal text-sm font-semibold px-4 py-2 rounded-full shadow-sm"
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <CheckCircle2 className="w-4 h-4" />
                     {b.title}
                   </span>
                 ))}
@@ -260,7 +260,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               </div>
 
               {/* Offer nudge */}
-              <p className="text-sm text-saffron font-semibold bg-saffron/10 rounded-xl px-4 py-3 border border-saffron/20 leading-relaxed">
+              <p className="text-base text-saffron font-semibold bg-saffron/10 rounded-xl px-5 py-4 border border-saffron/20 leading-relaxed shadow-sm">
                 ⚡ {product.offerNudge}
               </p>
 
@@ -355,9 +355,9 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
                 <button
                   onClick={handleAddToCart}
-                  className="w-full flex items-center justify-center gap-2.5 bg-teal hover:bg-teal-hover text-ivory font-bold text-base md:text-lg px-6 py-4 rounded-2xl shadow-lg shadow-teal/20 active:scale-[0.98] transition-all min-h-[56px]"
+                  className="w-full flex items-center justify-center gap-3 bg-teal hover:bg-teal-hover text-ivory font-bold text-lg md:text-xl px-8 py-5 rounded-2xl shadow-xl shadow-teal/20 active:scale-[0.98] transition-all min-h-[64px]"
                 >
-                  <ShoppingBag className="w-5 h-5" />
+                  <ShoppingBag className="w-6 h-6" />
                   <span>أكدي طلبك الآن</span>
                   <span className="hidden sm:inline text-ivory/60 font-normal">
                     ·
