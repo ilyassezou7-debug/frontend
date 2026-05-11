@@ -94,23 +94,23 @@ export default function HomePage() {
             {/* ───────── HERO IMAGE — premium pharma-apothecary frame ─────────
                 Order-first on mobile so it's the first thing a phone visitor
                 sees, before scrolling into the brand pitch. */}
-            <div className="relative w-full max-w-md mx-auto md:mx-0 order-1 md:order-2">
-              {/* Soft ambient halo */}
-              <div
-                aria-hidden="true"
-                className="absolute -inset-6 sm:-inset-8 bg-gradient-to-br from-saffron/10 via-transparent to-teal/10 rounded-[2.5rem] blur-2xl opacity-70 pointer-events-none"
-              />
-
-              {/* Frame */}
-              <div className="relative aspect-square w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-ivory to-white shadow-[0_30px_60px_-15px_rgba(16,38,34,0.18)] ring-1 ring-saffron/25 border border-white">
-                <Image
-                  src="/images/products/breath-drops/hero.webp"
-                  alt="أطلس بيور – عناية صيدلانية نباتية"
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
+              <div className="relative aspect-square max-w-md mx-auto md:mx-0 w-full order-1 md:order-2">
+                {/* Soft ambient halo */}
+                <div
+                  aria-hidden="true"
+                  className="absolute -inset-6 sm:-inset-8 bg-gradient-to-br from-saffron/10 via-transparent to-teal/10 rounded-[2.5rem] blur-2xl opacity-70 pointer-events-none"
                 />
+
+                {/* Frame */}
+                <div className="relative aspect-square w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-ivory to-white shadow-[0_30px_60px_-15px_rgba(16,38,34,0.18)] ring-1 ring-saffron/25 border border-white">
+                  <Image
+                    src="/images/home/hero-new.webp"
+                    alt="أطلس بيور – عناية صيدلانية نباتية"
+                    fill
+                    priority
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
                 <div
                   aria-hidden="true"
                   className="absolute inset-0 ring-1 ring-inset ring-white/50 rounded-[1.75rem] pointer-events-none"
@@ -367,10 +367,10 @@ export default function HomePage() {
                 ))}
               </ul>
             </div>
-            <div className="relative aspect-square max-w-sm mx-auto w-full">
+            <div className="relative aspect-[4/3] md:aspect-square w-full h-full min-h-[400px] md:min-h-full">
               <div className="absolute inset-0 bg-white/5 rounded-3xl border border-saffron/30 overflow-hidden" />
               <Image
-                src="/images/products/breath-drops/ingredients.webp"
+                src="/images/home/ingredients-new.webp"
                 alt="مكونات نباتية نشطة"
                 fill
                 className="object-cover rounded-3xl"
