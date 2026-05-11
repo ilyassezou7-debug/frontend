@@ -160,7 +160,7 @@ export default function ThankYouClient() {
 
       {/* ───── 2. CALL WINDOW BANNER (highest priority) ───── */}
       {callWindow && (
-        <section className="px-4 -mt-6 relative z-10">
+        <section className="px-4 pt-12 relative z-10">
           <div className="container-max max-w-3xl">
             <div
               className={`rounded-2xl p-5 sm:p-6 shadow-xl border-2 ${
