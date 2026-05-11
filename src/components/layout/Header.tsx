@@ -33,55 +33,13 @@ export default function Header() {
     <>
       <header className="sticky top-0 z-40 bg-ivory/95 backdrop-blur-sm shadow-sm border-b border-border-soft">
         <div className="container-max">
-          <div className="flex items-center justify-between h-16">
-            {/* Brand - Right side (RTL) */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <Image 
-                src="/logo.png" 
-                alt="Atlas Pure Logo" 
-                width={42} 
-                height={42} 
-                className="group-hover:scale-105 transition-transform object-contain"
-              />
-              <div className="leading-tight">
-                <p className="font-bold text-lg text-charcoal font-display leading-none">
-                  أطلس بيور
-                </p>
-              </div>
-            </Link>
-
-            {/* Desktop nav - Center */}
-            <nav className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-charcoal hover:text-teal font-medium transition-colors text-sm"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-
-            {/* Cart - Left side (RTL = left) */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => openCart()}
-                className="relative p-2 rounded-xl hover:bg-sand transition-colors"
-                aria-label="السلة"
-              >
-                <ShoppingBag className="w-6 h-6 text-charcoal" />
-                {mounted && itemCount > 0 && (
-                  <span className="absolute -top-1 -left-1 bg-teal text-ivory text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
-                    {itemCount > 9 ? "9+" : itemCount}
-                  </span>
-                )}
-              </button>
-
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            {/* Right side (RTL) - Desktop Nav & Mobile Menu */}
+            <div className="flex items-center flex-1">
               {/* Mobile menu toggle */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden p-2 rounded-xl hover:bg-sand transition-colors"
+                className="md:hidden p-2 -mr-2 rounded-xl hover:bg-sand transition-colors"
                 aria-label="القائمة"
               >
                 {mobileOpen ? (
@@ -89,6 +47,56 @@ export default function Header() {
                 ) : (
                   <Menu className="w-6 h-6 text-charcoal" />
                 )}
+              </button>
+
+              {/* Desktop nav */}
+              <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-charcoal hover:text-teal font-medium transition-colors text-sm"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            {/* Center - Brand Logo */}
+            <div className="flex-1 flex justify-center">
+              <Link href="/" className="flex items-center gap-2.5 group">
+                <Image 
+                  src="/logo.png" 
+                  alt="Atlas Pure Logo" 
+                  width={44} 
+                  height={44} 
+                  className="group-hover:scale-105 transition-transform object-contain"
+                />
+                <div className="leading-tight hidden sm:block">
+                  <p className="font-bold text-xl text-charcoal font-display leading-none tracking-wide">
+                    أطلس بيور
+                  </p>
+                </div>
+              </Link>
+            </div>
+
+            {/* Left side (RTL) - Cart */}
+            <div className="flex items-center justify-end flex-1">
+              <button
+                onClick={() => openCart()}
+                className="relative p-2 -ml-2 rounded-xl hover:bg-sand transition-colors flex items-center gap-2 group"
+                aria-label="السلة"
+              >
+                <span className="hidden sm:block text-sm font-bold text-charcoal group-hover:text-teal transition-colors">السلة</span>
+                <div className="relative">
+                  <ShoppingBag className="w-6 h-6 text-charcoal group-hover:text-teal transition-colors" />
+                  {mounted && itemCount > 0 && (
+                    <span className="absolute -top-1.5 -left-1.5 bg-saffron text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold ring-2 ring-ivory shadow-sm">
+                      {itemCount > 9 ? "9+" : itemCount}
+                    </span>
+                  )}
+                </div>
               </button>
             </div>
           </div>
