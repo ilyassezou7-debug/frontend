@@ -580,9 +580,9 @@ export const PRODUCTS: Product[] = [
     offerNudge:
       "بداية النتيجة كتبان من الأسبوع الأول – جربيه وارجعي فلوسك إلا ما عجبكش.",
     images: {
-      hero: "/images/placeholders/nail-hero.svg",
-      ingredients: "/images/placeholders/nail-ingredients.svg",
-      lifestyle: "/images/placeholders/nail-lifestyle.svg",
+      hero: "/images/products/nail-serum/hero.webp",
+      ingredients: "/images/products/nail-serum/ingredients.webp",
+      lifestyle: "/images/products/nail-serum/lifestyle.webp",
     },
     offers: [
       { offerId: "one", quantity: 1, price: 199, label: "تجربة أولى" },
