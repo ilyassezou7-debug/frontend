@@ -32,11 +32,23 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-white shadow-sm border-b border-border-soft relative z-40">
+      <header className="sticky top-0 bg-white shadow-sm border-b border-border-soft z-50">
         <div className="container-max">
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Right side (RTL start) — Cart & Mobile Menu */}
             <div className="flex items-center gap-3 sm:gap-4">
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="md:hidden p-1.5 rounded-xl hover:bg-sand transition-colors"
+                aria-label="القائمة"
+              >
+                {mobileOpen ? (
+                  <X className="w-7 h-7 text-charcoal" />
+                ) : (
+                  <Menu className="w-7 h-7 text-charcoal" />
+                )}
+              </button>
+
               <button
                 onClick={() => openCart()}
                 className="relative p-1.5 sm:p-2 rounded-xl hover:bg-sand transition-colors group"
@@ -53,19 +65,6 @@ export default function Header() {
                     </span>
                   )}
                 </div>
-              </button>
-
-              {/* Mobile menu toggle */}
-              <button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden p-1.5 rounded-xl hover:bg-sand transition-colors"
-                aria-label="القائمة"
-              >
-                {mobileOpen ? (
-                  <X className="w-7 h-7 text-charcoal" />
-                ) : (
-                  <Menu className="w-7 h-7 text-charcoal" />
-                )}
               </button>
             </div>
 
