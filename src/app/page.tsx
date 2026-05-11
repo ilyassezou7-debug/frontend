@@ -104,7 +104,7 @@ export default function HomePage() {
                 {/* Frame */}
                 <div className="relative aspect-square w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-ivory to-white shadow-[0_30px_60px_-15px_rgba(16,38,34,0.18)] ring-1 ring-saffron/25 border border-white">
                   <Image
-                    src="/images/home/hero-new.webp"
+                    src="/images/home/ingredients-new.webp"
                     alt="أطلس بيور – عناية صيدلانية نباتية"
                     fill
                     priority
@@ -370,7 +370,7 @@ export default function HomePage() {
             <div className="relative aspect-[4/3] md:aspect-square w-full h-full min-h-[400px] md:min-h-full">
               <div className="absolute inset-0 bg-white/5 rounded-3xl border border-saffron/30 overflow-hidden" />
               <Image
-                src="/images/home/ingredients-new.webp"
+                src="/images/home/hero-new.webp"
                 alt="مكونات نباتية نشطة"
                 fill
                 className="object-cover rounded-3xl"
