@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { Product } from "@/types/product";
 import StarRating from "@/components/ui/StarRating";
 import { formatMAD } from "@/lib/money";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, BadgeCheck } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -29,6 +29,10 @@ export default function ProductCard({
             className="object-cover hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
+          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-teal text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1.5 z-10 border border-teal/10">
+            <BadgeCheck className="w-3.5 h-3.5" />
+            مصادق عليها (ONSSA)
+          </div>
         </div>
       </Link>
 

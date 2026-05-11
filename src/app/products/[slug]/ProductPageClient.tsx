@@ -94,6 +94,10 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 className="object-cover rounded-3xl"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-teal text-xs font-bold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5 z-10 border border-teal/10">
+                <BadgeCheck className="w-4 h-4" />
+                مصادق عليها (ONSSA)
+              </div>
             </div>
 
             {/* Product Info */}
