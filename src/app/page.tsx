@@ -80,7 +80,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-ivory via-mist/40 to-sand section-padding overflow-hidden">
+      <section className="relative bg-gradient-to-br from-ivory via-mist/40 to-sand py-16 md:py-24 lg:py-32 overflow-hidden">
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none"
           style={{
@@ -90,11 +90,11 @@ export default function HomePage() {
           }}
         />
         <div className="container-max relative">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
             {/* ───────── HERO IMAGE — premium pharma-apothecary frame ─────────
                 Order-first on mobile so it's the first thing a phone visitor
                 sees, before scrolling into the brand pitch. */}
-              <div className="relative aspect-square max-w-md mx-auto md:mx-0 w-full order-1 md:order-2">
+              <div className="relative aspect-square max-w-lg lg:max-w-xl mx-auto md:mx-0 w-full order-1 md:order-2">
                 {/* Soft ambient halo */}
                 <div
                   aria-hidden="true"
@@ -179,36 +179,36 @@ export default function HomePage() {
             </div>
 
             {/* Text */}
-            <div className="space-y-6 order-2 md:order-1">
-              <div className="inline-flex items-center gap-2 bg-white border border-teal/20 text-teal text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                <ShieldCheck className="w-4 h-4" />
+            <div className="space-y-6 lg:space-y-8 order-2 md:order-1">
+              <div className="inline-flex items-center gap-2 bg-white border border-teal/20 text-teal text-xs lg:text-sm font-bold px-4 py-2 rounded-full shadow-sm">
+                <ShieldCheck className="w-4 h-4 lg:w-5 lg:h-5" />
                 <span className="tracking-wide">عناية صيدلانية نباتية مغربية</span>
               </div>
-              <h1 className="font-display font-bold text-4xl md:text-5xl text-charcoal leading-[1.15]">
+              <h1 className="font-display font-bold text-4xl md:text-5xl lg:text-[3.5rem] text-charcoal leading-[1.15]">
                 دواء الطبيعة.{" "}
-                <span className="text-teal">بمعايير الصيدلية.</span>
+                <span className="text-teal block mt-2">بمعايير الصيدلية.</span>
               </h1>
-              <p className="text-lg text-muted leading-relaxed max-w-xl">
+              <p className="text-lg md:text-xl text-muted leading-relaxed max-w-xl">
                 أطلس بيور كتقدم تركيبات نباتية مدروسة من إعداد صيادلة، مصادق عليها رسمياً، ومخصصة للمشاكل اليومية اللي ما كتنهضرش عليها بصوت عالي. بأمان، خصوصية، ونتائج حقيقية.
               </p>
-              <div className="flex flex-wrap gap-3">
-                <Link href="/products" className="btn-primary flex items-center gap-2">
+              <div className="flex flex-wrap gap-4 pt-2">
+                <Link href="/products" className="btn-primary flex items-center gap-2 text-lg px-8 py-4">
                   تصفحي المنتجات
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="w-5 h-5" />
                 </Link>
-                <Link href="/about" className="btn-secondary">
+                <Link href="/about" className="btn-secondary text-lg px-8 py-4">
                   اعرفي علينا
                 </Link>
               </div>
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted pt-2">
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-teal" /> الدفع عند الاستلام
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm md:text-base text-muted pt-4">
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-teal" /> الدفع عند الاستلام
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-teal" /> توصيل مجاني
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-teal" /> توصيل مجاني
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-teal" /> ضمان 30 يوم
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-teal" /> ضمان 30 يوم
                 </span>
               </div>
             </div>
