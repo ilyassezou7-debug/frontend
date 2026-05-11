@@ -165,9 +165,9 @@ export const PRODUCTS: Product[] = [
     offerNudge:
       "من أول قطرة كتحسي بالفرق – جربيه وارجعي فلوسك إلا ما عجبكش.",
     images: {
-      hero: "/images/placeholders/breath-hero.svg",
-      ingredients: "/images/placeholders/breath-ingredients.svg",
-      lifestyle: "/images/placeholders/breath-lifestyle.svg",
+      hero: "/images/products/breath-drops/hero.webp",
+      ingredients: "/images/products/breath-drops/ingredients.webp",
+      lifestyle: "/images/products/breath-drops/lifestyle.webp",
     },
     offers: [
       { offerId: "one", quantity: 1, price: 199, label: "تجربة أولى" },
