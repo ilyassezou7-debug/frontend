@@ -23,9 +23,9 @@ export default function PainPointsList({
   return (
     <section className="section-padding bg-sand">
       <div className="container-max">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[5fr_7fr] gap-8 md:gap-12 items-center">
-          {/* Image — constrained on desktop for better text balance */}
-          <div className="relative aspect-square max-w-md mx-auto md:max-w-sm lg:max-w-md w-full md:order-1 order-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+          {/* Image */}
+          <div className="relative aspect-square max-w-md mx-auto md:max-w-none w-full md:order-1 order-2">
             <div className="absolute inset-0 bg-white rounded-3xl shadow-sm transform rotate-1" />
             {image && (
               <Image
@@ -33,7 +33,7 @@ export default function PainPointsList({
                 alt={imageAlt ?? ""}
                 fill
                 className="object-cover rounded-3xl"
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 40vw, 35vw"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             )}
           </div>

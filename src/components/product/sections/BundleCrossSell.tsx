@@ -36,7 +36,7 @@ export default function BundleCrossSell({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl mx-auto lg:max-w-4xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
           {others.map((p) => (
             <div
               key={p.id}

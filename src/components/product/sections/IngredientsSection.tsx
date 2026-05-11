@@ -37,8 +37,8 @@ export default function IngredientsSection({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start">
-          {/* Image — proportional on desktop */}
-          <div className="relative aspect-square max-w-sm mx-auto lg:max-w-none w-full lg:col-span-2 lg:sticky lg:top-32">
+          {/* Image */}
+          <div className="relative aspect-square max-w-md mx-auto lg:max-w-none w-full lg:col-span-2 lg:sticky lg:top-32">
             <div className="absolute inset-0 bg-white rounded-3xl shadow-sm border border-border-soft overflow-hidden" />
             {image && (
               <Image
@@ -46,7 +46,7 @@ export default function IngredientsSection({
                 alt={imageAlt ?? ""}
                 fill
                 className="object-cover rounded-3xl"
-                sizes="(max-width: 1024px) 100vw, 30vw"
+                sizes="(max-width: 1024px) 100vw, 40vw"
               />
             )}
           </div>

@@ -55,7 +55,7 @@ export default function ReviewsBlock({
         </div>
 
         {/* Summary */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
           {/* Average rating */}
           <div className="bg-ivory rounded-2xl p-6 border border-border-soft text-center flex flex-col items-center justify-center">
             <p className="text-5xl font-extrabold text-charcoal tabular-nums leading-none mb-2">

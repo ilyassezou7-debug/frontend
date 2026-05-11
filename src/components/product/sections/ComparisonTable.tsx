@@ -59,7 +59,7 @@ export default function ComparisonTable({ rows }: ComparisonTableProps) {
           </p>
         </div>
 
-        <div className="overflow-hidden rounded-3xl border border-border-soft bg-white shadow-sm max-w-5xl mx-auto">
+        <div className="overflow-hidden rounded-3xl border border-border-soft bg-white shadow-sm">
           {/* Header */}
           <div className="grid grid-cols-[1.4fr_1fr_1fr_1fr] sm:grid-cols-[2fr_1fr_1fr_1fr] bg-charcoal text-ivory">
             <div className="p-3 sm:p-4 text-right text-[11px] sm:text-sm font-semibold">
