@@ -35,53 +35,20 @@ export default function Header() {
       <header className="bg-white shadow-sm border-b border-border-soft relative z-40">
         <div className="container-max">
           <div className="flex items-center justify-between h-16 sm:h-20">
-            {/* Right side (RTL) - Brand Logo */}
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="leading-tight text-right">
-                  <p className="font-bold text-lg sm:text-xl text-charcoal font-display leading-none tracking-wide">
-                    أطلس بيور
-                  </p>
-                  <p className="text-[9px] sm:text-[10px] font-bold text-saffron tracking-[0.15em] mt-1 uppercase">
-                    Atlas Pure
-                  </p>
-                </div>
-                <Image 
-                  src="/logo.png" 
-                  alt="Atlas Pure Logo" 
-                  width={44} 
-                  height={44} 
-                  className="group-hover:scale-105 transition-transform object-contain"
-                />
-              </Link>
-            </div>
-
-            {/* Center - Desktop Nav */}
-            <div className="hidden md:flex items-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-              <nav className="flex items-center gap-6 lg:gap-8">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-charcoal hover:text-teal font-bold transition-colors text-[15px]"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-
-            {/* Left side (RTL) - Cart & Mobile Menu */}
+            {/* Right side (RTL start) — Cart & Mobile Menu */}
             <div className="flex items-center gap-3 sm:gap-4">
               <button
                 onClick={() => openCart()}
-                className="relative p-1.5 sm:p-2 rounded-xl hover:bg-sand transition-colors"
+                className="relative p-1.5 sm:p-2 rounded-xl hover:bg-sand transition-colors group"
                 aria-label="السلة"
               >
                 <div className="relative">
-                  <ShoppingBag className="w-6 h-6 sm:w-7 sm:h-7 text-charcoal group-hover:text-teal transition-colors" strokeWidth={1.5} />
+                  <ShoppingBag
+                    className="w-6 h-6 sm:w-7 sm:h-7 text-charcoal group-hover:text-teal transition-colors"
+                    strokeWidth={1.5}
+                  />
                   {mounted && itemCount > 0 && (
-                    <span className="absolute -top-1.5 -left-1.5 bg-teal-dark text-white text-[10px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold ring-2 ring-white shadow-sm">
+                    <span className="absolute -top-1.5 -right-1.5 bg-teal-dark text-white text-[10px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold ring-2 ring-white shadow-sm tabular-nums">
                       {itemCount > 9 ? "9+" : itemCount}
                     </span>
                   )}
@@ -100,6 +67,42 @@ export default function Header() {
                   <Menu className="w-7 h-7 text-charcoal" />
                 )}
               </button>
+            </div>
+
+            {/* Center — Desktop Nav */}
+            <div className="hidden md:flex items-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+              <nav className="flex items-center gap-6 lg:gap-8">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-charcoal hover:text-teal font-bold transition-colors text-[15px]"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            {/* Left side (RTL end) — Brand Logo */}
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center gap-2.5 group">
+                <Image
+                  src="/logo.png"
+                  alt="Atlas Pure Logo"
+                  width={44}
+                  height={44}
+                  className="group-hover:scale-105 transition-transform object-contain"
+                />
+                <div className="leading-tight text-left">
+                  <p className="font-bold text-lg sm:text-xl text-charcoal font-display leading-none tracking-wide">
+                    أطلس بيور
+                  </p>
+                  <p className="text-[9px] sm:text-[10px] font-bold text-saffron tracking-[0.15em] mt-1 uppercase">
+                    Atlas Pure
+                  </p>
+                </div>
+              </Link>
             </div>
           </div>
 
