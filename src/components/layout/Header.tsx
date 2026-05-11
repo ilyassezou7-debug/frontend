@@ -32,7 +32,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 bg-white shadow-sm border-b border-border-soft z-50">
+      <header className="sticky top-0 bg-white shadow-sm border-b border-border-soft z-50 will-change-transform">
         <div className="container-max">
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Right side (RTL start) — Brand Logo */}

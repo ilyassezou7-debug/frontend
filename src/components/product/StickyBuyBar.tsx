@@ -51,7 +51,7 @@ export default function StickyBuyBar({
 
   return (
     <div
-      className={`fixed inset-x-0 bottom-0 z-40 transition-all duration-300 ease-out pointer-events-none ${
+      className={`fixed inset-x-0 bottom-0 z-40 will-change-transform transition-[opacity,transform] duration-300 ease-out pointer-events-none ${
         hidden
           ? "opacity-0 translate-y-full"
           : "opacity-100 translate-y-0 pointer-events-auto"

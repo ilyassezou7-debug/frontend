@@ -81,7 +81,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       {/* ───────── HERO + OFFER ───────── */}
       <section
         id={OFFER_BLOCK_ID}
-        className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-ivory via-mist/30 to-sand scroll-mt-28 md:scroll-mt-32"
+        className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-ivory via-mist/30 to-sand scroll-mt-28 md:scroll-mt-32 overflow-hidden"
       >
         <div className="container-max">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
