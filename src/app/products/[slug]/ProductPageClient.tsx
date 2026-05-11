@@ -85,24 +85,15 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* Product Image — fills column on desktop */}
             <div className="relative aspect-square w-full">
-              <div className="absolute inset-0 bg-white rounded-3xl shadow-md border border-border-soft" />
-              <div className="absolute inset-3 rounded-2xl border border-saffron/30" />
+              <div className="absolute inset-0 bg-white rounded-3xl shadow-md border border-border-soft overflow-hidden" />
               <Image
                 src={product.images.hero}
                 alt={product.displayName}
                 fill
                 priority
-                className="object-contain p-8 sm:p-12 rounded-3xl opacity-30"
+                className="object-cover rounded-3xl"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-              {/* Floating badges */}
-              <div className="absolute top-4 left-4 bg-saffron text-white text-[10px] sm:text-[11px] font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
-                <BadgeCheck className="w-3.5 h-3.5" />
-                ONSSA
-              </div>
-              <div className="absolute bottom-4 right-4 bg-teal text-white text-[10px] sm:text-[11px] font-bold tracking-wide px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
-                100% طبيعي
-              </div>
             </div>
 
             {/* Product Info */}

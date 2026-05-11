@@ -49,7 +49,7 @@ export default function BundleCrossSell({
                     src={p.images.hero}
                     alt={p.shortName}
                     fill
-                    className="object-cover opacity-50 group-hover:opacity-70 transition-opacity"
+                    className="object-cover"
                     sizes="128px"
                   />
                   <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-saffron text-white flex items-center justify-center shadow-md ring-2 ring-white">

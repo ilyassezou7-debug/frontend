@@ -128,27 +128,15 @@ export default function HomePage() {
 
             {/* Image */}
             <div className="relative aspect-square max-w-md mx-auto md:mx-0 w-full">
-              <div className="absolute inset-0 bg-white rounded-3xl shadow-md border border-border-soft" />
-              <div className="absolute inset-3 rounded-2xl border border-saffron/30" />
+              <div className="absolute inset-0 bg-white rounded-3xl shadow-md border border-border-soft overflow-hidden" />
               <Image
-                src="/images/placeholders/home-hero.svg"
+                src="/images/products/breath-drops/hero.webp"
                 alt="أطلس بيور – عناية صيدلانية نباتية"
                 fill
                 priority
-                className="object-contain p-10 rounded-3xl opacity-30"
+                className="object-cover rounded-3xl"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
-                <div className="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-saffron/20 max-w-[85%]">
-                  <p className="text-charcoal font-bold text-sm leading-relaxed">
-                    صورة &quot;still life&quot; صيدلانية: ثلاث قنينات أنيقة فوق رخام أبيض، أوراق نباتية، إضاءة طبيعية. شكل مستوحى من رفوف الصيدلية.
-                  </p>
-                </div>
-              </div>
-              {/* Pharmacy seal corner */}
-              <div className="absolute -top-3 -left-3 bg-saffron text-white text-[10px] font-bold tracking-[0.2em] uppercase px-3 py-1.5 rounded-full shadow-md">
-                ONSSA Approved
-              </div>
             </div>
           </div>
         </div>
@@ -306,22 +294,14 @@ export default function HomePage() {
               </ul>
             </div>
             <div className="relative aspect-square max-w-sm mx-auto w-full">
-              <div className="absolute inset-0 bg-white/5 rounded-3xl border border-saffron/30" />
-              <div className="absolute inset-3 rounded-2xl border border-white/10" />
+              <div className="absolute inset-0 bg-white/5 rounded-3xl border border-saffron/30 overflow-hidden" />
               <Image
-                src="/images/placeholders/breath-ingredients.svg"
+                src="/images/products/breath-drops/ingredients.webp"
                 alt="مكونات نباتية نشطة"
                 fill
-                className="object-contain p-10 opacity-25"
+                className="object-cover rounded-3xl"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-10 pointer-events-none">
-                <div className="bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-saffron/30 max-w-[85%]">
-                  <p className="text-charcoal font-bold text-sm leading-relaxed">
-                    صورة لرفّ صيدلية بقنينات زجاجية تحمل المكونات النباتية الخام (قرنفل، نعناع، شبة، ثوم) – أسلوب apothecary راقي.
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </div>

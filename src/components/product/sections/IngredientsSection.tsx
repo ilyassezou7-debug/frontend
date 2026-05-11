@@ -39,26 +39,16 @@ export default function IngredientsSection({
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start">
           {/* Image — fills its column on desktop */}
           <div className="relative aspect-square w-full lg:col-span-2">
-            <div className="absolute inset-0 bg-white rounded-3xl shadow-sm border border-border-soft" />
-            <div className="absolute inset-3 rounded-2xl border border-saffron/30" />
+            <div className="absolute inset-0 bg-white rounded-3xl shadow-sm border border-border-soft overflow-hidden" />
             {image && (
               <Image
                 src={image}
                 alt={imageAlt ?? ""}
                 fill
-                className="object-contain p-10 opacity-30"
+                className="object-cover rounded-3xl"
                 sizes="(max-width: 1024px) 100vw, 40vw"
               />
             )}
-            {/* Floating ingredient pills */}
-            <div className="absolute top-4 left-4 bg-saffron text-white text-[11px] font-bold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
-              <BadgeCheck className="w-3.5 h-3.5" />
-              ONSSA Approved
-            </div>
-            <div className="absolute bottom-4 right-4 bg-teal text-white text-[11px] font-bold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
-              <Leaf className="w-3.5 h-3.5" />
-              100% طبيعي
-            </div>
           </div>
 
           {/* Ingredient cards */}

@@ -26,20 +26,9 @@ export default function ProductCard({
             src={product.images.hero}
             alt={product.displayName}
             fill
-            className="object-cover hover:scale-105 transition-transform duration-300 opacity-40"
+            className="object-cover hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-          
-          {/* Image content placeholder description */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-10 pointer-events-none">
-            <div className="bg-white/85 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-white/50 max-w-[85%]">
-              <p className="text-charcoal font-bold text-sm leading-relaxed">
-                {product.id === "breath_drops" && "صورة جذابة لقطرات النفس مع أوراق النعناع والقرنفل في خلفية نقية توحي بالانتعاش والثقة."}
-                {product.id === "foot_spray" && "صورة لبخاخ القدمين مع لمسات من زيت شجرة الشاي والشبة، في بيئة مريحة توحي بالنظافة."}
-                {product.id === "nail_serum" && "صورة لسيروم الأظافر تبرز نقاء السيروم مع مكونات طبيعية كالثوم وخل التفاح."}
-              </p>
-            </div>
-          </div>
         </div>
       </Link>
 

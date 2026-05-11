@@ -32,15 +32,10 @@ export default function PainPointsList({
                 src={image}
                 alt={imageAlt ?? ""}
                 fill
-                className="object-cover rounded-3xl p-2 opacity-30"
+                className="object-cover rounded-3xl"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             )}
-            <div className="absolute inset-0 flex items-end justify-end p-5">
-              <div className="bg-charcoal/90 backdrop-blur-sm text-ivory text-[11px] font-medium px-3 py-1.5 rounded-full">
-                صورة معبّرة عن المشكل
-              </div>
-            </div>
           </div>
 
           {/* Pain points list */}
