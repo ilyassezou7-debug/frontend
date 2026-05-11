@@ -32,7 +32,7 @@ export default function BenefitsGrid({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
           {benefits.map((b, i) => {
             const Icon = ICONS[i % ICONS.length];
             return (

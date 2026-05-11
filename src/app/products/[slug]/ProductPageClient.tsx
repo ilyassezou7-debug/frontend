@@ -84,13 +84,9 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-ivory via-mist/30 to-sand scroll-mt-28 md:scroll-mt-32"
       >
         <div className="container-max">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
-            {/* ───────── PRODUCT IMAGE — Pharma-apothecary frame ─────────
-                Mobile-first hero: this is the first thing the customer sees on a phone.
-                The frame evokes a museum/apothecary display case (ivory + saffron
-                accents + layered shadow), with the ONSSA certification seal as the
-                focal trust signal. */}
-            <div className="relative aspect-square max-w-md mx-auto md:max-w-none w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[5fr_7fr] gap-8 md:gap-12 lg:gap-16 items-center">
+            {/* ───────── PRODUCT IMAGE — Pharma-apothecary frame ───────── */}
+            <div className="relative aspect-square max-w-md mx-auto md:max-w-sm lg:max-w-md xl:max-w-lg w-full md:sticky md:top-32">
               {/* Soft ambient halo behind the frame (premium feel, no perf cost) */}
               <div
                 aria-hidden="true"
@@ -159,7 +155,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 role="img"
                 aria-label="مصادق عليه من ONSSA"
               >
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28">
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-24 md:h-24">
                   {/* Subtle, slow pulse — drawing the eye without being noisy */}
                   <span
                     aria-hidden="true"
@@ -213,10 +209,9 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             </div>
 
             {/* Product Info */}
-            <div className="space-y-5 lg:space-y-6">
+            <div className="space-y-5 lg:space-y-6 lg:py-4">
               <div>
-                {/* Hero Promise — the headline that lands at top of viewport when sticky CTA is tapped */}
-                <h1 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-charcoal leading-[1.15] mb-3 lg:mb-4">
+                <h1 className="font-display font-bold text-3xl sm:text-4xl lg:text-[2.75rem] xl:text-5xl text-charcoal leading-[1.15] mb-3 lg:mb-4">
                   {product.heroPromise}
                 </h1>
                 <div className="flex items-center gap-2 mb-3 lg:mb-4">
@@ -265,9 +260,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               </p>
 
               {/* ───────── HOW-TO-ORDER MINI GUIDE ───────── */}
-              {/* Tight, brand-aligned 3-step visualization that turns the
-                  "add to cart" moment into a confidence-building micro-tour. */}
-              <div className="bg-white border border-border-soft rounded-2xl shadow-sm overflow-hidden">
+              <div className="bg-white border border-border-soft rounded-2xl shadow-sm overflow-hidden lg:max-w-xl">
                 <div className="flex items-center justify-between gap-2 px-4 pt-3.5 pb-2 border-b border-border-soft/70">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-teal/10 flex items-center justify-center">
@@ -452,7 +445,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           </div>
 
           {/* Steps */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12 max-w-5xl mx-auto">
             {product.howToUseSteps.map((step, i) => (
               <div
                 key={i}
@@ -474,7 +467,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           </div>
 
           {/* Timeline + Tips */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
             {/* Timeline */}
             <div className="lg:col-span-3 bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-border-soft">
               <div className="flex items-center gap-3 mb-6">
