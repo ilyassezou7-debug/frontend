@@ -589,11 +589,16 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         />
       </div>
 
-      {/* ───────── SIDE "BACK TO ORDER" FAB ─────────
-          A small floating pill on the side that the customer can tap while
-          browsing content sections — scrolls them back to the offer block.
-          Complements (does not replace) the bottom sticky bar. */}
-      <BackToOrderFAB targetId={OFFER_BLOCK_ID} />
+      {/* ───────── SIDE "QUICK ORDER" FAB ─────────
+          Opens a bottom sheet with the offer selector so the user can
+          place an order without losing their reading position. */}
+      <BackToOrderFAB
+        targetId={OFFER_BLOCK_ID}
+        product={product}
+        selectedOffer={selectedOffer}
+        onOfferChange={setSelectedOffer}
+        onAddToCart={handleAddToCart}
+      />
     </div>
   );
 }
