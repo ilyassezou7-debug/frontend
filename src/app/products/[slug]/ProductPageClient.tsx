@@ -13,11 +13,14 @@ import {
   Truck,
   Banknote,
   BadgeCheck,
+  ListChecks,
+  Timer,
 } from "lucide-react";
 import type { Product } from "@/types/product";
 import type { OfferId } from "@/types/product";
 import OfferSelector from "@/components/product/OfferSelector";
 import StickyBuyBar from "@/components/product/StickyBuyBar";
+import BackToOrderFAB from "@/components/product/BackToOrderFAB";
 import StarRating from "@/components/ui/StarRating";
 import FAQAccordion from "@/components/ui/FAQAccordion";
 
@@ -152,16 +155,114 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 ⚡ {product.offerNudge}
               </p>
 
-              {/* Desktop CTA + inline trust micro-strip */}
-              <div className="hidden md:block space-y-3">
+              {/* ───────── HOW-TO-ORDER MINI GUIDE ───────── */}
+              {/* Tight, brand-aligned 3-step visualization that turns the
+                  "add to cart" moment into a confidence-building micro-tour. */}
+              <div className="bg-white border border-border-soft rounded-2xl shadow-sm overflow-hidden">
+                <div className="flex items-center justify-between gap-2 px-4 pt-3.5 pb-2 border-b border-border-soft/70">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-teal/10 flex items-center justify-center">
+                      <ListChecks className="w-4 h-4 text-teal" />
+                    </div>
+                    <p className="font-display font-bold text-sm text-charcoal">
+                      كيفاش تطلبي – 3 خطوات فقط
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-teal bg-teal/10 px-2 py-1 rounded-full">
+                    <Timer className="w-3 h-3" />
+                    أقل من دقيقة
+                  </span>
+                </div>
+
+                <ol className="grid grid-cols-3 gap-0 p-3">
+                  {[
+                    {
+                      n: 1,
+                      title: "اختاري الكمية",
+                      sub: "العرض اللي بغيتي",
+                      tone: "teal" as const,
+                    },
+                    {
+                      n: 2,
+                      title: "اسمك ورقمك",
+                      sub: "حقلين فقط",
+                      tone: "teal" as const,
+                    },
+                    {
+                      n: 3,
+                      title: "خلصي عند الباب",
+                      sub: "بدون بطاقة",
+                      tone: "saffron" as const,
+                    },
+                  ].map((step, i, arr) => (
+                    <li
+                      key={step.n}
+                      className={`relative flex flex-col items-center text-center px-1.5 ${
+                        i < arr.length - 1
+                          ? "after:content-[''] after:absolute after:top-4 after:left-0 after:w-[calc(50%-1rem)] after:h-px after:border-t after:border-dashed after:border-teal/30"
+                          : ""
+                      } ${
+                        i > 0
+                          ? "before:content-[''] before:absolute before:top-4 before:right-0 before:w-[calc(50%-1rem)] before:h-px before:border-t before:border-dashed before:border-teal/30"
+                          : ""
+                      }`}
+                    >
+                      <div
+                        className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center font-bold text-[11px] shadow-sm ring-2 ring-white tabular-nums ${
+                          step.tone === "saffron"
+                            ? "bg-saffron text-ivory"
+                            : "bg-teal text-ivory"
+                        }`}
+                      >
+                        {step.n}
+                      </div>
+                      <p className="text-[11px] font-bold text-charcoal leading-tight mt-2">
+                        {step.title}
+                      </p>
+                      <p className="text-[10px] text-muted leading-tight mt-0.5">
+                        {step.sub}
+                      </p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              {/* ───────── PRIMARY CTA ───────── */}
+              {/* Single unified CTA for mobile + desktop. The price is shown
+                  prominently above, the button copy commits to the action. */}
+              <div className="space-y-3">
+                <div className="flex items-baseline justify-between gap-3 px-1">
+                  <div className="flex items-baseline gap-2 tabular-nums">
+                    <span className="text-[11px] text-muted">المجموع:</span>
+                    <span className="font-display font-extrabold text-2xl text-teal">
+                      {formatMAD(offer.price)}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/70 rounded-full px-2.5 py-1 inline-flex items-center gap-1">
+                    <Truck className="w-3 h-3" />
+                    التوصيل مجاني
+                  </span>
+                </div>
+
                 <button
                   onClick={handleAddToCart}
-                  className="btn-primary w-full flex items-center justify-center gap-2 text-base"
+                  className="w-full flex items-center justify-center gap-2.5 bg-teal hover:bg-teal-hover text-ivory font-bold text-base md:text-lg px-6 py-4 rounded-2xl shadow-lg shadow-teal/20 active:scale-[0.98] transition-all min-h-[56px]"
                 >
                   <ShoppingBag className="w-5 h-5" />
-                  أضيفي للسلة – {formatMAD(offer.price)}
+                  <span>أكدي طلبك الآن</span>
+                  <span className="hidden sm:inline text-ivory/60 font-normal">
+                    ·
+                  </span>
+                  <span className="hidden sm:inline text-ivory/90 font-semibold">
+                    الدفع عند الاستلام
+                  </span>
                 </button>
-                <div className="flex items-center justify-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-muted">
+
+                <p className="text-center text-[11px] text-muted leading-relaxed">
+                  بضغطة وحدة كنخدمو ليك السلة · بدون تسجيل · بدون بطاقة بنكية
+                </p>
+
+                <div className="flex items-center justify-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-muted pt-1">
                   <span className="inline-flex items-center gap-1">
                     <Banknote className="w-3.5 h-3.5 text-teal" />
                     الدفع عند الاستلام
@@ -172,31 +273,6 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                     توصيل مجاني
                   </span>
                   <span className="text-border-soft">•</span>
-                  <span className="inline-flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-teal" />
-                    ضمان 30 يوم
-                  </span>
-                </div>
-              </div>
-
-              {/* Mobile CTA */}
-              <div className="md:hidden space-y-3">
-                <button
-                  onClick={handleAddToCart}
-                  className="btn-primary w-full flex items-center justify-center gap-2 text-base"
-                >
-                  <ShoppingBag className="w-5 h-5" />
-                  أضيفي للسلة – {formatMAD(offer.price)}
-                </button>
-                <div className="flex items-center justify-between gap-2 text-[10px] text-muted">
-                  <span className="inline-flex items-center gap-1">
-                    <Banknote className="w-3.5 h-3.5 text-teal" />
-                    دفع COD
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <Truck className="w-3.5 h-3.5 text-teal" />
-                    توصيل مجاني
-                  </span>
                   <span className="inline-flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-teal" />
                     ضمان 30 يوم
@@ -417,6 +493,12 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         selectedOffer={selectedOffer}
         targetId={OFFER_BLOCK_ID}
       />
+
+      {/* ───────── SIDE "BACK TO ORDER" FAB ─────────
+          A small floating pill on the side that the customer can tap while
+          browsing content sections — scrolls them back to the offer block.
+          Complements (does not replace) the bottom sticky bar. */}
+      <BackToOrderFAB targetId={OFFER_BLOCK_ID} />
     </div>
   );
 }
