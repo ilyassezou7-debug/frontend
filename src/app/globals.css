@@ -80,6 +80,22 @@ body {
   }
 }
 
+/* Footer marquee — infinite horizontal scroll of brand promises */
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-x 38s linear infinite;
+  will-change: transform;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}
+
 @layer components {
   .btn-primary {
     @apply bg-teal text-ivory font-semibold rounded-2xl px-6 py-3 min-h-[48px] hover:bg-teal-hover active:scale-95 transition-all duration-150 shadow-sm;
