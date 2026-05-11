@@ -487,7 +487,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                     شنو غادي تحسي بيه؟
                   </h3>
                   <p className="text-xs text-muted">
-                    نتائج محسوسة من أول استعمال – وكتزيد مع الوقت
+                    نتائج فعّالة من أول استعمال – وكتزيد مع الوقت
                   </p>
                 </div>
               </div>

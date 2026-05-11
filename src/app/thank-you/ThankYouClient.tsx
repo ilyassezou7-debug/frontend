@@ -498,7 +498,7 @@ export default function ThankYouClient() {
                   {
                     n: "2",
                     title: "خلال أسبوع",
-                    desc: "نتائج محسوسة + تغيير واضح",
+                    desc: "نتائج فعّالة + تغيير واضح",
                   },
                   {
                     n: "3",

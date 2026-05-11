@@ -23,7 +23,7 @@ const MESSAGES = [
   },
   {
     icon: Sparkles,
-    text: "نتائج محسوسة من أول أسبوع استعمال",
+    text: "نتائج فعّالة من أول أسبوع استعمال",
   },
 ] as const;
 

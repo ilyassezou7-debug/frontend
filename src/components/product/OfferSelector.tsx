@@ -63,7 +63,7 @@ export default function OfferSelector({
       <div className="flex items-center justify-center gap-2 bg-emerald-50/80 border border-emerald-200/60 rounded-xl px-3 py-2.5 mb-2 shadow-sm">
         <Zap className="w-4 h-4 text-emerald-600 flex-shrink-0" fill="currentColor" />
         <p className="text-xs font-bold text-emerald-800 leading-tight">
-          نتائج محسوسة من أول أسبوع
+          نتائج فعّالة من أول أسبوع
         </p>
       </div>
 

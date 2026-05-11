@@ -11,7 +11,7 @@ const COMMON_ANTI_CLAIMS = [
 
 const baseComparison = (resultLabel: string) => [
   {
-    feature: "نتائج محسوسة من أول أسبوع",
+    feature: "نتائج فعّالة من أول أسبوع",
     us: true,
     traditional: false,
     pharmacy: "أحياناً",
