@@ -3,6 +3,7 @@ import { Noto_Sans_Arabic, IBM_Plex_Sans_Arabic, Inter } from "next/font/google"
 import "./globals.css";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import Header from "@/components/layout/Header";
+import StickyHeaderWrap from "@/components/layout/StickyHeaderWrap";
 import Footer from "@/components/layout/Footer";
 import PixelProvider from "@/components/tracking/PixelProvider";
 import { SITE_CONFIG } from "@/config/site";
@@ -82,10 +83,10 @@ export default function RootLayout({
     >
       <body className="font-arabic">
         <PixelProvider>
-          <div className="sticky top-0 z-50 w-full flex flex-col">
+          <StickyHeaderWrap>
             <Header />
             <AnnouncementBar />
-          </div>
+          </StickyHeaderWrap>
           <main>{children}</main>
           <Footer />
         </PixelProvider>

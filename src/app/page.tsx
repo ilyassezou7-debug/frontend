@@ -90,9 +90,96 @@ export default function HomePage() {
           }}
         />
         <div className="container-max relative">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center">
+            {/* ───────── HERO IMAGE — premium pharma-apothecary frame ─────────
+                Order-first on mobile so it's the first thing a phone visitor
+                sees, before scrolling into the brand pitch. */}
+            <div className="relative w-full max-w-md mx-auto md:mx-0 order-1 md:order-2">
+              {/* Soft ambient halo */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-6 sm:-inset-8 bg-gradient-to-br from-saffron/10 via-transparent to-teal/10 rounded-[2.5rem] blur-2xl opacity-70 pointer-events-none"
+              />
+
+              {/* Frame */}
+              <div className="relative aspect-square w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-ivory to-white shadow-[0_30px_60px_-15px_rgba(16,38,34,0.18)] ring-1 ring-saffron/25 border border-white">
+                <Image
+                  src="/images/products/breath-drops/hero.webp"
+                  alt="أطلس بيور – عناية صيدلانية نباتية"
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 ring-1 ring-inset ring-white/50 rounded-[1.75rem] pointer-events-none"
+                />
+                <div
+                  aria-hidden="true"
+                  className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-charcoal/45 via-charcoal/15 to-transparent pointer-events-none"
+                />
+                <div className="absolute bottom-3 right-4 sm:bottom-4 sm:right-5 flex items-center gap-2 text-white/90 z-10">
+                  <span className="font-display font-bold text-xs sm:text-sm leading-none">
+                    أطلس بيور
+                  </span>
+                  <span className="w-px h-3 bg-white/50" />
+                  <span className="font-sans text-[9px] sm:text-[10px] tracking-[0.25em] font-semibold uppercase">
+                    Pharma-Botanic
+                  </span>
+                </div>
+              </div>
+
+              {/* Gold corner brackets — museum-frame accent */}
+              <span
+                aria-hidden="true"
+                className="absolute -top-1.5 -right-1.5 w-7 h-7 border-t-2 border-r-2 border-saffron/60 rounded-tr-2xl pointer-events-none"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute -top-1.5 -left-1.5 w-7 h-7 border-t-2 border-l-2 border-saffron/60 rounded-tl-2xl pointer-events-none"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-1.5 -right-1.5 w-7 h-7 border-b-2 border-r-2 border-saffron/60 rounded-br-2xl pointer-events-none"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-1.5 -left-1.5 w-7 h-7 border-b-2 border-l-2 border-saffron/60 rounded-bl-2xl pointer-events-none"
+              />
+
+              {/* ONSSA certification seal */}
+              <div
+                className="absolute top-3 right-3 sm:-top-3 sm:-right-3 z-20"
+                role="img"
+                aria-label="مصادق عليه من ONSSA"
+              >
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28">
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-full bg-saffron/25 animate-ping"
+                    style={{ animationDuration: "3s" }}
+                  />
+                  <div className="relative w-full h-full rounded-full bg-gradient-to-br from-saffron via-saffron to-saffron-dark shadow-xl ring-4 ring-ivory">
+                    <div className="absolute inset-1.5 sm:inset-2 rounded-full border border-dashed border-ivory/60 flex flex-col items-center justify-center text-ivory text-center px-1.5">
+                      <BadgeCheck
+                        className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 mb-0.5"
+                        strokeWidth={2.5}
+                      />
+                      <p className="font-display text-[10px] sm:text-[11px] md:text-xs font-extrabold leading-none">
+                        مصادق عليه
+                      </p>
+                      <p className="text-[8px] sm:text-[9px] md:text-[10px] font-bold tracking-[0.25em] mt-0.5 leading-none">
+                        ONSSA
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Text */}
-            <div className="space-y-6">
+            <div className="space-y-6 order-2 md:order-1">
               <div className="inline-flex items-center gap-2 bg-white border border-teal/20 text-teal text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
                 <ShieldCheck className="w-4 h-4" />
                 <span className="tracking-wide">عناية صيدلانية نباتية مغربية</span>
@@ -123,23 +210,6 @@ export default function HomePage() {
                 <span className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-teal" /> ضمان 30 يوم
                 </span>
-              </div>
-            </div>
-
-            {/* Image */}
-            <div className="relative aspect-square max-w-md mx-auto md:mx-0 w-full">
-              <div className="absolute inset-0 bg-white rounded-3xl shadow-md border border-border-soft overflow-hidden" />
-              <Image
-                src="/images/products/breath-drops/hero.webp"
-                alt="أطلس بيور – عناية صيدلانية نباتية"
-                fill
-                priority
-                className="object-cover rounded-3xl"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-teal text-xs font-bold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5 z-10 border border-teal/10">
-                <BadgeCheck className="w-4 h-4" />
-                مصادق عليها (ONSSA)
               </div>
             </div>
           </div>

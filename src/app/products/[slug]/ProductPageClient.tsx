@@ -82,24 +82,134 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       {/* ───────── HERO + OFFER ───────── */}
       <section
         id={OFFER_BLOCK_ID}
-        className="section-padding bg-gradient-to-br from-ivory via-mist/30 to-sand scroll-mt-20 md:scroll-mt-24"
+        className="section-padding bg-gradient-to-br from-ivory via-mist/30 to-sand scroll-mt-28 md:scroll-mt-32"
       >
         <div className="container-max">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
-            {/* Product Image — fills column on desktop */}
-            <div className="relative aspect-square w-full">
-              <div className="absolute inset-0 bg-white rounded-3xl shadow-md border border-border-soft overflow-hidden" />
-              <Image
-                src={product.images.hero}
-                alt={product.displayName}
-                fill
-                priority
-                className="object-cover rounded-3xl"
-                sizes="(max-width: 768px) 100vw, 50vw"
+            {/* ───────── PRODUCT IMAGE — Pharma-apothecary frame ─────────
+                Mobile-first hero: this is the first thing the customer sees on a phone.
+                The frame evokes a museum/apothecary display case (ivory + saffron
+                accents + layered shadow), with the ONSSA certification seal as the
+                focal trust signal. */}
+            <div className="relative w-full">
+              {/* Soft ambient halo behind the frame (premium feel, no perf cost) */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-6 sm:-inset-8 bg-gradient-to-br from-saffron/10 via-transparent to-teal/10 rounded-[2.5rem] blur-2xl opacity-70 pointer-events-none"
               />
-              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-teal text-xs font-bold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5 z-10 border border-teal/10">
-                <BadgeCheck className="w-4 h-4" />
-                مصادق عليها (ONSSA)
+
+              {/* Frame */}
+              <div className="relative aspect-square w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-ivory to-white shadow-[0_30px_60px_-15px_rgba(16,38,34,0.18)] ring-1 ring-saffron/25 border border-white">
+                <Image
+                  src={product.images.hero}
+                  alt={product.displayName}
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+
+                {/* Inner white hairline — apothecary display feel */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 ring-1 ring-inset ring-white/50 rounded-[1.75rem] pointer-events-none"
+                />
+
+                {/* Bottom gradient for legibility of the wordmark */}
+                <div
+                  aria-hidden="true"
+                  className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-charcoal/45 via-charcoal/15 to-transparent pointer-events-none"
+                />
+
+                {/* Apothecary wordmark — discreet, brand-anchoring */}
+                <div className="absolute bottom-3 right-4 sm:bottom-4 sm:right-5 flex items-center gap-2 text-white/90 z-10">
+                  <span className="font-display font-bold text-xs sm:text-sm leading-none">
+                    أطلس بيور
+                  </span>
+                  <span className="w-px h-3 bg-white/50" />
+                  <span className="font-sans text-[9px] sm:text-[10px] tracking-[0.25em] font-semibold uppercase">
+                    Pharma-Botanic
+                  </span>
+                </div>
+              </div>
+
+              {/* Gold corner brackets — museum-frame accent (decorative) */}
+              <span
+                aria-hidden="true"
+                className="absolute -top-1.5 -right-1.5 w-7 h-7 border-t-2 border-r-2 border-saffron/60 rounded-tr-2xl pointer-events-none"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute -top-1.5 -left-1.5 w-7 h-7 border-t-2 border-l-2 border-saffron/60 rounded-tl-2xl pointer-events-none"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-1.5 -right-1.5 w-7 h-7 border-b-2 border-r-2 border-saffron/60 rounded-br-2xl pointer-events-none"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-1.5 -left-1.5 w-7 h-7 border-b-2 border-l-2 border-saffron/60 rounded-bl-2xl pointer-events-none"
+              />
+
+              {/* ───────── ONSSA CERTIFICATION SEAL ─────────
+                  Circular "stamp" sits over the top-right corner of the frame.
+                  This is the hero trust signal — readable at a glance even
+                  before any text loads. */}
+              <div
+                className="absolute top-3 right-3 sm:-top-3 sm:-right-3 z-20"
+                role="img"
+                aria-label="مصادق عليه من ONSSA"
+              >
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28">
+                  {/* Subtle, slow pulse — drawing the eye without being noisy */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-full bg-saffron/25 animate-ping"
+                    style={{ animationDuration: "3s" }}
+                  />
+
+                  {/* The seal */}
+                  <div className="relative w-full h-full rounded-full bg-gradient-to-br from-saffron via-saffron to-saffron-dark shadow-xl ring-4 ring-ivory">
+                    {/* Inner dashed ring — like a real certification stamp */}
+                    <div className="absolute inset-1.5 sm:inset-2 rounded-full border border-dashed border-ivory/60 flex flex-col items-center justify-center text-ivory text-center px-1.5">
+                      <BadgeCheck
+                        className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 mb-0.5"
+                        strokeWidth={2.5}
+                      />
+                      <p className="font-display text-[10px] sm:text-[11px] md:text-xs font-extrabold leading-none">
+                        مصادق عليه
+                      </p>
+                      <p className="text-[8px] sm:text-[9px] md:text-[10px] font-bold tracking-[0.25em] mt-0.5 leading-none">
+                        ONSSA
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile-only mini trust strip directly under the frame.
+                  Reassures phone visitors before they scroll into the body
+                  content. Hidden on md+ since the desktop info column already
+                  shows the same trust signals. */}
+              <div className="md:hidden mt-4 grid grid-cols-3 gap-2">
+                <div className="flex flex-col items-center justify-center gap-1 bg-white/80 backdrop-blur-sm border border-border-soft rounded-xl py-2 px-1 text-center">
+                  <Banknote className="w-4 h-4 text-teal" />
+                  <span className="text-[10px] font-semibold text-charcoal leading-tight">
+                    دفع عند الاستلام
+                  </span>
+                </div>
+                <div className="flex flex-col items-center justify-center gap-1 bg-white/80 backdrop-blur-sm border border-border-soft rounded-xl py-2 px-1 text-center">
+                  <Truck className="w-4 h-4 text-teal" />
+                  <span className="text-[10px] font-semibold text-charcoal leading-tight">
+                    توصيل مجاني
+                  </span>
+                </div>
+                <div className="flex flex-col items-center justify-center gap-1 bg-white/80 backdrop-blur-sm border border-border-soft rounded-xl py-2 px-1 text-center">
+                  <ShieldCheck className="w-4 h-4 text-teal" />
+                  <span className="text-[10px] font-semibold text-charcoal leading-tight">
+                    ضمان 30 يوم
+                  </span>
+                </div>
               </div>
             </div>
 
