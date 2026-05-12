@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import * as Dialog from "@radix-ui/react-dialog";
 import Image from "next/image";
-import { X, Timer } from "lucide-react";
+import { Timer, CheckCircle2, Package } from "lucide-react";
 import { useCartStore } from "@/store/cart-store";
 import { useCheckoutStore } from "@/store/checkout-store";
 import { getProductById } from "@/config/products";
@@ -16,7 +16,9 @@ import { trackPurchase, getTrackingData } from "@/lib/tracking";
 import type { OrderPayload } from "@/types/order";
 
 const UPSELL_PRICE = 99;
-const COUNTDOWN_SECONDS = 12;
+const COUNTDOWN_SECONDS = 10;
+
+type SubmitPhase = "idle" | "accepting" | "declining";
 
 interface UpsellModalProps {
   isOpen: boolean;
@@ -26,42 +28,56 @@ interface UpsellModalProps {
 export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
   const router = useRouter();
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phase, setPhase] = useState<SubmitPhase>("idle");
   const hasSubmittedRef = useRef(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const items = useCartStore((s) => s.items);
   const getTotal = useCartStore((s) => s.getTotal);
   const clearCart = useCartStore((s) => s.clearCart);
   const customer = useCheckoutStore((s) => s.customer);
-  const setStep = useCheckoutStore((s) => s.setStep);
   const setLastOrder = useCheckoutStore((s) => s.setLastOrder);
   const closeCheckout = useCheckoutStore((s) => s.closeCheckout);
 
-  const upsellProduct = getProductById(productId as Parameters<typeof getProductById>[0]);
+  const upsellProduct = getProductById(
+    productId as Parameters<typeof getProductById>[0]
+  );
+
+  const stopCountdown = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
 
   const submitFinalOrder = useCallback(
     async (upsellAccepted: boolean) => {
       if (hasSubmittedRef.current || !customer) return;
       hasSubmittedRef.current = true;
-      setIsSubmitting(true);
+
+      // Stop timer immediately — give instant visual feedback
+      stopCountdown();
+      setPhase(upsellAccepted ? "accepting" : "declining");
 
       const subtotal = getTotal();
       const upsellTotal = upsellAccepted ? subtotal + UPSELL_PRICE : subtotal;
       const eventId = generateEventId();
-      const tracking = getTrackingData() as unknown as OrderPayload["tracking"];
+      const tracking =
+        getTrackingData() as unknown as OrderPayload["tracking"];
 
-      const upsellItem = upsellAccepted && upsellProduct
-        ? [
-            {
-              product_id: upsellProduct.id,
-              offer_id: "upsell_99",
-              quantity: 1,
-              unit_count: 1,
-              price: UPSELL_PRICE,
-              source: "post_checkout_upsell",
-            },
-          ]
-        : [];
+      const upsellItem =
+        upsellAccepted && upsellProduct
+          ? [
+              {
+                product_id: upsellProduct.id,
+                offer_id: "upsell_99",
+                quantity: 1,
+                unit_count: 1,
+                price: UPSELL_PRICE,
+                source: "post_checkout_upsell",
+              },
+            ]
+          : [];
 
       const payload: OrderPayload = {
         customer,
@@ -106,18 +122,20 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
         const response = await submitOrder(payload);
         setLastOrder(response.order_id, response.public_id);
 
-        // Track purchase
         const contents = items.map((i) => ({
           id: i.productId,
           quantity: i.quantity,
           price: i.price,
         }));
         if (upsellAccepted && upsellProduct) {
-          contents.push({ id: upsellProduct.id, quantity: 1, price: UPSELL_PRICE });
+          contents.push({
+            id: upsellProduct.id,
+            quantity: 1,
+            price: UPSELL_PRICE,
+          });
         }
         trackPurchase(upsellTotal, eventId, contents);
 
-        // Save order summary to localStorage
         if (typeof window !== "undefined") {
           localStorage.setItem(
             "atlas_last_order",
@@ -136,7 +154,6 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
         router.push(`/thank-you?order_id=${response.public_id}`);
       } catch (err) {
         console.error("Order submission failed:", err);
-        // Still redirect to thank-you even on error (COD store pattern)
         clearCart();
         closeCheckout();
         router.push("/thank-you");
@@ -152,21 +169,23 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
       clearCart,
       closeCheckout,
       router,
+      stopCountdown,
     ]
   );
 
-  // Countdown timer
   useEffect(() => {
     if (!isOpen) {
       setCountdown(COUNTDOWN_SECONDS);
+      setPhase("idle");
       hasSubmittedRef.current = false;
+      stopCountdown();
       return;
     }
 
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          clearInterval(interval);
+          stopCountdown();
           submitFinalOrder(false);
           return 0;
         }
@@ -174,18 +193,20 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
       });
     }, 1000);
 
-    return () => clearInterval(interval);
-  }, [isOpen, submitFinalOrder]);
+    return stopCountdown;
+  }, [isOpen, submitFinalOrder, stopCountdown]);
 
   if (!upsellProduct) return null;
 
   const progressPercent = (countdown / COUNTDOWN_SECONDS) * 100;
+  const isSubmitting = phase !== "idle";
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={() => {}}>
       <AnimatePresence>
         {isOpen && (
           <Dialog.Portal forceMount>
+            {/* Overlay */}
             <Dialog.Overlay asChild>
               <motion.div
                 initial={{ opacity: 0 }}
@@ -197,95 +218,172 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
 
             <Dialog.Content asChild>
               <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                initial={{ opacity: 0, scale: 0.93, y: 40 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 30 }}
-                transition={{ type: "spring", damping: 20, stiffness: 180 }}
+                exit={{ opacity: 0, scale: 0.93, y: 40 }}
+                transition={{ type: "spring", damping: 22, stiffness: 200 }}
                 className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4"
               >
-                <div className="bg-ivory w-full md:max-w-md rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden">
-                  {/* Countdown bar */}
-                  <div className="h-1 bg-border-soft">
-                    <div
-                      className="h-full bg-saffron transition-all duration-1000"
-                      style={{ width: `${progressPercent}%` }}
-                    />
-                  </div>
-
-                  <div className="p-5 space-y-4">
-                    {/* Header */}
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-2 text-saffron mb-2">
-                        <Timer className="w-5 h-5" />
-                        <span className="font-bold text-lg">{countdown} ثانية</span>
-                      </div>
-                      <Dialog.Title className="font-bold text-xl text-charcoal font-display">
-                        انتظري! قبل ما نأكدو الطلب ديالك...
-                      </Dialog.Title>
-                    </div>
-
-                    {/* Product showcase */}
-                    <div className="bg-sand rounded-2xl p-4 flex items-center gap-4">
-                      <div className="w-20 h-20 rounded-xl overflow-hidden bg-white flex-shrink-0 relative">
-                        <Image
-                          src={upsellProduct.images.hero}
-                          alt={upsellProduct.shortName}
-                          fill
-                          className="object-cover"
-                          sizes="80px"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-charcoal">
-                          {upsellProduct.shortName}
-                        </p>
-                        <p className="text-sm text-muted mt-1 leading-relaxed">
-                          {upsellProduct.subheading}
-                        </p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <span className="font-bold text-teal text-xl">
-                            {formatMAD(UPSELL_PRICE)}
-                          </span>
-                          <span className="text-muted line-through text-sm">
-                            {formatMAD(199)}
-                          </span>
-                          <span className="bg-saffron text-white text-xs px-2 py-0.5 rounded-full font-bold">
-                            -50%
-                          </span>
+                <div
+                  className="bg-ivory w-full md:max-w-md rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden"
+                  style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+                >
+                  <AnimatePresence mode="wait">
+                    {/* ── LOADING STATE (shown immediately on any button press) ── */}
+                    {isSubmitting ? (
+                      <motion.div
+                        key="loading"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.18 }}
+                        className="flex flex-col items-center justify-center gap-5 px-6 py-14 text-center"
+                      >
+                        {/* Animated spinner ring */}
+                        <div className="relative w-16 h-16">
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{
+                              repeat: Infinity,
+                              duration: 0.9,
+                              ease: "linear",
+                            }}
+                            className="w-16 h-16 border-4 border-teal/20 border-t-teal rounded-full"
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Package className="w-6 h-6 text-teal" />
+                          </div>
                         </div>
-                      </div>
-                    </div>
 
-                    <p className="text-center text-sm text-muted">
-                      زيدي{" "}
-                      <span className="font-semibold text-charcoal">
-                        {upsellProduct.shortName}
-                      </span>{" "}
-                      لطلبك غير بـ{" "}
-                      <span className="font-bold text-teal">99 درهم</span> اليوم
-                      فقط.
-                    </p>
+                        <div className="space-y-1.5">
+                          <p className="font-bold text-xl text-charcoal font-display">
+                            {phase === "accepting"
+                              ? "جاري تأكيد طلبك..."
+                              : "جاري تأكيد طلبك..."}
+                          </p>
+                          <p className="text-sm text-muted leading-relaxed">
+                            {phase === "accepting"
+                              ? "تم إضافة المنتج — نجهز طلبك الآن"
+                              : "طلبك مسجل — سيتصل بك فريقنا قريباً"}
+                          </p>
+                        </div>
 
-                    {/* Buttons */}
-                    <div className="space-y-2">
-                      <button
-                        onClick={() => submitFinalOrder(true)}
-                        disabled={isSubmitting}
-                        className="btn-primary w-full text-sm disabled:opacity-60"
+                        {/* Animated dots */}
+                        <div className="flex gap-1.5">
+                          {[0, 1, 2].map((i) => (
+                            <motion.div
+                              key={i}
+                              animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
+                              transition={{
+                                repeat: Infinity,
+                                duration: 1,
+                                delay: i * 0.2,
+                              }}
+                              className="w-2 h-2 rounded-full bg-teal"
+                            />
+                          ))}
+                        </div>
+                      </motion.div>
+                    ) : (
+                      /* ── UPSELL CONTENT ── */
+                      <motion.div
+                        key="content"
+                        initial={{ opacity: 1 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.15 }}
                       >
-                        {isSubmitting
-                          ? "جاري تأكيد الطلب..."
-                          : `نعم، زيديه لطلبي بـ ${formatMAD(UPSELL_PRICE)}`}
-                      </button>
-                      <button
-                        onClick={() => submitFinalOrder(false)}
-                        disabled={isSubmitting}
-                        className="w-full py-2 text-sm text-muted hover:text-charcoal transition-colors disabled:opacity-60"
-                      >
-                        لا شكراً، كملي الطلب بدونه
-                      </button>
-                    </div>
-                  </div>
+                        {/* Countdown progress bar */}
+                        <div className="h-1.5 bg-border-soft">
+                          <motion.div
+                            className="h-full bg-saffron origin-right"
+                            style={{ width: `${progressPercent}%` }}
+                            transition={{ duration: 0.9, ease: "linear" }}
+                          />
+                        </div>
+
+                        <div className="p-5 space-y-4">
+                          {/* Timer + headline */}
+                          <div className="text-center">
+                            <div className="inline-flex items-center gap-1.5 bg-saffron/10 text-saffron rounded-full px-3 py-1 mb-3">
+                              <Timer className="w-4 h-4" />
+                              <span className="font-bold text-sm tabular-nums">
+                                {countdown} ثانية
+                              </span>
+                            </div>
+                            <Dialog.Title className="font-bold text-xl text-charcoal font-display leading-snug">
+                              انتظري! قبل ما نأكدو الطلب ديالك...
+                            </Dialog.Title>
+                          </div>
+
+                          {/* Product card */}
+                          <div className="bg-sand rounded-2xl p-4 flex items-center gap-4">
+                            <div className="w-20 h-20 rounded-xl overflow-hidden bg-white flex-shrink-0 relative shadow-sm">
+                              <Image
+                                src={upsellProduct.images.hero}
+                                alt={upsellProduct.shortName}
+                                fill
+                                className="object-cover"
+                                sizes="80px"
+                              />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-semibold text-charcoal">
+                                {upsellProduct.shortName}
+                              </p>
+                              <p className="text-sm text-muted mt-1 leading-relaxed line-clamp-2">
+                                {upsellProduct.subheading}
+                              </p>
+                              <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                <span className="font-bold text-teal text-xl">
+                                  {formatMAD(UPSELL_PRICE)}
+                                </span>
+                                <span className="text-muted line-through text-sm">
+                                  {formatMAD(199)}
+                                </span>
+                                <span className="bg-saffron text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                                  ‑50%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <p className="text-center text-sm text-muted px-2">
+                            زيدي{" "}
+                            <span className="font-semibold text-charcoal">
+                              {upsellProduct.shortName}
+                            </span>{" "}
+                            لطلبك غير بـ{" "}
+                            <span className="font-bold text-teal">
+                              99 درهم
+                            </span>{" "}
+                            اليوم فقط.
+                          </p>
+
+                          {/* Action buttons */}
+                          <div className="space-y-2.5 pb-1">
+                            {/* Accept — primary CTA */}
+                            <button
+                              onClick={() => submitFinalOrder(true)}
+                              className="btn-primary w-full text-base min-h-[54px] flex items-center justify-center gap-2 active:scale-[0.98]"
+                            >
+                              <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                              <span>
+                                نعم، زيديه لطلبي بـ {formatMAD(UPSELL_PRICE)}
+                              </span>
+                            </button>
+
+                            {/* Decline — clearly tappable, no waiting */}
+                            <button
+                              onClick={() => submitFinalOrder(false)}
+                              className="w-full min-h-[48px] flex items-center justify-center rounded-2xl text-sm text-muted hover:text-charcoal hover:bg-sand/60 active:bg-sand transition-colors px-4"
+                            >
+                              لا شكراً، كملي الطلب بدونه
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </motion.div>
             </Dialog.Content>

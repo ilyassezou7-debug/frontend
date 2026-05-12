@@ -368,33 +368,42 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                       <motion.button
                         type="submit"
                         disabled={isSubmitting}
-                        whileTap={{ scale: 0.98 }}
-                        className={cn(
-                          "w-full text-base font-bold py-4 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2",
-                          isValid && !isSubmitting
-                            ? "btn-primary shadow-lg shadow-teal/20"
-                            : "btn-primary opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
-                        )}
+                        whileTap={{ scale: 0.97 }}
+                        className="btn-primary w-full text-base font-bold min-h-[54px] rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-teal/20 disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
                       >
-                        {isSubmitting ? (
-                          <>
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{
-                                repeat: Infinity,
-                                duration: 1,
-                                ease: "linear",
-                              }}
-                              className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                            />
-                            جاري المعالجة...
-                          </>
-                        ) : (
-                          <>
-                            <Lock className="w-4 h-4" />
-                            تأكيد الطلب — الدفع عند الاستلام
-                          </>
-                        )}
+                        <AnimatePresence mode="wait" initial={false}>
+                          {isSubmitting ? (
+                            <motion.span
+                              key="loading"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className="flex items-center gap-2"
+                            >
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{
+                                  repeat: Infinity,
+                                  duration: 0.85,
+                                  ease: "linear",
+                                }}
+                                className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full flex-shrink-0"
+                              />
+                              جاري التحقق...
+                            </motion.span>
+                          ) : (
+                            <motion.span
+                              key="idle"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className="flex items-center gap-2"
+                            >
+                              <Lock className="w-4 h-4 flex-shrink-0" />
+                              تأكيد الطلب — الدفع عند الاستلام
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
                       </motion.button>
                     </form>
 
