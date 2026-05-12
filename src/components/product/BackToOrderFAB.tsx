@@ -5,19 +5,21 @@ import { ShoppingBag, ArrowUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface BackToOrderFABProps {
-  /** DOM id of the offer block to scroll back to. */
-  targetId: string;
+  /** DOM id of the section to watch — FAB hides when this is visible. */
+  watchId: string;
+  /** DOM id of the offer selector to scroll to on click. */
+  scrollToId: string;
 }
 
 /**
  * Floating pill that appears once the user scrolls past the offer block.
- * Tapping it smoothly scrolls them back up to the offers section.
+ * Tapping it smoothly scrolls them directly to the offer selector cards.
  */
-export default function BackToOrderFAB({ targetId }: BackToOrderFABProps) {
+export default function BackToOrderFAB({ watchId, scrollToId }: BackToOrderFABProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const target = document.getElementById(targetId);
+    const target = document.getElementById(watchId);
     if (!target) return;
     const obs = new IntersectionObserver(
       ([entry]) => setVisible(!entry.isIntersecting),
@@ -25,10 +27,10 @@ export default function BackToOrderFAB({ targetId }: BackToOrderFABProps) {
     );
     obs.observe(target);
     return () => obs.disconnect();
-  }, [targetId]);
+  }, [watchId]);
 
   function handleClick() {
-    const target = document.getElementById(targetId);
+    const target = document.getElementById(scrollToId);
     if (!target) return;
     target.scrollIntoView({ behavior: "smooth", block: "start" });
   }

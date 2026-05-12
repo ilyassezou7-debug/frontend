@@ -44,7 +44,10 @@ export default function StickyBuyBar({
   }, [targetId]);
 
   function handleClick() {
-    const target = document.getElementById(targetId);
+    // Scroll to the offer selector specifically; fall back to the section
+    const target =
+      document.getElementById("offer-select") ??
+      document.getElementById(targetId);
     if (!target) return;
     target.scrollIntoView({ behavior: "smooth", block: "start" });
   }

@@ -243,7 +243,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               </div>
 
               {/* Offer Selector */}
-              <div>
+              <div id="offer-select">
                 <p className="font-semibold text-charcoal mb-3">
                   اختاري الكمية:
                 </p>
@@ -590,8 +590,9 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       </div>
 
       {/* ───────── SIDE FAB ─────────
-          Scrolls the user back up to the offers section. */}
-      <BackToOrderFAB targetId={OFFER_BLOCK_ID} />
+          Watches the hero section for visibility, scrolls directly to the
+          offer selector cards so the customer lands on the packages. */}
+      <BackToOrderFAB watchId={OFFER_BLOCK_ID} scrollToId="offer-select" />
     </div>
   );
 }

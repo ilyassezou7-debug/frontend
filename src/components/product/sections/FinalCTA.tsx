@@ -19,7 +19,9 @@ export default function FinalCTA({
   targetId,
 }: FinalCTAProps) {
   function handleClick() {
-    const target = document.getElementById(targetId);
+    const target =
+      document.getElementById("offer-select") ??
+      document.getElementById(targetId);
     target?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
