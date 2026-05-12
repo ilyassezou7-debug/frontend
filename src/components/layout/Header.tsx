@@ -3,11 +3,18 @@
 import Link from "next/link";
 import { ShoppingBag, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { useCartStore } from "@/store/cart-store";
 import { useCheckoutStore } from "@/store/checkout-store";
-import CartDrawer from "@/components/cart/CartDrawer";
-import CheckoutFlow from "@/components/checkout/CheckoutFlow";
 import Image from "next/image";
+
+// Lazy-loaded: only needed after the user opens the cart
+const CartDrawer = dynamic(() => import("@/components/cart/CartDrawer"), {
+  ssr: false,
+});
+const CheckoutFlow = dynamic(() => import("@/components/checkout/CheckoutFlow"), {
+  ssr: false,
+});
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);

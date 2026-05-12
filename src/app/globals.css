@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,7 +9,7 @@ html {
 }
 
 body {
-  font-family: 'Noto Sans Arabic', sans-serif;
+  font-family: var(--font-noto-arabic), sans-serif;
   background: #F7F5EF;
   color: #102622;
   -webkit-font-smoothing: antialiased;
@@ -19,7 +17,7 @@ body {
 }
 
 .font-display {
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-family: var(--font-ibm-arabic), sans-serif;
 }
 
 /* Custom scrollbar */

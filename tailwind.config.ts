@@ -22,9 +22,9 @@ const config: Config = {
         "border-soft": "#E5DED1",
       },
       fontFamily: {
-        arabic: ["Noto Sans Arabic", "sans-serif"],
-        display: ["IBM Plex Sans Arabic", "sans-serif"],
-        sans: ["Inter", "sans-serif"],
+        arabic: ["var(--font-noto-arabic)", "sans-serif"],
+        display: ["var(--font-ibm-arabic)", "sans-serif"],
+        sans: ["var(--font-inter)", "sans-serif"],
       },
       borderRadius: {
         "2xl": "1rem",
