@@ -197,15 +197,15 @@ export const adminApi = {
 // ── Status helpers ────────────────────────────────────────────────────
 
 export const STATUS_LABELS: Record<string, string> = {
-  new: "جديد",
-  confirmed: "مؤكد",
-  processing: "جاري التجهيز",
-  shipped: "تم الشحن",
-  delivered: "تم التوصيل",
-  cancelled: "ملغي",
-  returned: "مسترجع",
-  sent_to_sheet: "مرسل",
-  sheet_failed: "خطأ الإرسال",
+  new: "New",
+  confirmed: "Confirmed",
+  processing: "Processing",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+  returned: "Returned",
+  sent_to_sheet: "Sent to Sheet",
+  sheet_failed: "Sheet Error",
 };
 
 export const STATUS_COLORS: Record<string, string> = {
@@ -223,15 +223,15 @@ export const STATUS_COLORS: Record<string, string> = {
 export const ALL_STATUSES = Object.keys(STATUS_LABELS);
 
 export function formatMAD(amount: number) {
-  return `${amount.toLocaleString("fr-MA")} درهم`;
+  return `${amount.toLocaleString("en-US")} MAD`;
 }
 
 export function formatDate(iso: string) {
-  return new Date(iso).toLocaleString("ar-MA", {
-    day: "2-digit",
-    month: "2-digit",
+  return new Date(iso).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
     year: "numeric",
-    hour: "2-digit",
+    hour: "numeric",
     minute: "2-digit",
   });
 }
