@@ -23,7 +23,7 @@ import {
   type OrderSummary,
 } from "@/lib/admin-api";
 import OrderPreviewModal from "@/components/admin/OrderPreviewModal";
-import { Sidebar } from "@/app/admin/dashboard/page";
+import { Sidebar } from "@/components/admin/Sidebar";
 
 // ── Status badge ───────────────────────────────────────────────────────
 
