@@ -27,7 +27,7 @@ import {
   ALL_STATUSES,
   type OrderDetail,
 } from "@/lib/admin-api";
-import { StatusBadge } from "@/app/admin/orders/page";
+import { StatusBadge } from "@/components/admin/StatusBadge";
 
 const OFFER_LABELS: Record<string, string> = {
   one: "1 Unit",
