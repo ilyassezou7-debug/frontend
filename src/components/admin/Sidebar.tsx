@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, ShoppingBag, LogOut } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, LogOut, Calculator } from "lucide-react";
 import { clearAdminToken } from "@/lib/admin-api";
 
 export function Sidebar() {
@@ -39,6 +39,13 @@ export function Sidebar() {
         >
           <ShoppingBag className="w-4.5 h-4.5" />
           Orders
+        </Link>
+        <Link
+          href="/admin/calculator"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white font-medium text-sm transition-all"
+        >
+          <Calculator className="w-4.5 h-4.5" />
+          Profit Calculator
         </Link>
       </nav>
 
