@@ -4,7 +4,7 @@ export type OfferId = "one" | "two" | "three" | "upsell_99";
 export interface ProductOffer {
   offerId: "one" | "two" | "three";
   quantity: 1 | 2 | 3;
-  price: 199 | 279 | 349;
+  price: number;
   label: string;
   badge?: string;
 }
