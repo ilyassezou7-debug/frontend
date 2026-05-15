@@ -11,6 +11,13 @@ import {
   RefreshCw,
   ChevronRight,
   Zap,
+  Tag,
+  PackageCheck,
+  Truck,
+  RotateCcw,
+  BadgeDollarSign,
+  Gift,
+  ShieldCheck,
 } from "lucide-react";
 import { adminApi, isAdminLoggedIn } from "@/lib/admin-api";
 import { Sidebar } from "@/components/admin/Sidebar";
@@ -24,6 +31,18 @@ function usd(n: number) {
 function pct(n: number) {
   return `${n.toFixed(1)}%`;
 }
+
+function dh(n: number) {
+  return `${n.toLocaleString("fr-MA", { minimumFractionDigits: 0, maximumFractionDigits: 0 })} DH`;
+}
+
+// ── COD Pricing Rules (MAD) ────────────────────────────────────────────
+// target profit per delivered order based on qty × upsell
+const PROFIT_RULES: Record<1 | 2 | 3, { no: number; yes: number }> = {
+  1: { no: 30,  yes: 60  },
+  2: { no: 50,  yes: 70  },
+  3: { no: 70,  yes: 100 },
+};
 
 interface InputFieldProps {
   label: string;
@@ -154,6 +173,14 @@ export default function CalculatorPage() {
   const [leads, setLeads] = useState<number>(200);
   const [cpl, setCpl]     = useState<number>(2.5);
 
+  // ── MAD Pricing Calculator
+  const [pricingQty, setPricingQty]         = useState<1 | 2 | 3>(1);
+  const [hasUpsell, setHasUpsell]           = useState<boolean>(false);
+  const [pProductCost, setPProductCost]     = useState<number>(30);
+  const [pShippingCost, setPShippingCost]   = useState<number>(25);
+  const [pCodFees, setPCodFees]             = useState<number>(20);
+  const [pUpsellCost, setPUpsellCost]       = useState<number>(15);
+
   useEffect(() => {
     setMounted(true);
     if (!isAdminLoggedIn()) { router.replace("/admin/login"); return; }
@@ -209,6 +236,20 @@ export default function CalculatorPage() {
   const isProfit        = netProfit >= 0;
   const cplVsBe         = cpl - beCpl;             // positive = losing, negative = profitable
   const cplPctFromBe    = beCpl > 0 ? (cplVsBe / beCpl) * 100 : 0;
+
+  // ── MAD Pricing Calculator derived values
+  // Formula: for every 1 delivered order (CR=50%, DR=50% → 25% effective rate)
+  //   → 2 confirmed orders were shipped (DR=50%)
+  //   → 2 × shipping cost lost (1 delivered + 1 returned)
+  //   → product cost × qty (1 time — returned product is recovered)
+  //   → COD fees only on the delivered order
+  //   → upsell cost only on delivered order (if upsell)
+  const pTargetProfit   = PROFIT_RULES[pricingQty][hasUpsell ? "yes" : "no"];
+  const pProductTotal   = pProductCost * pricingQty;
+  const pShippingTotal  = pShippingCost * 2;               // shipped twice per delivered order
+  const pUpsellTotal    = hasUpsell ? pUpsellCost : 0;
+  const pBreakEven      = pProductTotal + pShippingTotal + pCodFees + pUpsellTotal;
+  const pRecommended    = pBreakEven + pTargetProfit;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]" dir="ltr">
@@ -575,6 +616,267 @@ export default function CalculatorPage() {
               </div>
             </div>
           </section>
+          <div className="border-t border-slate-200" />
+
+          {/* ═══════════════════════════════════════════════════════════
+              SECTION 3 — MOROCCO COD PRICING CALCULATOR
+          ═══════════════════════════════════════════════════════════ */}
+          <section>
+            <div className="flex items-center gap-2 mb-5">
+              <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-700 text-white font-black text-sm">3</div>
+              <h2 className="text-lg font-black text-slate-900">Pricing Calculator</h2>
+              <span className="text-xs text-slate-400 font-medium">— What should you sell for? (Morocco COD)</span>
+            </div>
+
+            {/* Fixed rates banner */}
+            <div className="flex flex-wrap gap-3 mb-6">
+              {[
+                { icon: <ShieldCheck className="w-3.5 h-3.5" />, label: "Confirmation Rate", value: "50%", color: "bg-blue-50 border-blue-200 text-blue-700" },
+                { icon: <Truck className="w-3.5 h-3.5" />, label: "Delivery Rate", value: "50%", color: "bg-violet-50 border-violet-200 text-violet-700" },
+                { icon: <PackageCheck className="w-3.5 h-3.5" />, label: "Effective Rate", value: "25%", color: "bg-amber-50 border-amber-200 text-amber-700" },
+              ].map((b) => (
+                <div key={b.label} className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-xs font-bold ${b.color}`}>
+                  {b.icon}
+                  <span className="opacity-70">{b.label}:</span>
+                  <span>{b.value}</span>
+                </div>
+              ))}
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-500">
+                <RotateCcw className="w-3.5 h-3.5" />
+                Per 4 leads → 2 shipped → 1 delivered, 1 returned
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+              {/* ── Inputs ─────────────────────────────────── */}
+              <div className="lg:col-span-5 space-y-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Your Costs</p>
+
+                {/* Cost inputs */}
+                <div className="space-y-3">
+                  <InputField
+                    label="Product Cost"
+                    sublabel={`× ${pricingQty} unit${pricingQty > 1 ? "s" : ""} = ${dh(pProductCost * pricingQty)}`}
+                    value={pProductCost}
+                    onChange={setPProductCost}
+                    suffix="DH"
+                    step={1}
+                  />
+                  <InputField
+                    label="Shipping Cost"
+                    sublabel="Charged per shipment — counted × 2 (delivered + returned)"
+                    value={pShippingCost}
+                    onChange={setPShippingCost}
+                    suffix="DH"
+                    step={1}
+                  />
+                  <InputField
+                    label="COD / Delivery Fees"
+                    sublabel="Courier cash-collection fee on delivered orders"
+                    value={pCodFees}
+                    onChange={setPCodFees}
+                    suffix="DH"
+                    step={1}
+                  />
+                  <div className={`space-y-2 rounded-xl p-3.5 border transition-all ${hasUpsell ? "bg-teal-50/60 border-teal-200" : "bg-slate-50 border-slate-200 opacity-60"}`}>
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                        <Gift className="w-3.5 h-3.5 text-teal-500" />
+                        Upsell Product Cost
+                      </label>
+                      <span className="text-[10px] font-bold bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full">Optional</span>
+                    </div>
+                    <p className="text-[10px] text-slate-400">Only counted when upsell is enabled below</p>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        value={pUpsellCost}
+                        onChange={(e) => setPUpsellCost(Number(e.target.value))}
+                        step={1}
+                        min={0}
+                        disabled={!hasUpsell}
+                        className="w-full border rounded-lg py-2.5 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-teal-500/40 focus:outline-none bg-white border-slate-200 transition-all pl-3 pr-10 disabled:cursor-not-allowed"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">DH</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quantity selector */}
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Quantity Ordered</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([1, 2, 3] as const).map((q) => (
+                      <button
+                        key={q}
+                        onClick={() => setPricingQty(q)}
+                        className={`py-3 rounded-xl font-black text-sm border-2 transition-all ${
+                          pricingQty === q
+                            ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-900/20"
+                            : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"
+                        }`}
+                      >
+                        {q === 1 ? "1 Piece" : q === 2 ? "2 Pieces" : "3 Pieces"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Upsell toggle */}
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Upsell</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setHasUpsell(false)}
+                      className={`py-3 rounded-xl font-bold text-sm border-2 transition-all flex items-center justify-center gap-2 ${
+                        !hasUpsell
+                          ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-900/20"
+                          : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"
+                      }`}
+                    >
+                      No Upsell
+                    </button>
+                    <button
+                      onClick={() => setHasUpsell(true)}
+                      className={`py-3 rounded-xl font-bold text-sm border-2 transition-all flex items-center justify-center gap-2 ${
+                        hasUpsell
+                          ? "bg-teal-600 border-teal-600 text-white shadow-lg shadow-teal-600/20"
+                          : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"
+                      }`}
+                    >
+                      <Gift className="w-3.5 h-3.5" />
+                      With Upsell
+                    </button>
+                  </div>
+                </div>
+
+                {/* Target profit info box */}
+                <div className="rounded-xl bg-amber-50 border border-amber-200 p-4">
+                  <p className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-1">Target Profit Applied</p>
+                  <p className="text-2xl font-black text-amber-900">{dh(pTargetProfit)}</p>
+                  <p className="text-[11px] text-amber-700/70 mt-1">
+                    {pricingQty} piece{pricingQty > 1 ? "s" : ""} · {hasUpsell ? "with upsell" : "no upsell"}
+                  </p>
+                  <div className="mt-3 pt-3 border-t border-amber-200">
+                    <p className="text-[10px] text-amber-700/60 font-medium">All scenarios:</p>
+                    <div className="mt-1.5 grid grid-cols-2 gap-1">
+                      {([1, 2, 3] as const).map((q) => (
+                        <div key={q} className={`text-[10px] rounded-lg px-2 py-1.5 border ${pricingQty === q ? "bg-amber-100 border-amber-300 font-bold text-amber-900" : "bg-white border-amber-100 text-amber-700"}`}>
+                          <span className="font-bold">{q}pc</span> — no: {PROFIT_RULES[q].no} DH · up: {PROFIT_RULES[q].yes} DH
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Results ─────────────────────────────────── */}
+              <div className="lg:col-span-7 flex flex-col gap-5">
+
+                {/* Cost breakdown card */}
+                <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
+                  <div className="px-6 py-4 bg-slate-50 border-b border-slate-100">
+                    <p className="text-sm font-bold text-slate-700">Cost Breakdown — per Delivered Order</p>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      Accounts for CR=50% · DR=50% · 2 shipments per 1 delivery
+                    </p>
+                  </div>
+                  <div className="px-6 py-4 space-y-0.5">
+                    <Row
+                      label="Product Cost"
+                      sub={`${pricingQty} unit${pricingQty > 1 ? "s" : ""} × ${dh(pProductCost)}`}
+                      value={dh(pProductTotal)}
+                    />
+                    <Row
+                      label="Shipping Cost"
+                      sub="× 2 (1 delivered + 1 returned shipment)"
+                      value={dh(pShippingTotal)}
+                    />
+                    <Row
+                      label="COD / Delivery Fees"
+                      sub="Charged on delivered order only"
+                      value={dh(pCodFees)}
+                    />
+                    {hasUpsell && (
+                      <Row
+                        label="Upsell Cost"
+                        sub="Extra product for upsell"
+                        value={dh(pUpsellTotal)}
+                      />
+                    )}
+                    <div className="mt-3 pt-3 border-t-2 border-slate-200 flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">Break-Even Price</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Minimum selling price to not lose money</p>
+                      </div>
+                      <p className="text-2xl font-black text-slate-800">{dh(pBreakEven)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recommended price — hero card */}
+                <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950 rounded-2xl shadow-xl p-6 relative overflow-hidden">
+                  <div className="absolute -top-10 -right-10 w-48 h-48 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
+                  <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
+
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Tag className="w-4 h-4 text-emerald-400" />
+                      <p className="text-xs font-bold uppercase tracking-widest text-emerald-400">Recommended Selling Price</p>
+                    </div>
+
+                    <div className="flex items-end gap-4 flex-wrap mb-5">
+                      <div>
+                        <p className="text-5xl font-black text-white tracking-tight leading-none">{dh(pRecommended)}</p>
+                        <p className="text-slate-400 text-sm mt-2">
+                          Break-even <span className="text-slate-300 font-bold">{dh(pBreakEven)}</span> + profit <span className="text-emerald-400 font-bold">{dh(pTargetProfit)}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-px bg-white/5 rounded-xl overflow-hidden mb-4">
+                      <div className="bg-slate-900/80 px-4 py-3 text-center">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Break-Even</p>
+                        <p className="text-lg font-black text-slate-200">{dh(pBreakEven)}</p>
+                      </div>
+                      <div className="bg-slate-900/80 px-4 py-3 text-center">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Target Profit</p>
+                        <p className="text-lg font-black text-amber-400">{dh(pTargetProfit)}</p>
+                      </div>
+                      <div className="bg-emerald-900/50 px-4 py-3 text-center">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-1">Net Profit</p>
+                        <p className="text-lg font-black text-emerald-400">{dh(pTargetProfit)}</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-white/5 rounded-xl px-4 py-3 flex items-start gap-2.5">
+                      <BadgeDollarSign className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-[11px] text-slate-400 leading-relaxed">
+                        <span className="text-slate-200 font-bold">Formula:</span>{" "}
+                        Selling Price = (Product × {pricingQty}) + (Shipping × 2) + COD Fees{hasUpsell ? " + Upsell" : ""} + Target Profit{" "}
+                        = {dh(pProductTotal)} + {dh(pShippingTotal)} + {dh(pCodFees)}{hasUpsell ? ` + ${dh(pUpsellTotal)}` : ""} + {dh(pTargetProfit)}{" "}
+                        = <span className="text-emerald-400 font-bold">{dh(pRecommended)}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Summary grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    { label: "Qty", value: `${pricingQty}x`, sub: `piece${pricingQty > 1 ? "s" : ""}`, color: "slate" },
+                    { label: "Upsell", value: hasUpsell ? "YES" : "NO", sub: hasUpsell ? `+${dh(pUpsellCost)}` : "none", color: hasUpsell ? "green" : "slate" },
+                    { label: "Break-Even", value: dh(pBreakEven), sub: "min. price", color: "amber" },
+                    { label: "Sell For", value: dh(pRecommended), sub: `+${dh(pTargetProfit)} profit`, color: "green" },
+                  ].map((k) => (
+                    <KpiCard key={k.label} label={k.label} value={k.value} sub={k.sub} color={k.color} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
         </div>
       </main>
     </div>
