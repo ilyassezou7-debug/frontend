@@ -646,10 +646,10 @@ export default function CalculatorPage() {
                 </div>
                 <div className="px-6 py-4 space-y-2.5">
                   {([
-                    { icon: <PackageCheck className="w-4 h-4 text-slate-400" />, label: "Product Cost", hint: `per unit · ×${pricingQty} = ${dh(pProductCost * pricingQty)}`, value: pProductCost, set: setPProductCost },
-                    { icon: <Truck className="w-4 h-4 text-slate-400" />,        label: "Shipping Cost", hint: `per shipment · ×${pShipsPerDel.toFixed(1)} = ${dh(pShippingTotal)}`, value: pShippingCost, set: setPShippingCost },
-                    { icon: <BadgeDollarSign className="w-4 h-4 text-slate-400" />, label: "COD / Delivery Fees", hint: "charged on delivered orders", value: pCodFees, set: setPCodFees },
-                    { icon: <TrendingUp className="w-4 h-4 text-blue-500" />,    label: "Ad Cost per Lead", hint: `Facebook / TikTok · ×${pLeadsPerDel.toFixed(1)} leads = ${dh(pAdTotal)}`, value: pCpl, set: setPCpl, blue: true },
+                    { icon: <PackageCheck className="w-4 h-4 text-slate-400" />, label: "Product Cost",       hint: `per unit · ×${pricingQty} = ${dh(pProductCost * pricingQty)}`,            value: pProductCost,  set: setPProductCost, blue: false },
+                    { icon: <Truck className="w-4 h-4 text-slate-400" />,        label: "Shipping Cost",      hint: `per shipment · ×${pShipsPerDel.toFixed(1)} = ${dh(pShippingTotal)}`,       value: pShippingCost, set: setPShippingCost, blue: false },
+                    { icon: <BadgeDollarSign className="w-4 h-4 text-slate-400" />, label: "COD / Delivery Fees", hint: "charged on delivered orders",                                          value: pCodFees,      set: setPCodFees, blue: false },
+                    { icon: <TrendingUp className="w-4 h-4 text-blue-500" />,    label: "Ad Cost per Lead",   hint: `Facebook / TikTok · ×${pLeadsPerDel.toFixed(1)} leads = ${dh(pAdTotal)}`, value: pCpl,          set: setPCpl, blue: true },
                   ] as const).map((f) => (
                     <div key={f.label} className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 border ${f.blue ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
                       <div className="flex-shrink-0">{f.icon}</div>
