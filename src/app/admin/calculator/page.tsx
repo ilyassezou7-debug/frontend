@@ -179,6 +179,7 @@ export default function CalculatorPage() {
   const [pProductCost, setPProductCost]     = useState<number>(30);
   const [pShippingCost, setPShippingCost]   = useState<number>(25);
   const [pCodFees, setPCodFees]             = useState<number>(20);
+  const [pCpl, setPCpl]                     = useState<number>(5);
   const [pUpsellCost, setPUpsellCost]       = useState<number>(15);
 
   useEffect(() => {
@@ -238,17 +239,14 @@ export default function CalculatorPage() {
   const cplPctFromBe    = beCpl > 0 ? (cplVsBe / beCpl) * 100 : 0;
 
   // ── MAD Pricing Calculator derived values
-  // Formula: for every 1 delivered order (CR=50%, DR=50% → 25% effective rate)
-  //   → 2 confirmed orders were shipped (DR=50%)
-  //   → 2 × shipping cost lost (1 delivered + 1 returned)
-  //   → product cost × qty (1 time — returned product is recovered)
-  //   → COD fees only on the delivered order
-  //   → upsell cost only on delivered order (if upsell)
+  // CR=50%, DR=50% → effective 25% → 4 leads needed per 1 delivered order
+  // 2 confirmed shipped per 1 delivered → shipping paid twice
   const pTargetProfit   = PROFIT_RULES[pricingQty][hasUpsell ? "yes" : "no"];
   const pProductTotal   = pProductCost * pricingQty;
-  const pShippingTotal  = pShippingCost * 2;               // shipped twice per delivered order
+  const pShippingTotal  = pShippingCost * 2;   // 1 delivered + 1 returned shipment
+  const pAdTotal        = pCpl * 4;            // 4 leads needed per delivered order
   const pUpsellTotal    = hasUpsell ? pUpsellCost : 0;
-  const pBreakEven      = pProductTotal + pShippingTotal + pCodFees + pUpsellTotal;
+  const pBreakEven      = pProductTotal + pShippingTotal + pCodFees + pAdTotal + pUpsellTotal;
   const pRecommended    = pBreakEven + pTargetProfit;
 
   return (
@@ -622,73 +620,97 @@ export default function CalculatorPage() {
               SECTION 3 — MOROCCO COD PRICING CALCULATOR
           ═══════════════════════════════════════════════════════════ */}
           <section>
-            <div className="flex items-center gap-2 mb-5">
-              <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-700 text-white font-black text-sm">3</div>
-              <h2 className="text-lg font-black text-slate-900">Pricing Calculator</h2>
-              <span className="text-xs text-slate-400 font-medium">— What should you sell for? (Morocco COD)</span>
-            </div>
-
-            {/* Fixed rates banner */}
-            <div className="flex flex-wrap gap-3 mb-6">
-              {[
-                { icon: <ShieldCheck className="w-3.5 h-3.5" />, label: "Confirmation Rate", value: "50%", color: "bg-blue-50 border-blue-200 text-blue-700" },
-                { icon: <Truck className="w-3.5 h-3.5" />, label: "Delivery Rate", value: "50%", color: "bg-violet-50 border-violet-200 text-violet-700" },
-                { icon: <PackageCheck className="w-3.5 h-3.5" />, label: "Effective Rate", value: "25%", color: "bg-amber-50 border-amber-200 text-amber-700" },
-              ].map((b) => (
-                <div key={b.label} className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-xs font-bold ${b.color}`}>
-                  {b.icon}
-                  <span className="opacity-70">{b.label}:</span>
-                  <span>{b.value}</span>
-                </div>
-              ))}
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-500">
-                <RotateCcw className="w-3.5 h-3.5" />
-                Per 4 leads → 2 shipped → 1 delivered, 1 returned
+            {/* Section header */}
+            <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-700 text-white font-black text-sm flex-shrink-0">3</div>
+              <div>
+                <h2 className="text-lg font-black text-slate-900 leading-tight">Pricing Calculator — Morocco COD</h2>
+                <p className="text-xs text-slate-400 mt-0.5">Enter your costs → get the exact price to set on your product</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Funnel reminder strip */}
+            <div className="flex flex-wrap items-center gap-2 mb-6 mt-4 bg-slate-900 rounded-2xl px-5 py-3.5">
+              <span className="text-xs text-slate-400 font-medium mr-1">COD Funnel (fixed):</span>
+              {[
+                { label: "100 Leads", color: "bg-slate-700 text-slate-200" },
+                { label: "→ 50 Confirmed", color: "bg-blue-900 text-blue-300" },
+                { label: "→ 25 Delivered", color: "bg-emerald-900 text-emerald-300" },
+                { label: "→ 25 Returned", color: "bg-red-900/60 text-red-400" },
+              ].map((s) => (
+                <span key={s.label} className={`text-[11px] font-bold px-3 py-1 rounded-full ${s.color}`}>{s.label}</span>
+              ))}
+              <span className="text-[11px] text-slate-500 ml-auto hidden sm:block">
+                → 4 leads generate 1 delivery · shipping paid twice
+              </span>
+            </div>
 
-              {/* ── Inputs ─────────────────────────────────── */}
-              <div className="lg:col-span-5 space-y-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Your Costs</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                {/* Cost inputs */}
-                <div className="space-y-3">
-                  <InputField
-                    label="Product Cost"
-                    sublabel={`× ${pricingQty} unit${pricingQty > 1 ? "s" : ""} = ${dh(pProductCost * pricingQty)}`}
-                    value={pProductCost}
-                    onChange={setPProductCost}
-                    suffix="DH"
-                    step={1}
-                  />
-                  <InputField
-                    label="Shipping Cost"
-                    sublabel="Charged per shipment — counted × 2 (delivered + returned)"
-                    value={pShippingCost}
-                    onChange={setPShippingCost}
-                    suffix="DH"
-                    step={1}
-                  />
-                  <InputField
-                    label="COD / Delivery Fees"
-                    sublabel="Courier cash-collection fee on delivered orders"
-                    value={pCodFees}
-                    onChange={setPCodFees}
-                    suffix="DH"
-                    step={1}
-                  />
-                  <div className={`space-y-2 rounded-xl p-3.5 border transition-all ${hasUpsell ? "bg-teal-50/60 border-teal-200" : "bg-slate-50 border-slate-200 opacity-60"}`}>
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-                        <Gift className="w-3.5 h-3.5 text-teal-500" />
-                        Upsell Product Cost
-                      </label>
-                      <span className="text-[10px] font-bold bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full">Optional</span>
+              {/* ── LEFT: Inputs ──────────────────────────────── */}
+              <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
+                <div className="bg-slate-50 border-b border-slate-100 px-6 py-4">
+                  <p className="text-sm font-black text-slate-800">Your Costs</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Fill in every cost in Moroccan Dirham</p>
+                </div>
+
+                <div className="px-6 py-5 space-y-3">
+                  {/* Cost rows */}
+                  {[
+                    {
+                      icon: <PackageCheck className="w-4 h-4 text-slate-500" />,
+                      label: "Product Cost",
+                      hint: `per unit · total = ${dh(pProductCost * pricingQty)}`,
+                      value: pProductCost, set: setPProductCost,
+                    },
+                    {
+                      icon: <Truck className="w-4 h-4 text-slate-500" />,
+                      label: "Shipping Cost",
+                      hint: "per shipment · counted ×2 (send + return)",
+                      value: pShippingCost, set: setPShippingCost,
+                    },
+                    {
+                      icon: <BadgeDollarSign className="w-4 h-4 text-slate-500" />,
+                      label: "COD / Delivery Fees",
+                      hint: "courier cash-collection fee",
+                      value: pCodFees, set: setPCodFees,
+                    },
+                    {
+                      icon: <TrendingUp className="w-4 h-4 text-blue-500" />,
+                      label: "Ad Cost per Lead (CPL)",
+                      hint: "Facebook / TikTok · counted ×4 per delivery",
+                      value: pCpl, set: setPCpl,
+                      highlight: true,
+                    },
+                  ].map((f) => (
+                    <div key={f.label} className={`flex items-center gap-3 rounded-xl px-4 py-3 border ${f.highlight ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
+                      <div className="flex-shrink-0">{f.icon}</div>
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-xs font-bold ${f.highlight ? "text-blue-800" : "text-slate-700"}`}>{f.label}</p>
+                        <p className="text-[10px] text-slate-400 truncate">{f.hint}</p>
+                      </div>
+                      <div className="relative flex-shrink-0 w-28">
+                        <input
+                          type="number"
+                          value={f.value}
+                          onChange={(e) => f.set(Number(e.target.value))}
+                          step={1}
+                          min={0}
+                          className="w-full border border-slate-200 rounded-lg py-2 pl-3 pr-8 text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-teal-500/40 focus:outline-none text-right"
+                        />
+                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] font-bold text-slate-400">DH</span>
+                      </div>
                     </div>
-                    <p className="text-[10px] text-slate-400">Only counted when upsell is enabled below</p>
-                    <div className="relative">
+                  ))}
+
+                  {/* Upsell cost row — toggled */}
+                  <div className={`flex items-center gap-3 rounded-xl px-4 py-3 border transition-all ${hasUpsell ? "bg-teal-50 border-teal-200" : "bg-slate-50 border-slate-200 opacity-50"}`}>
+                    <Gift className={`w-4 h-4 flex-shrink-0 ${hasUpsell ? "text-teal-600" : "text-slate-400"}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-slate-700">Upsell Product Cost <span className="text-[10px] font-normal text-slate-400">(optional)</span></p>
+                      <p className="text-[10px] text-slate-400">only counted when upsell is ON</p>
+                    </div>
+                    <div className="relative flex-shrink-0 w-28">
                       <input
                         type="number"
                         value={pUpsellCost}
@@ -696,183 +718,191 @@ export default function CalculatorPage() {
                         step={1}
                         min={0}
                         disabled={!hasUpsell}
-                        className="w-full border rounded-lg py-2.5 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-teal-500/40 focus:outline-none bg-white border-slate-200 transition-all pl-3 pr-10 disabled:cursor-not-allowed"
+                        className="w-full border border-slate-200 rounded-lg py-2 pl-3 pr-8 text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-teal-500/40 focus:outline-none text-right disabled:cursor-not-allowed disabled:bg-slate-100"
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">DH</span>
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] font-bold text-slate-400">DH</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Quantity selector */}
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Quantity Ordered</p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {([1, 2, 3] as const).map((q) => (
-                      <button
-                        key={q}
-                        onClick={() => setPricingQty(q)}
-                        className={`py-3 rounded-xl font-black text-sm border-2 transition-all ${
-                          pricingQty === q
-                            ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-900/20"
-                            : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"
-                        }`}
-                      >
-                        {q === 1 ? "1 Piece" : q === 2 ? "2 Pieces" : "3 Pieces"}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Upsell toggle */}
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Upsell</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => setHasUpsell(false)}
-                      className={`py-3 rounded-xl font-bold text-sm border-2 transition-all flex items-center justify-center gap-2 ${
-                        !hasUpsell
-                          ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-900/20"
-                          : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"
-                      }`}
-                    >
-                      No Upsell
-                    </button>
-                    <button
-                      onClick={() => setHasUpsell(true)}
-                      className={`py-3 rounded-xl font-bold text-sm border-2 transition-all flex items-center justify-center gap-2 ${
-                        hasUpsell
-                          ? "bg-teal-600 border-teal-600 text-white shadow-lg shadow-teal-600/20"
-                          : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"
-                      }`}
-                    >
-                      <Gift className="w-3.5 h-3.5" />
-                      With Upsell
-                    </button>
-                  </div>
-                </div>
-
-                {/* Target profit info box */}
-                <div className="rounded-xl bg-amber-50 border border-amber-200 p-4">
-                  <p className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-1">Target Profit Applied</p>
-                  <p className="text-2xl font-black text-amber-900">{dh(pTargetProfit)}</p>
-                  <p className="text-[11px] text-amber-700/70 mt-1">
-                    {pricingQty} piece{pricingQty > 1 ? "s" : ""} · {hasUpsell ? "with upsell" : "no upsell"}
-                  </p>
-                  <div className="mt-3 pt-3 border-t border-amber-200">
-                    <p className="text-[10px] text-amber-700/60 font-medium">All scenarios:</p>
-                    <div className="mt-1.5 grid grid-cols-2 gap-1">
+                {/* Quantity + Upsell toggles */}
+                <div className="border-t border-slate-100 px-6 py-5 space-y-4">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Quantity</p>
+                    <div className="grid grid-cols-3 gap-2">
                       {([1, 2, 3] as const).map((q) => (
-                        <div key={q} className={`text-[10px] rounded-lg px-2 py-1.5 border ${pricingQty === q ? "bg-amber-100 border-amber-300 font-bold text-amber-900" : "bg-white border-amber-100 text-amber-700"}`}>
-                          <span className="font-bold">{q}pc</span> — no: {PROFIT_RULES[q].no} DH · up: {PROFIT_RULES[q].yes} DH
-                        </div>
+                        <button
+                          key={q}
+                          onClick={() => setPricingQty(q)}
+                          className={`py-2.5 rounded-xl font-black text-sm border-2 transition-all ${
+                            pricingQty === q
+                              ? "bg-slate-900 border-slate-900 text-white"
+                              : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"
+                          }`}
+                        >
+                          {q === 1 ? "1 Piece" : q === 2 ? "2 Pieces" : "3 Pieces"}
+                        </button>
                       ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Upsell</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setHasUpsell(false)}
+                        className={`py-2.5 rounded-xl font-bold text-sm border-2 transition-all ${!hasUpsell ? "bg-slate-900 border-slate-900 text-white" : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"}`}
+                      >
+                        No Upsell
+                      </button>
+                      <button
+                        onClick={() => setHasUpsell(true)}
+                        className={`py-2.5 rounded-xl font-bold text-sm border-2 transition-all flex items-center justify-center gap-1.5 ${hasUpsell ? "bg-teal-600 border-teal-600 text-white" : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"}`}
+                      >
+                        <Gift className="w-3.5 h-3.5" /> With Upsell
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* ── Results ─────────────────────────────────── */}
-              <div className="lg:col-span-7 flex flex-col gap-5">
+              {/* ── RIGHT: Result ──────────────────────────────── */}
+              <div className="flex flex-col gap-4">
 
-                {/* Cost breakdown card */}
+                {/* Cost breakdown — simple table */}
                 <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
-                  <div className="px-6 py-4 bg-slate-50 border-b border-slate-100">
-                    <p className="text-sm font-bold text-slate-700">Cost Breakdown — per Delivered Order</p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      Accounts for CR=50% · DR=50% · 2 shipments per 1 delivery
-                    </p>
+                  <div className="bg-slate-50 border-b border-slate-100 px-6 py-4">
+                    <p className="text-sm font-black text-slate-800">Cost Per Delivered Order</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Every dirham you spend to get 1 order delivered</p>
                   </div>
-                  <div className="px-6 py-4 space-y-0.5">
-                    <Row
-                      label="Product Cost"
-                      sub={`${pricingQty} unit${pricingQty > 1 ? "s" : ""} × ${dh(pProductCost)}`}
-                      value={dh(pProductTotal)}
-                    />
-                    <Row
-                      label="Shipping Cost"
-                      sub="× 2 (1 delivered + 1 returned shipment)"
-                      value={dh(pShippingTotal)}
-                    />
-                    <Row
-                      label="COD / Delivery Fees"
-                      sub="Charged on delivered order only"
-                      value={dh(pCodFees)}
-                    />
-                    {hasUpsell && (
-                      <Row
-                        label="Upsell Cost"
-                        sub="Extra product for upsell"
-                        value={dh(pUpsellTotal)}
-                      />
-                    )}
-                    <div className="mt-3 pt-3 border-t-2 border-slate-200 flex items-center justify-between">
+                  <div className="px-6 py-4">
+                    {[
+                      {
+                        dot: "bg-slate-400",
+                        label: `Product cost`,
+                        calc: `${pricingQty} × ${dh(pProductCost)}`,
+                        amount: pProductTotal,
+                      },
+                      {
+                        dot: "bg-slate-400",
+                        label: "Shipping",
+                        calc: `2 shipments × ${dh(pShippingCost)}`,
+                        amount: pShippingTotal,
+                      },
+                      {
+                        dot: "bg-slate-400",
+                        label: "COD fees",
+                        calc: "on delivered order",
+                        amount: pCodFees,
+                      },
+                      {
+                        dot: "bg-blue-500",
+                        label: "Ad spend",
+                        calc: `4 leads × ${dh(pCpl)}`,
+                        amount: pAdTotal,
+                        highlight: true,
+                      },
+                      ...(hasUpsell ? [{
+                        dot: "bg-teal-500",
+                        label: "Upsell cost",
+                        calc: "extra product",
+                        amount: pUpsellTotal,
+                      }] : []),
+                    ].map((row) => (
+                      <div key={row.label} className={`flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0 ${row.highlight ? "bg-blue-50/50 -mx-6 px-6" : ""}`}>
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-2 h-2 rounded-full flex-shrink-0 ${row.dot}`} />
+                          <div>
+                            <p className="text-sm text-slate-700 font-medium">{row.label}</p>
+                            <p className="text-[10px] text-slate-400">{row.calc}</p>
+                          </div>
+                        </div>
+                        <p className="text-sm font-bold text-slate-900">{dh(row.amount)}</p>
+                      </div>
+                    ))}
+
+                    {/* Break-even total */}
+                    <div className="mt-4 pt-4 border-t-2 border-slate-200 flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-bold text-slate-900">Break-Even Price</p>
-                        <p className="text-[10px] text-slate-400 mt-0.5">Minimum selling price to not lose money</p>
+                        <p className="text-sm font-black text-slate-900">Break-Even Price</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Sell below this → losing money</p>
                       </div>
                       <p className="text-2xl font-black text-slate-800">{dh(pBreakEven)}</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Recommended price — hero card */}
-                <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950 rounded-2xl shadow-xl p-6 relative overflow-hidden">
-                  <div className="absolute -top-10 -right-10 w-48 h-48 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
-                  <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
+                {/* THE PRICE — hero card */}
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                  <div className="bg-gradient-to-br from-slate-900 to-emerald-950 p-6">
+                    <div className="absolute -top-8 -right-8 w-40 h-40 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
 
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Tag className="w-4 h-4 text-emerald-400" />
-                      <p className="text-xs font-bold uppercase tracking-widest text-emerald-400">Recommended Selling Price</p>
-                    </div>
+                    <div className="relative z-10">
+                      {/* Scenario badge */}
+                      <div className="flex items-center gap-2 mb-4 flex-wrap">
+                        <span className="text-[11px] font-bold bg-white/10 text-slate-300 px-3 py-1 rounded-full">
+                          {pricingQty} piece{pricingQty > 1 ? "s" : ""}
+                        </span>
+                        <span className={`text-[11px] font-bold px-3 py-1 rounded-full ${hasUpsell ? "bg-teal-500/20 text-teal-300" : "bg-white/5 text-slate-400"}`}>
+                          {hasUpsell ? "With Upsell" : "No Upsell"}
+                        </span>
+                        <span className="text-[11px] font-bold bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full">
+                          +{dh(pTargetProfit)} target profit
+                        </span>
+                      </div>
 
-                    <div className="flex items-end gap-4 flex-wrap mb-5">
-                      <div>
-                        <p className="text-5xl font-black text-white tracking-tight leading-none">{dh(pRecommended)}</p>
-                        <p className="text-slate-400 text-sm mt-2">
-                          Break-even <span className="text-slate-300 font-bold">{dh(pBreakEven)}</span> + profit <span className="text-emerald-400 font-bold">{dh(pTargetProfit)}</span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-px bg-white/5 rounded-xl overflow-hidden mb-4">
-                      <div className="bg-slate-900/80 px-4 py-3 text-center">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Break-Even</p>
-                        <p className="text-lg font-black text-slate-200">{dh(pBreakEven)}</p>
-                      </div>
-                      <div className="bg-slate-900/80 px-4 py-3 text-center">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Target Profit</p>
-                        <p className="text-lg font-black text-amber-400">{dh(pTargetProfit)}</p>
-                      </div>
-                      <div className="bg-emerald-900/50 px-4 py-3 text-center">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-1">Net Profit</p>
-                        <p className="text-lg font-black text-emerald-400">{dh(pTargetProfit)}</p>
-                      </div>
-                    </div>
-
-                    <div className="bg-white/5 rounded-xl px-4 py-3 flex items-start gap-2.5">
-                      <BadgeDollarSign className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                      <p className="text-[11px] text-slate-400 leading-relaxed">
-                        <span className="text-slate-200 font-bold">Formula:</span>{" "}
-                        Selling Price = (Product × {pricingQty}) + (Shipping × 2) + COD Fees{hasUpsell ? " + Upsell" : ""} + Target Profit{" "}
-                        = {dh(pProductTotal)} + {dh(pShippingTotal)} + {dh(pCodFees)}{hasUpsell ? ` + ${dh(pUpsellTotal)}` : ""} + {dh(pTargetProfit)}{" "}
-                        = <span className="text-emerald-400 font-bold">{dh(pRecommended)}</span>
+                      <p className="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-2 flex items-center gap-1.5">
+                        <Tag className="w-3.5 h-3.5" /> Sell this product for
                       </p>
+                      <p className="text-6xl font-black text-white tracking-tight leading-none mb-1">
+                        {dh(pRecommended)}
+                      </p>
+                      <p className="text-sm text-slate-400 mt-3">
+                        {dh(pBreakEven)} costs <span className="text-slate-500 mx-1">+</span>
+                        <span className="text-emerald-400 font-bold">{dh(pTargetProfit)} net profit</span>
+                      </p>
+
+                      {/* Mini 3-col stat row */}
+                      <div className="grid grid-cols-3 gap-px bg-white/5 rounded-xl overflow-hidden mt-5">
+                        <div className="bg-black/20 px-4 py-3 text-center">
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-1">Break-Even</p>
+                          <p className="text-base font-black text-slate-200">{dh(pBreakEven)}</p>
+                        </div>
+                        <div className="bg-black/20 px-4 py-3 text-center">
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-1">Ad Cost</p>
+                          <p className="text-base font-black text-blue-400">{dh(pAdTotal)}</p>
+                        </div>
+                        <div className="bg-emerald-900/40 px-4 py-3 text-center">
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-emerald-600 mb-1">Net Profit</p>
+                          <p className="text-base font-black text-emerald-400">{dh(pTargetProfit)}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Summary grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {[
-                    { label: "Qty", value: `${pricingQty}x`, sub: `piece${pricingQty > 1 ? "s" : ""}`, color: "slate" },
-                    { label: "Upsell", value: hasUpsell ? "YES" : "NO", sub: hasUpsell ? `+${dh(pUpsellCost)}` : "none", color: hasUpsell ? "green" : "slate" },
-                    { label: "Break-Even", value: dh(pBreakEven), sub: "min. price", color: "amber" },
-                    { label: "Sell For", value: dh(pRecommended), sub: `+${dh(pTargetProfit)} profit`, color: "green" },
-                  ].map((k) => (
-                    <KpiCard key={k.label} label={k.label} value={k.value} sub={k.sub} color={k.color} />
-                  ))}
+                {/* Profit rules reference */}
+                <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-5">
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">All Profit Targets</p>
+                  <div className="space-y-2">
+                    {([1, 2, 3] as const).map((q) => {
+                      const activeNo  = pricingQty === q && !hasUpsell;
+                      const activeYes = pricingQty === q && hasUpsell;
+                      return (
+                        <div key={q} className="flex items-center gap-2">
+                          <span className="text-xs font-black text-slate-500 w-14">{q} piece{q > 1 ? "s" : ""}</span>
+                          <span className={`flex-1 text-center text-xs font-bold rounded-lg py-1.5 border ${activeNo ? "bg-slate-900 text-white border-slate-900" : "bg-slate-50 text-slate-600 border-slate-200"}`}>
+                            No upsell: {PROFIT_RULES[q].no} DH
+                          </span>
+                          <span className={`flex-1 text-center text-xs font-bold rounded-lg py-1.5 border ${activeYes ? "bg-teal-600 text-white border-teal-600" : "bg-slate-50 text-slate-600 border-slate-200"}`}>
+                            Upsell: {PROFIT_RULES[q].yes} DH
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
+
               </div>
             </div>
           </section>
