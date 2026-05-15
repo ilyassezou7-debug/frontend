@@ -37,11 +37,10 @@ function dh(n: number) {
 }
 
 // ── COD Pricing Rules (MAD) ────────────────────────────────────────────
-// target profit per delivered order based on qty × upsell
-const PROFIT_RULES: Record<1 | 2 | 3, { no: number; yes: number }> = {
-  1: { no: 30,  yes: 60  },
-  2: { no: 50,  yes: 70  },
-  3: { no: 70,  yes: 100 },
+const PROFIT_RULES: Record<1 | 2 | 3, number> = {
+  1: 30,
+  2: 50,
+  3: 70,
 };
 
 interface InputFieldProps {
@@ -175,12 +174,13 @@ export default function CalculatorPage() {
 
   // ── MAD Pricing Calculator
   const [pricingQty, setPricingQty]         = useState<1 | 2 | 3>(1);
-  const [hasUpsell, setHasUpsell]           = useState<boolean>(false);
   const [pProductCost, setPProductCost]     = useState<number>(30);
   const [pShippingCost, setPShippingCost]   = useState<number>(25);
   const [pCodFees, setPCodFees]             = useState<number>(20);
   const [pCpl, setPCpl]                     = useState<number>(5);
-  const [pUpsellCost, setPUpsellCost]       = useState<number>(15);
+  const [pConfRate, setPConfRate]           = useState<number>(50);
+  const [pDelivRate, setPDelivRate]         = useState<number>(50);
+  const [pUserPrice, setPUserPrice]         = useState<number>(0);
 
   useEffect(() => {
     setMounted(true);
@@ -239,15 +239,22 @@ export default function CalculatorPage() {
   const cplPctFromBe    = beCpl > 0 ? (cplVsBe / beCpl) * 100 : 0;
 
   // ── MAD Pricing Calculator derived values
-  // CR=50%, DR=50% → effective 25% → 4 leads needed per 1 delivered order
-  // 2 confirmed shipped per 1 delivered → shipping paid twice
-  const pTargetProfit   = PROFIT_RULES[pricingQty][hasUpsell ? "yes" : "no"];
-  const pProductTotal   = pProductCost * pricingQty;
-  const pShippingTotal  = pShippingCost * 2;   // 1 delivered + 1 returned shipment
-  const pAdTotal        = pCpl * 4;            // 4 leads needed per delivered order
-  const pUpsellTotal    = hasUpsell ? pUpsellCost : 0;
-  const pBreakEven      = pProductTotal + pShippingTotal + pCodFees + pAdTotal + pUpsellTotal;
-  const pRecommended    = pBreakEven + pTargetProfit;
+  // Dynamic CR/DR → shipments per delivery = 1/DR, leads per delivery = 1/(CR×DR)
+  const pCr              = Math.max(pConfRate, 1) / 100;
+  const pDr              = Math.max(pDelivRate, 1) / 100;
+  const pLeadsPerDel     = 1 / (pCr * pDr);          // e.g. CR=50%,DR=50% → 4
+  const pShipsPerDel     = 1 / pDr;                  // e.g. DR=50% → 2
+  const pTargetProfit    = PROFIT_RULES[pricingQty];
+  const pProductTotal    = pProductCost * pricingQty;
+  const pShippingTotal   = pShippingCost * pShipsPerDel;
+  const pAdTotal         = pCpl * pLeadsPerDel;
+  const pBreakEven       = pProductTotal + pShippingTotal + pCodFees + pAdTotal;
+  const pRecommended     = pBreakEven + pTargetProfit;
+  // Green-light: compare user's chosen price vs break-even
+  const pUserProfit      = pUserPrice - pBreakEven;
+  const pIsGreen         = pUserPrice > 0 && pUserProfit >= pTargetProfit;
+  const pIsRed           = pUserPrice > 0 && pUserProfit < 0;
+  const pIsOk            = pUserPrice > 0 && pUserProfit >= 0 && !pIsGreen;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]" dir="ltr">
@@ -620,286 +627,259 @@ export default function CalculatorPage() {
               SECTION 3 — MOROCCO COD PRICING CALCULATOR
           ═══════════════════════════════════════════════════════════ */}
           <section>
-            {/* Section header */}
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-6">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-700 text-white font-black text-sm flex-shrink-0">3</div>
               <div>
                 <h2 className="text-lg font-black text-slate-900 leading-tight">Pricing Calculator — Morocco COD</h2>
-                <p className="text-xs text-slate-400 mt-0.5">Enter your costs → get the exact price to set on your product</p>
+                <p className="text-xs text-slate-400 mt-0.5">Enter your costs → see exactly what price to set and get the green light</p>
               </div>
-            </div>
-
-            {/* Funnel reminder strip */}
-            <div className="flex flex-wrap items-center gap-2 mb-6 mt-4 bg-slate-900 rounded-2xl px-5 py-3.5">
-              <span className="text-xs text-slate-400 font-medium mr-1">COD Funnel (fixed):</span>
-              {[
-                { label: "100 Leads", color: "bg-slate-700 text-slate-200" },
-                { label: "→ 50 Confirmed", color: "bg-blue-900 text-blue-300" },
-                { label: "→ 25 Delivered", color: "bg-emerald-900 text-emerald-300" },
-                { label: "→ 25 Returned", color: "bg-red-900/60 text-red-400" },
-              ].map((s) => (
-                <span key={s.label} className={`text-[11px] font-bold px-3 py-1 rounded-full ${s.color}`}>{s.label}</span>
-              ))}
-              <span className="text-[11px] text-slate-500 ml-auto hidden sm:block">
-                → 4 leads generate 1 delivery · shipping paid twice
-              </span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
               {/* ── LEFT: Inputs ──────────────────────────────── */}
               <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
-                <div className="bg-slate-50 border-b border-slate-100 px-6 py-4">
-                  <p className="text-sm font-black text-slate-800">Your Costs</p>
-                  <p className="text-xs text-slate-400 mt-0.5">Fill in every cost in Moroccan Dirham</p>
-                </div>
 
-                <div className="px-6 py-5 space-y-3">
-                  {/* Cost rows */}
-                  {[
-                    {
-                      icon: <PackageCheck className="w-4 h-4 text-slate-500" />,
-                      label: "Product Cost",
-                      hint: `per unit · total = ${dh(pProductCost * pricingQty)}`,
-                      value: pProductCost, set: setPProductCost,
-                    },
-                    {
-                      icon: <Truck className="w-4 h-4 text-slate-500" />,
-                      label: "Shipping Cost",
-                      hint: "per shipment · counted ×2 (send + return)",
-                      value: pShippingCost, set: setPShippingCost,
-                    },
-                    {
-                      icon: <BadgeDollarSign className="w-4 h-4 text-slate-500" />,
-                      label: "COD / Delivery Fees",
-                      hint: "courier cash-collection fee",
-                      value: pCodFees, set: setPCodFees,
-                    },
-                    {
-                      icon: <TrendingUp className="w-4 h-4 text-blue-500" />,
-                      label: "Ad Cost per Lead (CPL)",
-                      hint: "Facebook / TikTok · counted ×4 per delivery",
-                      value: pCpl, set: setPCpl,
-                      highlight: true,
-                    },
-                  ].map((f) => (
-                    <div key={f.label} className={`flex items-center gap-3 rounded-xl px-4 py-3 border ${f.highlight ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
+                {/* Costs */}
+                <div className="bg-slate-50 border-b border-slate-100 px-6 py-3.5">
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-500">Your Costs (DH)</p>
+                </div>
+                <div className="px-6 py-4 space-y-2.5">
+                  {([
+                    { icon: <PackageCheck className="w-4 h-4 text-slate-400" />, label: "Product Cost", hint: `per unit · ×${pricingQty} = ${dh(pProductCost * pricingQty)}`, value: pProductCost, set: setPProductCost },
+                    { icon: <Truck className="w-4 h-4 text-slate-400" />,        label: "Shipping Cost", hint: `per shipment · ×${pShipsPerDel.toFixed(1)} = ${dh(pShippingTotal)}`, value: pShippingCost, set: setPShippingCost },
+                    { icon: <BadgeDollarSign className="w-4 h-4 text-slate-400" />, label: "COD / Delivery Fees", hint: "charged on delivered orders", value: pCodFees, set: setPCodFees },
+                    { icon: <TrendingUp className="w-4 h-4 text-blue-500" />,    label: "Ad Cost per Lead", hint: `Facebook / TikTok · ×${pLeadsPerDel.toFixed(1)} leads = ${dh(pAdTotal)}`, value: pCpl, set: setPCpl, blue: true },
+                  ] as const).map((f) => (
+                    <div key={f.label} className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 border ${f.blue ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
                       <div className="flex-shrink-0">{f.icon}</div>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-xs font-bold ${f.highlight ? "text-blue-800" : "text-slate-700"}`}>{f.label}</p>
+                        <p className={`text-xs font-bold ${f.blue ? "text-blue-800" : "text-slate-700"}`}>{f.label}</p>
                         <p className="text-[10px] text-slate-400 truncate">{f.hint}</p>
                       </div>
-                      <div className="relative flex-shrink-0 w-28">
-                        <input
-                          type="number"
-                          value={f.value}
-                          onChange={(e) => f.set(Number(e.target.value))}
-                          step={1}
-                          min={0}
-                          className="w-full border border-slate-200 rounded-lg py-2 pl-3 pr-8 text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-teal-500/40 focus:outline-none text-right"
-                        />
-                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] font-bold text-slate-400">DH</span>
+                      <div className="relative w-24 flex-shrink-0">
+                        <input type="number" value={f.value} onChange={(e) => f.set(Number(e.target.value))} step={1} min={0}
+                          className="w-full border border-slate-200 rounded-lg py-1.5 pl-2 pr-7 text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-teal-400/40 focus:outline-none text-right" />
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">DH</span>
                       </div>
                     </div>
                   ))}
-
-                  {/* Upsell cost row — toggled */}
-                  <div className={`flex items-center gap-3 rounded-xl px-4 py-3 border transition-all ${hasUpsell ? "bg-teal-50 border-teal-200" : "bg-slate-50 border-slate-200 opacity-50"}`}>
-                    <Gift className={`w-4 h-4 flex-shrink-0 ${hasUpsell ? "text-teal-600" : "text-slate-400"}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-slate-700">Upsell Product Cost <span className="text-[10px] font-normal text-slate-400">(optional)</span></p>
-                      <p className="text-[10px] text-slate-400">only counted when upsell is ON</p>
-                    </div>
-                    <div className="relative flex-shrink-0 w-28">
-                      <input
-                        type="number"
-                        value={pUpsellCost}
-                        onChange={(e) => setPUpsellCost(Number(e.target.value))}
-                        step={1}
-                        min={0}
-                        disabled={!hasUpsell}
-                        className="w-full border border-slate-200 rounded-lg py-2 pl-3 pr-8 text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-teal-500/40 focus:outline-none text-right disabled:cursor-not-allowed disabled:bg-slate-100"
-                      />
-                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] font-bold text-slate-400">DH</span>
-                    </div>
-                  </div>
                 </div>
 
-                {/* Quantity + Upsell toggles */}
-                <div className="border-t border-slate-100 px-6 py-5 space-y-4">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Quantity</p>
-                    <div className="grid grid-cols-3 gap-2">
-                      {([1, 2, 3] as const).map((q) => (
-                        <button
-                          key={q}
-                          onClick={() => setPricingQty(q)}
-                          className={`py-2.5 rounded-xl font-black text-sm border-2 transition-all ${
-                            pricingQty === q
-                              ? "bg-slate-900 border-slate-900 text-white"
-                              : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"
-                          }`}
-                        >
-                          {q === 1 ? "1 Piece" : q === 2 ? "2 Pieces" : "3 Pieces"}
-                        </button>
-                      ))}
+                {/* COD rates */}
+                <div className="border-t border-slate-100 bg-slate-50 px-6 py-3.5">
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-500">COD Rates (%)</p>
+                </div>
+                <div className="px-6 py-4 grid grid-cols-2 gap-3">
+                  {([
+                    { icon: <ShieldCheck className="w-4 h-4 text-blue-500" />, label: "Confirmation Rate", value: pConfRate, set: setPConfRate, color: "bg-blue-50 border-blue-200" },
+                    { icon: <Truck className="w-4 h-4 text-violet-500" />,     label: "Delivery Rate",     value: pDelivRate, set: setPDelivRate, color: "bg-violet-50 border-violet-200" },
+                  ] as const).map((f) => (
+                    <div key={f.label} className={`rounded-xl px-3.5 py-3 border ${f.color}`}>
+                      <div className="flex items-center gap-1.5 mb-2">
+                        {f.icon}
+                        <p className="text-[11px] font-bold text-slate-700">{f.label}</p>
+                      </div>
+                      <div className="relative">
+                        <input type="number" value={f.value} onChange={(e) => f.set(Math.min(100, Math.max(1, Number(e.target.value))))} step={5} min={1} max={100}
+                          className="w-full border border-slate-200 rounded-lg py-1.5 pl-2 pr-7 text-lg font-black text-slate-900 bg-white focus:ring-2 focus:ring-teal-400/40 focus:outline-none text-center" />
+                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">%</span>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Upsell</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        onClick={() => setHasUpsell(false)}
-                        className={`py-2.5 rounded-xl font-bold text-sm border-2 transition-all ${!hasUpsell ? "bg-slate-900 border-slate-900 text-white" : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"}`}
-                      >
-                        No Upsell
+                  ))}
+                </div>
+
+                {/* Quantity */}
+                <div className="border-t border-slate-100 px-6 py-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Quantity</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([1, 2, 3] as const).map((q) => (
+                      <button key={q} onClick={() => setPricingQty(q)}
+                        className={`py-2.5 rounded-xl font-black text-sm border-2 transition-all ${pricingQty === q ? "bg-slate-900 border-slate-900 text-white" : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"}`}>
+                        {q === 1 ? "1 Piece" : q === 2 ? "2 Pieces" : "3 Pieces"}
                       </button>
-                      <button
-                        onClick={() => setHasUpsell(true)}
-                        className={`py-2.5 rounded-xl font-bold text-sm border-2 transition-all flex items-center justify-center gap-1.5 ${hasUpsell ? "bg-teal-600 border-teal-600 text-white" : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"}`}
-                      >
-                        <Gift className="w-3.5 h-3.5" /> With Upsell
-                      </button>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* ── RIGHT: Result ──────────────────────────────── */}
+              {/* ── RIGHT: Results ──────────────────────────────── */}
               <div className="flex flex-col gap-4">
 
-                {/* Cost breakdown — simple table */}
+                {/* Funnel summary */}
+                <div className="bg-slate-900 rounded-2xl px-5 py-4 flex flex-wrap items-center gap-2">
+                  <span className="text-[11px] text-slate-500 font-medium">Your funnel:</span>
+                  {[
+                    { t: `${Math.round(pLeadsPerDel)} leads`, c: "bg-slate-700 text-slate-200" },
+                    { t: `→ ${Math.round(pLeadsPerDel * pCr)} confirmed`, c: "bg-blue-900 text-blue-300" },
+                    { t: "→ 1 delivered", c: "bg-emerald-900 text-emerald-300" },
+                    { t: `${Math.round(pShipsPerDel - 1)} returned`, c: "bg-red-900/50 text-red-400" },
+                  ].map((s) => (
+                    <span key={s.t} className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${s.c}`}>{s.t}</span>
+                  ))}
+                </div>
+
+                {/* Cost breakdown */}
                 <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
-                  <div className="bg-slate-50 border-b border-slate-100 px-6 py-4">
-                    <p className="text-sm font-black text-slate-800">Cost Per Delivered Order</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Every dirham you spend to get 1 order delivered</p>
+                  <div className="bg-slate-50 border-b border-slate-100 px-6 py-3.5">
+                    <p className="text-xs font-black uppercase tracking-widest text-slate-500">Cost per Delivered Order</p>
                   </div>
-                  <div className="px-6 py-4">
+                  <div className="px-6 py-4 space-y-0.5">
                     {[
-                      {
-                        dot: "bg-slate-400",
-                        label: `Product cost`,
-                        calc: `${pricingQty} × ${dh(pProductCost)}`,
-                        amount: pProductTotal,
-                      },
-                      {
-                        dot: "bg-slate-400",
-                        label: "Shipping",
-                        calc: `2 shipments × ${dh(pShippingCost)}`,
-                        amount: pShippingTotal,
-                      },
-                      {
-                        dot: "bg-slate-400",
-                        label: "COD fees",
-                        calc: "on delivered order",
-                        amount: pCodFees,
-                      },
-                      {
-                        dot: "bg-blue-500",
-                        label: "Ad spend",
-                        calc: `4 leads × ${dh(pCpl)}`,
-                        amount: pAdTotal,
-                        highlight: true,
-                      },
-                      ...(hasUpsell ? [{
-                        dot: "bg-teal-500",
-                        label: "Upsell cost",
-                        calc: "extra product",
-                        amount: pUpsellTotal,
-                      }] : []),
-                    ].map((row) => (
-                      <div key={row.label} className={`flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0 ${row.highlight ? "bg-blue-50/50 -mx-6 px-6" : ""}`}>
+                      { dot: "bg-slate-400", label: "Product cost",    calc: `${pricingQty} × ${dh(pProductCost)}`,                         amount: pProductTotal },
+                      { dot: "bg-slate-400", label: "Shipping",        calc: `×${pShipsPerDel.toFixed(1)} shipments × ${dh(pShippingCost)}`, amount: pShippingTotal },
+                      { dot: "bg-slate-400", label: "COD fees",        calc: "collected on delivery",                                        amount: pCodFees },
+                      { dot: "bg-blue-500",  label: "Ad spend",        calc: `×${pLeadsPerDel.toFixed(1)} leads × ${dh(pCpl)}`,              amount: pAdTotal, blue: true },
+                    ].map((r) => (
+                      <div key={r.label} className={`flex items-center justify-between py-2 border-b border-slate-100 last:border-0 ${r.blue ? "-mx-6 px-6 bg-blue-50/60" : ""}`}>
                         <div className="flex items-center gap-2.5">
-                          <div className={`w-2 h-2 rounded-full flex-shrink-0 ${row.dot}`} />
+                          <div className={`w-2 h-2 rounded-full ${r.dot}`} />
                           <div>
-                            <p className="text-sm text-slate-700 font-medium">{row.label}</p>
-                            <p className="text-[10px] text-slate-400">{row.calc}</p>
+                            <p className="text-sm text-slate-700 font-medium">{r.label}</p>
+                            <p className="text-[10px] text-slate-400">{r.calc}</p>
                           </div>
                         </div>
-                        <p className="text-sm font-bold text-slate-900">{dh(row.amount)}</p>
+                        <p className="text-sm font-bold text-slate-900">{dh(r.amount)}</p>
                       </div>
                     ))}
-
-                    {/* Break-even total */}
-                    <div className="mt-4 pt-4 border-t-2 border-slate-200 flex items-center justify-between">
+                    <div className="pt-3 mt-1 border-t-2 border-slate-200 flex items-center justify-between">
                       <div>
                         <p className="text-sm font-black text-slate-900">Break-Even Price</p>
-                        <p className="text-[10px] text-slate-400 mt-0.5">Sell below this → losing money</p>
+                        <p className="text-[10px] text-slate-400">minimum — any lower = losing money</p>
                       </div>
-                      <p className="text-2xl font-black text-slate-800">{dh(pBreakEven)}</p>
+                      <p className="text-xl font-black text-slate-800">{dh(pBreakEven)}</p>
                     </div>
                   </div>
                 </div>
 
-                {/* THE PRICE — hero card */}
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                  <div className="bg-gradient-to-br from-slate-900 to-emerald-950 p-6">
-                    <div className="absolute -top-8 -right-8 w-40 h-40 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
-                    <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
-
-                    <div className="relative z-10">
-                      {/* Scenario badge */}
-                      <div className="flex items-center gap-2 mb-4 flex-wrap">
-                        <span className="text-[11px] font-bold bg-white/10 text-slate-300 px-3 py-1 rounded-full">
-                          {pricingQty} piece{pricingQty > 1 ? "s" : ""}
-                        </span>
-                        <span className={`text-[11px] font-bold px-3 py-1 rounded-full ${hasUpsell ? "bg-teal-500/20 text-teal-300" : "bg-white/5 text-slate-400"}`}>
-                          {hasUpsell ? "With Upsell" : "No Upsell"}
-                        </span>
-                        <span className="text-[11px] font-bold bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full">
-                          +{dh(pTargetProfit)} target profit
-                        </span>
-                      </div>
-
-                      <p className="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-2 flex items-center gap-1.5">
-                        <Tag className="w-3.5 h-3.5" /> Sell this product for
-                      </p>
-                      <p className="text-6xl font-black text-white tracking-tight leading-none mb-1">
-                        {dh(pRecommended)}
-                      </p>
-                      <p className="text-sm text-slate-400 mt-3">
-                        {dh(pBreakEven)} costs <span className="text-slate-500 mx-1">+</span>
-                        <span className="text-emerald-400 font-bold">{dh(pTargetProfit)} net profit</span>
-                      </p>
-
-                      {/* Mini 3-col stat row */}
-                      <div className="grid grid-cols-3 gap-px bg-white/5 rounded-xl overflow-hidden mt-5">
-                        <div className="bg-black/20 px-4 py-3 text-center">
-                          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-1">Break-Even</p>
-                          <p className="text-base font-black text-slate-200">{dh(pBreakEven)}</p>
-                        </div>
-                        <div className="bg-black/20 px-4 py-3 text-center">
-                          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-1">Ad Cost</p>
-                          <p className="text-base font-black text-blue-400">{dh(pAdTotal)}</p>
-                        </div>
-                        <div className="bg-emerald-900/40 px-4 py-3 text-center">
-                          <p className="text-[9px] font-bold uppercase tracking-widest text-emerald-600 mb-1">Net Profit</p>
-                          <p className="text-base font-black text-emerald-400">{dh(pTargetProfit)}</p>
-                        </div>
-                      </div>
+                {/* Recommended price hero */}
+                <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-slate-900 to-emerald-950 p-6 shadow-2xl">
+                  <div className="absolute -top-6 -right-6 w-36 h-36 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-1 flex items-center gap-1.5 relative z-10">
+                    <Tag className="w-3 h-3" /> Recommended selling price
+                  </p>
+                  <p className="text-5xl font-black text-white tracking-tight leading-none relative z-10">{dh(pRecommended)}</p>
+                  <p className="text-sm text-slate-400 mt-2 relative z-10">
+                    {dh(pBreakEven)} costs + <span className="text-amber-400 font-bold">{dh(pTargetProfit)} target profit</span>
+                  </p>
+                  <div className="grid grid-cols-3 gap-px bg-white/5 rounded-xl overflow-hidden mt-4 relative z-10">
+                    <div className="bg-black/20 px-3 py-2.5 text-center">
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">Break-Even</p>
+                      <p className="text-sm font-black text-slate-200">{dh(pBreakEven)}</p>
+                    </div>
+                    <div className="bg-black/20 px-3 py-2.5 text-center">
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">Ad Cost</p>
+                      <p className="text-sm font-black text-blue-400">{dh(pAdTotal)}</p>
+                    </div>
+                    <div className="bg-emerald-900/40 px-3 py-2.5 text-center">
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-emerald-600 mb-0.5">Net Profit</p>
+                      <p className="text-sm font-black text-emerald-400">{dh(pTargetProfit)}</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Profit rules reference */}
-                <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-5">
-                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">All Profit Targets</p>
-                  <div className="space-y-2">
-                    {([1, 2, 3] as const).map((q) => {
-                      const activeNo  = pricingQty === q && !hasUpsell;
-                      const activeYes = pricingQty === q && hasUpsell;
-                      return (
-                        <div key={q} className="flex items-center gap-2">
-                          <span className="text-xs font-black text-slate-500 w-14">{q} piece{q > 1 ? "s" : ""}</span>
-                          <span className={`flex-1 text-center text-xs font-bold rounded-lg py-1.5 border ${activeNo ? "bg-slate-900 text-white border-slate-900" : "bg-slate-50 text-slate-600 border-slate-200"}`}>
-                            No upsell: {PROFIT_RULES[q].no} DH
-                          </span>
-                          <span className={`flex-1 text-center text-xs font-bold rounded-lg py-1.5 border ${activeYes ? "bg-teal-600 text-white border-teal-600" : "bg-slate-50 text-slate-600 border-slate-200"}`}>
-                            Upsell: {PROFIT_RULES[q].yes} DH
-                          </span>
+                {/* Green-light checker */}
+                <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
+                  <div className="bg-slate-50 border-b border-slate-100 px-6 py-3.5">
+                    <p className="text-xs font-black uppercase tracking-widest text-slate-500">Green Light Check</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Enter your selling price → instant profit verdict</p>
+                  </div>
+                  <div className="px-6 py-5">
+                    {/* Price input */}
+                    <div className="relative mb-4">
+                      <input
+                        type="number"
+                        value={pUserPrice || ""}
+                        onChange={(e) => setPUserPrice(Number(e.target.value))}
+                        placeholder="e.g. 199"
+                        step={5}
+                        min={0}
+                        className="w-full border-2 border-slate-200 rounded-xl py-4 pl-5 pr-16 text-2xl font-black text-slate-900 bg-white focus:ring-0 focus:border-teal-400 focus:outline-none transition-colors placeholder:text-slate-300"
+                      />
+                      <span className="absolute right-5 top-1/2 -translate-y-1/2 text-lg font-black text-slate-400">DH</span>
+                    </div>
+
+                    {/* Verdict */}
+                    {pUserPrice <= 0 ? (
+                      <div className="rounded-xl bg-slate-50 border border-slate-200 px-5 py-4 text-center">
+                        <p className="text-sm text-slate-400 font-medium">Type your price above to see the verdict</p>
+                      </div>
+                    ) : pIsRed ? (
+                      <div className="rounded-xl bg-red-50 border-2 border-red-300 px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
+                            <AlertTriangle className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-black text-red-700">LOSING MONEY 🔴</p>
+                            <p className="text-xs text-red-600 mt-0.5">
+                              You lose <span className="font-black">{dh(Math.abs(pUserProfit))}</span> per delivered order.
+                              Raise price by at least <span className="font-black">{dh(pBreakEven - pUserPrice)}</span> to break even.
+                            </p>
+                          </div>
                         </div>
-                      );
-                    })}
+                        <div className="mt-3 bg-red-100 rounded-lg px-4 py-2 flex justify-between items-center">
+                          <span className="text-xs text-red-600 font-medium">Minimum price to not lose money</span>
+                          <span className="text-sm font-black text-red-800">{dh(pBreakEven)}</span>
+                        </div>
+                      </div>
+                    ) : pIsOk ? (
+                      <div className="rounded-xl bg-amber-50 border-2 border-amber-300 px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center flex-shrink-0">
+                            <AlertTriangle className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-black text-amber-700">BREAKING EVEN 🟡</p>
+                            <p className="text-xs text-amber-700 mt-0.5">
+                              Profit is only <span className="font-black">{dh(pUserProfit)}</span> — below your target of <span className="font-black">{dh(pTargetProfit)}</span>.
+                              Raise by <span className="font-black">{dh(pRecommended - pUserPrice)}</span> to hit target.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-xl bg-emerald-50 border-2 border-emerald-400 px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
+                            <CheckCircle2 className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-black text-emerald-700">PROFITABLE — GREEN LIGHT 🟢</p>
+                            <p className="text-xs text-emerald-700 mt-0.5">
+                              You make <span className="font-black">{dh(pUserProfit)}</span> net profit per delivered order. Go for it!
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mt-3 grid grid-cols-3 gap-2">
+                          <div className="bg-white rounded-lg px-3 py-2 text-center border border-emerald-200">
+                            <p className="text-[9px] uppercase tracking-widest text-slate-400 font-bold">Your Price</p>
+                            <p className="text-sm font-black text-slate-900">{dh(pUserPrice)}</p>
+                          </div>
+                          <div className="bg-white rounded-lg px-3 py-2 text-center border border-emerald-200">
+                            <p className="text-[9px] uppercase tracking-widest text-slate-400 font-bold">Total Costs</p>
+                            <p className="text-sm font-black text-slate-900">{dh(pBreakEven)}</p>
+                          </div>
+                          <div className="bg-emerald-100 rounded-lg px-3 py-2 text-center border border-emerald-300">
+                            <p className="text-[9px] uppercase tracking-widest text-emerald-600 font-bold">Net Profit</p>
+                            <p className="text-sm font-black text-emerald-700">{dh(pUserProfit)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Profit targets reference */}
+                    <div className="mt-4 pt-4 border-t border-slate-100">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Target profits per quantity</p>
+                      <div className="flex gap-2">
+                        {([1, 2, 3] as const).map((q) => (
+                          <div key={q} className={`flex-1 text-center rounded-lg py-2 border text-xs font-bold transition-all ${pricingQty === q ? "bg-slate-900 text-white border-slate-900" : "bg-slate-50 text-slate-500 border-slate-200"}`}>
+                            <p>{q} pc</p>
+                            <p className={pricingQty === q ? "text-emerald-400" : "text-slate-400"}>{PROFIT_RULES[q]} DH</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
