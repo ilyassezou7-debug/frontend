@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   CheckCircle2,
   Phone,
@@ -117,43 +118,62 @@ export default function ThankYouClient() {
   return (
     <div className="bg-ivory min-h-screen">
       {/* ───── 1. SUCCESS HEADER ───── */}
-      <section className="relative bg-gradient-to-br from-teal via-teal-dark to-teal-dark text-ivory pt-12 pb-10 sm:pt-16 sm:pb-14 overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-[0.07] pointer-events-none"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, #B8862F 1px, transparent 0)",
-            backgroundSize: "24px 24px",
-          }}
-        />
-        <div className="container-max max-w-3xl relative text-center">
-          {/* Confetti-feel seal */}
-          <div className="relative inline-flex items-center justify-center mb-5">
-            <div className="absolute inset-0 bg-saffron/30 rounded-full blur-2xl scale-125 animate-pulse" />
-            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-saffron via-saffron-dark to-saffron flex items-center justify-center shadow-2xl ring-4 ring-white/20">
-              <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+      <section className="relative bg-white pt-12 pb-10 sm:pt-16 sm:pb-12 overflow-hidden border-b border-border-soft">
+        {/* Subtle top accent line */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal to-saffron" />
+        
+        {/* Soft radial gradient background */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-teal-50/50 via-white to-white pointer-events-none" />
+        
+        <div className="container-max max-w-3xl relative text-center px-4">
+          {/* Modern clean checkmark */}
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", duration: 0.6, bounce: 0.4 }}
+            className="relative inline-flex items-center justify-center mb-6"
+          >
+            <div className="absolute inset-0 bg-emerald-100 rounded-full blur-xl scale-150" />
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-emerald-50 flex items-center justify-center border-4 border-white shadow-sm">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-white" strokeWidth={2.5} />
+              </div>
             </div>
-          </div>
+          </motion.div>
 
-          <p className="text-saffron text-[11px] font-bold tracking-[0.3em] uppercase mb-3">
-            تم استلام طلبيتك
-          </p>
-          <h1 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl mb-3 leading-tight">
-            مبروك عليك {customerFirstName} 🎉
-          </h1>
-          <p className="text-base sm:text-lg text-ivory/85 leading-relaxed max-w-xl mx-auto">
-            طلبيتك توصلات بنجاح فأطلس بيور.
-            <br className="hidden sm:block" />
-            دابا غير خصك تردي على مكالمة التأكيد، وحنا نتكلفو بالباقي.
-          </p>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <p className="text-teal text-[11px] font-bold tracking-[0.2em] uppercase mb-3">
+              تم استلام طلبيتك بنجاح
+            </p>
+            <h1 className="font-display font-bold text-3xl sm:text-4xl text-charcoal mb-4 leading-tight">
+              مبروك عليك {customerFirstName} 🎉
+            </h1>
+            <p className="text-base sm:text-lg text-muted leading-relaxed max-w-lg mx-auto">
+              طلبيتك توصلات بنجاح فأطلس بيور.
+              <br className="hidden sm:block" />
+              دابا غير خصك تردي على مكالمة التأكيد، وحنا نتكلفو بالباقي.
+            </p>
+          </motion.div>
 
           {orderId && (
-            <div className="inline-flex items-center gap-2 mt-5 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 rounded-full">
-              <span className="text-xs text-ivory/70">رقم الطلب:</span>
-              <span className="font-mono font-bold text-saffron text-sm tabular-nums">
-                #{orderId}
-              </span>
-            </div>
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="mt-8"
+            >
+              <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-4 bg-mist/50 border border-teal/10 px-5 py-3 rounded-2xl">
+                <span className="text-xs font-medium text-muted">رقم الطلب الخاص بك</span>
+                <div className="h-px w-8 sm:w-px sm:h-4 bg-border-soft" />
+                <span className="font-mono font-bold text-charcoal text-base tracking-wider">
+                  #{orderId}
+                </span>
+              </div>
+            </motion.div>
           )}
         </div>
       </section>
