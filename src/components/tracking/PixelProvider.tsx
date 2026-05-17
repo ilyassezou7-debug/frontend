@@ -2,7 +2,7 @@
 
 import { useEffect, type ReactNode } from "react";
 import Script from "next/script";
-import { trackPageView } from "@/lib/tracking";
+import { trackPageView, saveLandingUrl } from "@/lib/tracking";
 
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 const TIKTOK_PIXEL_ID = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID || "D8506I3C77U73K7PGR40";
@@ -14,6 +14,7 @@ interface PixelProviderProps {
 
 export default function PixelProvider({ children }: PixelProviderProps) {
   useEffect(() => {
+    saveLandingUrl();
     trackPageView();
   }, []);
 

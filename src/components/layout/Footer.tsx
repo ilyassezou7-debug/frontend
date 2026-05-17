@@ -11,7 +11,15 @@ const iconMap = {
   leaf: Leaf,
 } as const;
 
-export default function Footer() {
+export default function Footer({ isSoftPage = false }: { isSoftPage?: boolean }) {
+  const description = isSoftPage 
+    ? "أطلس بيور علامة مغربية تقدم منتجات طبيعية عالية الجودة، مستوحاة من طبيعة المغرب، لروتين يومي أفضل."
+    : SITE_CONFIG.brandShortDescription;
+    
+  const badges = isSoftPage
+    ? SITE_CONFIG.trustBadges.filter(b => !b.label.includes("صيادلة") && !b.label.includes("ONSSA"))
+    : SITE_CONFIG.trustBadges;
+
   return (
     <footer className="bg-teal-dark text-ivory">
       {/* Brand Top Section */}
@@ -32,11 +40,13 @@ export default function Footer() {
             </div>
           </div>
           <p className="max-w-2xl text-ivory/75 text-sm leading-relaxed">
-            {SITE_CONFIG.brandShortDescription}
+            {description}
           </p>
-          <p className="mt-4 text-saffron text-xs italic tracking-wide">
-            « {SITE_CONFIG.tagline} »
-          </p>
+          {!isSoftPage && (
+            <p className="mt-4 text-saffron text-xs italic tracking-wide">
+              « {SITE_CONFIG.tagline} »
+            </p>
+          )}
         </div>
       </div>
 
@@ -44,7 +54,7 @@ export default function Footer() {
       <div className="border-b border-teal/30">
         <div className="container-max py-6 px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-6">
-            {SITE_CONFIG.trustBadges.map((badge) => {
+            {badges.map((badge) => {
               const Icon = iconMap[badge.icon as keyof typeof iconMap];
               return (
                 <div key={badge.label} className="flex flex-row-reverse sm:flex-row items-center justify-between sm:justify-center w-full sm:w-auto bg-white/5 sm:bg-transparent p-4 sm:p-0 rounded-xl sm:rounded-none gap-3 sm:gap-2">
@@ -60,6 +70,7 @@ export default function Footer() {
       <div className="container-max py-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 text-center sm:text-start">
           {/* Products */}
+          {!isSoftPage && (
           <div className="border-b border-teal/30 sm:border-none pb-4 sm:pb-0">
             <details className="group">
               <summary className="flex items-center justify-between font-semibold font-display cursor-pointer list-none [&::-webkit-details-marker]:hidden outline-none">
@@ -85,6 +96,7 @@ export default function Footer() {
               </ul>
             </details>
           </div>
+          )}
 
           {/* Quick links */}
           <div className="border-b border-teal/30 sm:border-none pb-4 sm:pb-0">

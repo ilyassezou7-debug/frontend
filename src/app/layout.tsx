@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Arabic, IBM_Plex_Sans_Arabic, Inter } from "next/font/google";
 import "./globals.css";
-import AnnouncementBar from "@/components/layout/AnnouncementBar";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import { ConditionalHeader, ConditionalFooter, ConditionalAnnouncementBar } from "@/components/layout/ConditionalLayout";
 import PixelProvider from "@/components/tracking/PixelProvider";
 import { SITE_CONFIG } from "@/config/site";
 
@@ -82,12 +80,12 @@ export default function RootLayout({
     >
       <body className="font-arabic">
         <PixelProvider>
-          <Header />
+          <ConditionalHeader />
           <div className="relative z-40">
-            <AnnouncementBar />
+            <ConditionalAnnouncementBar />
           </div>
           <main>{children}</main>
-          <Footer />
+          <ConditionalFooter />
         </PixelProvider>
       </body>
     </html>

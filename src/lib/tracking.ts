@@ -150,6 +150,19 @@ export function trackPurchase(
   });
 }
 
+/**
+ * Call once on the very first page load to record the entry URL.
+ * sessionStorage resets when the browser tab is closed, so every new
+ * browsing session starts fresh while multi-page navigation within the
+ * same session still preserves the original landing URL.
+ */
+export function saveLandingUrl() {
+  if (typeof window === "undefined") return;
+  if (!sessionStorage.getItem("_landing_url")) {
+    sessionStorage.setItem("_landing_url", window.location.href);
+  }
+}
+
 export function getTrackingData() {
   if (typeof window === "undefined") return {};
   const getCookie = (name: string) => {
@@ -158,23 +171,33 @@ export function getTrackingData() {
     );
     return match ? match[2] : null;
   };
-  const params = new URLSearchParams(window.location.search);
+
+  // Use the first page the visitor landed on so UTM tags and click IDs
+  // are captured even when checkout happens on a different page.
+  const landingUrl = sessionStorage.getItem("_landing_url") || window.location.href;
+  let landingParams: URLSearchParams;
+  try {
+    landingParams = new URLSearchParams(new URL(landingUrl).search);
+  } catch {
+    landingParams = new URLSearchParams();
+  }
+
   return {
     fbp: getCookie("_fbp"),
     fbc: getCookie("_fbc"),
     ttp: getCookie("_ttp"),
-    ttclid: params.get("ttclid"),
-    sc_click_id: params.get("ScCid"),
-    fbclid: params.get("fbclid"),
-    page_url: window.location.href,
+    ttclid: landingParams.get("ttclid"),
+    sc_click_id: landingParams.get("ScCid"),
+    fbclid: landingParams.get("fbclid"),
+    page_url: landingUrl,
     referrer: document.referrer || null,
     user_agent: navigator.userAgent,
     utm: {
-      utm_source: params.get("utm_source") || "",
-      utm_medium: params.get("utm_medium") || "",
-      utm_campaign: params.get("utm_campaign") || "",
-      utm_content: params.get("utm_content") || "",
-      utm_term: params.get("utm_term") || "",
+      utm_source: landingParams.get("utm_source") || "",
+      utm_medium: landingParams.get("utm_medium") || "",
+      utm_campaign: landingParams.get("utm_campaign") || "",
+      utm_content: landingParams.get("utm_content") || "",
+      utm_term: landingParams.get("utm_term") || "",
     },
   };
 }

@@ -16,7 +16,7 @@ const CheckoutFlow = dynamic(() => import("@/components/checkout/CheckoutFlow"),
   ssr: false,
 });
 
-export default function Header() {
+export default function Header({ isSoftPage = false }: { isSoftPage?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   
@@ -32,7 +32,7 @@ export default function Header() {
 
   const navLinks = [
     { href: "/", label: "الرئيسية" },
-    { href: "/products", label: "المجموعة" },
+    ...(!isSoftPage ? [{ href: "/products", label: "المجموعة" }] : []),
     { href: "/about", label: "عن أطلس" },
     { href: "/contact", label: "تواصل معنا" },
   ];
@@ -92,6 +92,7 @@ export default function Header() {
                 )}
               </button>
 
+              {!isSoftPage && (
               <button
                 onClick={() => openCart()}
                 className="relative p-1.5 sm:p-2 rounded-xl hover:bg-sand transition-colors group"
@@ -109,6 +110,7 @@ export default function Header() {
                   )}
                 </div>
               </button>
+              )}
             </div>
           </div>
 
