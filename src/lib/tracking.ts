@@ -1,7 +1,7 @@
 declare global {
   interface Window {
     fbq?: (...args: unknown[]) => void;
-    ttq?: { track: (...args: unknown[]) => void; page: () => void };
+    ttq?: { track: (...args: unknown[]) => void; page: () => void; identify?: (...args: unknown[]) => void };
     snaptr?: (...args: unknown[]) => void;
     _fbPixelQueue?: Array<() => void>;
     _ttqQueue?: Array<() => void>;
