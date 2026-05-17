@@ -117,7 +117,7 @@ export default function LandingPage() {
                     ))}
                   </div>
                   <p className="text-charcoal/80 mb-4 text-sm leading-relaxed">
-                    "{review.text}"
+                    &quot;{review.text}&quot;
                   </p>
                   <div className="mt-auto">
                     <p className="font-bold text-teal-dark text-sm">{review.name}</p>
