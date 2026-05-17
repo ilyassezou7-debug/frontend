@@ -9,21 +9,45 @@ declare global {
   }
 }
 
-function safeMetaTrack(event: string, params?: Record<string, unknown>) {
+function safeMetaTrack(event: string, params?: Record<string, unknown>, eventId?: string) {
   if (typeof window !== "undefined" && window.fbq) {
-    window.fbq("track", event, params);
+    if (eventId) {
+      window.fbq("track", event, params, { eventID: eventId });
+    } else {
+      window.fbq("track", event, params);
+    }
   }
 }
 
-function safeTikTokTrack(event: string, params?: Record<string, unknown>) {
+function safeTikTokTrack(event: string, params?: Record<string, unknown>, eventId?: string) {
   if (typeof window !== "undefined" && window.ttq) {
-    window.ttq.track(event, params);
+    if (eventId) {
+      window.ttq.track(event, params, { event_id: eventId });
+    } else {
+      window.ttq.track(event, params);
+    }
   }
 }
 
 function safeSnapTrack(event: string, params?: Record<string, unknown>) {
   if (typeof window !== "undefined" && window.snaptr) {
     window.snaptr("track", event, params);
+  }
+}
+
+export function identifyUser(phone: string) {
+  if (typeof window === "undefined") return;
+  const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const snapPixelId = process.env.NEXT_PUBLIC_SNAP_PIXEL_ID;
+  
+  if (metaPixelId && window.fbq) {
+    window.fbq("init", metaPixelId, { ph: phone });
+  }
+  if (window.ttq && window.ttq.identify) {
+    window.ttq.identify({ phone });
+  }
+  if (snapPixelId && window.snaptr) {
+    window.snaptr("init", snapPixelId, { user_phone_number: phone });
   }
 }
 
@@ -36,73 +60,89 @@ export function trackPageView() {
 export function trackViewContent(
   productId: string,
   value: number,
-  eventId: string
+  eventId: string,
+  phone?: string
 ) {
-  const params = {
+  if (phone) identifyUser(phone);
+  
+  safeMetaTrack("ViewContent", {
     content_ids: [productId],
     value,
     currency: "MAD",
     content_type: "product",
-    eventID: eventId,
-  };
-  safeMetaTrack("ViewContent", params);
+  }, eventId);
+
   safeTikTokTrack("ViewContent", {
     content_id: productId,
     value,
     currency: "MAD",
-  });
+  }, eventId);
+
   safeSnapTrack("VIEW_CONTENT", {
     item_ids: [productId],
     price: value,
     currency: "MAD",
+    client_dedup_id: eventId,
   });
 }
 
 export function trackAddToCart(
   productId: string,
   value: number,
-  eventId: string
+  eventId: string,
+  phone?: string
 ) {
+  if (phone) identifyUser(phone);
+
   safeMetaTrack("AddToCart", {
     content_ids: [productId],
     value,
     currency: "MAD",
-    eventID: eventId,
-  });
+  }, eventId);
+
   safeTikTokTrack("AddToCart", {
     content_id: productId,
     value,
     currency: "MAD",
-  });
+  }, eventId);
+
   safeSnapTrack("ADD_CART", {
     item_ids: [productId],
     price: value,
     currency: "MAD",
+    client_dedup_id: eventId,
   });
 }
 
-export function trackInitiateCheckout(value: number, eventId: string) {
+export function trackInitiateCheckout(value: number, eventId: string, phone?: string) {
+  if (phone) identifyUser(phone);
+
   safeMetaTrack("InitiateCheckout", {
     value,
     currency: "MAD",
-    eventID: eventId,
-  });
-  safeTikTokTrack("InitiateCheckout", { value, currency: "MAD" });
-  safeSnapTrack("START_CHECKOUT", { price: value, currency: "MAD" });
+  }, eventId);
+
+  safeTikTokTrack("InitiateCheckout", { value, currency: "MAD" }, eventId);
+
+  safeSnapTrack("START_CHECKOUT", { price: value, currency: "MAD", client_dedup_id: eventId });
 }
 
 export function trackPurchase(
   value: number,
   eventId: string,
-  contents: Array<{ id: string; quantity: number; price: number }>
+  contents: Array<{ id: string; quantity: number; price: number }>,
+  phone?: string
 ) {
+  if (phone) identifyUser(phone);
+
   safeMetaTrack("Purchase", {
     value,
     currency: "MAD",
     content_ids: contents.map((c) => c.id),
-    eventID: eventId,
-  });
-  safeTikTokTrack("PlaceAnOrder", { value, currency: "MAD", contents });
+  }, eventId);
+
+  safeTikTokTrack("PlaceAnOrder", { value, currency: "MAD", contents }, eventId);
+
   safeSnapTrack("PURCHASE", {
     price: value,
     currency: "MAD",
