@@ -15,53 +15,33 @@ type Redirect = {
 };
 
 export default function RedirectAdmin() {
-  const [password, setPassword] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [redirects, setRedirects] = useState<Redirect[]>([]);
   const [slug, setSlug] = useState("");
   const [targetUrl, setTargetUrl] = useState("");
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedPassword = localStorage.getItem("redirect_admin_password");
-    if (savedPassword) {
-      setPassword(savedPassword);
-      fetchRedirects(savedPassword);
-    }
+    fetchRedirects();
   }, []);
 
-  const fetchRedirects = async (pass: string) => {
+  const fetchRedirects = async () => {
     try {
-      const res = await fetch(`${SITE_CONFIG.apiUrl}/api/redirects/`, {
-        headers: { Authorization: `Bearer ${pass}` },
-      });
+      const res = await fetch(`${SITE_CONFIG.apiUrl}/api/redirects/`);
       if (res.ok) {
         const data = await res.json();
         setRedirects(data);
-        setIsAuthenticated(true);
-        localStorage.setItem("redirect_admin_password", pass);
         setError("");
       } else {
         const errorData = await res.json().catch(() => ({}));
-        setIsAuthenticated(false);
-        localStorage.removeItem("redirect_admin_password");
-        if (pass) {
-          if (res.status === 401) {
-            setError("كلمة السر غالطة (Invalid password)");
-          } else {
-            setError(`خطأ فالسيرفر (${res.status}): ${errorData.detail || "تأكد بلي قاديتي قاعدة البيانات"}`);
-          }
-        }
+        setError(`خطأ فالسيرفر (${res.status}): ${errorData.detail || "تأكد بلي قاديتي قاعدة البيانات"}`);
       }
     } catch (err) {
       setError("Failed to connect to server");
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchRedirects(password);
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -75,8 +55,7 @@ export default function RedirectAdmin() {
       const res = await fetch(url, {
         method,
         headers: { 
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${password}` 
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ slug, target_url: targetUrl }),
       });
@@ -85,7 +64,7 @@ export default function RedirectAdmin() {
         setSlug("");
         setTargetUrl("");
         setEditingSlug(null);
-        fetchRedirects(password);
+        fetchRedirects();
       } else {
         const data = await res.json();
         setError(data.detail || "Failed to save redirect");
@@ -105,39 +84,18 @@ export default function RedirectAdmin() {
     if (!confirm("Are you sure?")) return;
     try {
       const res = await fetch(`${SITE_CONFIG.apiUrl}/api/redirects/${slugToDelete}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${password}` },
+        method: "DELETE"
       });
       if (res.ok) {
-        fetchRedirects(password);
+        fetchRedirects();
       }
     } catch (err) {
       setError("Failed to delete");
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Redirect Admin Login</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <Input
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {error && <p className="text-red-500 text-sm">{error}</p>}
-              <Button type="submit" className="w-full">Login</Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">جاري التحميل...</div>;
   }
 
   return (
@@ -145,11 +103,6 @@ export default function RedirectAdmin() {
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Redirect Management</h1>
-          <Button variant="outline" onClick={() => {
-            setIsAuthenticated(false);
-            localStorage.removeItem("redirect_admin_password");
-            setPassword("");
-          }}>Logout</Button>
         </div>
 
         <Card>
