@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Trash2, Edit, LogOut } from "lucide-react";
+import { Trash2, Edit, LogOut, ExternalLink } from "lucide-react";
 import { SITE_CONFIG } from "@/config/site";
 
 type Redirect = {
@@ -66,7 +66,12 @@ export default function RedirectAdmin() {
         headers: { 
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ slug, target_url: targetUrl }),
+        body: JSON.stringify({ 
+          slug: slug.trim(), 
+          target_url: targetUrl.trim().startsWith('http') || targetUrl.trim().startsWith('/') 
+            ? targetUrl.trim() 
+            : `/${targetUrl.trim()}` 
+        }),
       });
 
       if (res.ok) {
@@ -191,6 +196,15 @@ export default function RedirectAdmin() {
                     <TableCell className="truncate max-w-xs" title={r.target_url}>{r.target_url}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={() => window.open(`/ads/${r.slug}`, '_blank')}
+                          title="Test Redirect"
+                          className="text-blue-500 hover:text-blue-700"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(r)}>
                           <Edit className="w-4 h-4" />
                         </Button>
