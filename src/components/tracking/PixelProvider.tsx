@@ -80,11 +80,11 @@ export default function PixelProvider({ children }: PixelProviderProps) {
         />
       )}
 
-      {/* Snapchat Pixel */}
+      {/* Snapchat Pixel — lowest priority, deferred until browser is idle */}
       {SNAP_PIXEL_ID && (
         <Script
           id="snap-pixel"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
               (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()

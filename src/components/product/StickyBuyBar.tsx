@@ -63,7 +63,7 @@ export default function StickyBuyBar({
       aria-hidden={hidden}
     >
       <div className="mx-auto max-w-3xl px-3 pb-3 sm:pb-4">
-        <div className="bg-white/95 backdrop-blur-md border border-border-soft rounded-2xl shadow-2xl shadow-charcoal/10 ring-1 ring-black/5 overflow-hidden">
+        <div className="bg-white border border-border-soft rounded-2xl shadow-2xl shadow-charcoal/10 ring-1 ring-black/5 overflow-hidden">
           <div className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3">
             {/* Tiny product thumbnail */}
             <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-sand">

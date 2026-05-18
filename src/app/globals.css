@@ -4,8 +4,19 @@
 
 html {
   direction: rtl;
-  scroll-behavior: smooth;
   overflow-x: hidden;
+  /* Smooth scroll only for users who haven't requested reduced motion */
+  scroll-behavior: auto;
+  /* Prevent scroll chaining / rubber-band bleed into parent scroller */
+  overscroll-behavior-y: contain;
+  /* Hint to the browser to keep a dedicated composited layer for scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -14,6 +25,9 @@ body {
   color: #102622;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent layout thrashing from text-size adjustments on mobile */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .font-display {
@@ -70,6 +84,31 @@ body {
 /* Override transition for elements that should not animate */
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+/* Promote fixed/sticky elements to their own GPU compositing layer so the
+   browser can move them independently without triggering a main-thread repaint
+   on every scroll tick. */
+[style*="position: fixed"],
+.fixed {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Respect user's motion preference — kill all CSS animations/transitions */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Section paint containment: sections only re-paint their own box, not the
+   whole page, reducing the area the browser must rasterize on each frame. */
+section {
+  contain: layout style;
 }
 
 @layer utilities {

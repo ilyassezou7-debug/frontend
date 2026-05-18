@@ -12,6 +12,8 @@ const nextConfig = {
     remotePatterns: [],
     // Serve AVIF first (smallest), then WebP — both vastly smaller than JPEG/PNG
     formats: ["image/avif", "image/webp"],
+    // Cache optimised images for 30 days on CDN/browser (default is 60s)
+    minimumCacheTTL: 2592000,
   },
 
   // Only framer-motion still needs CommonJS transpilation in Next.js 14
@@ -29,6 +31,43 @@ const nextConfig = {
       "@radix-ui/react-label",
       "@radix-ui/react-slot",
     ],
+    // Restore scroll position when navigating back/forward
+    scrollRestoration: true,
+  },
+
+  async headers() {
+    return [
+      {
+        // Immutable cache for all Next.js hashed static chunks (_next/static)
+        source: "/_next/static/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // Long cache for public images/fonts/svgs
+        source: "/images/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=2592000, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
+        // Fonts cached for 1 year
+        source: "/fonts/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
   },
 };
 

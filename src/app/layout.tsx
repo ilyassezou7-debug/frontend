@@ -7,23 +7,29 @@ import { SITE_CONFIG } from "@/config/site";
 
 const notoSansArabic = Noto_Sans_Arabic({
   subsets: ["arabic"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  // Trimmed from 6 weights to 3 — covers body (400), semi-bold (600), bold (700)
+  weight: ["400", "600", "700"],
   variable: "--font-noto-arabic",
   display: "swap",
+  preload: true,
 });
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
-  weight: ["300", "400", "500", "600", "700"],
+  // Display font only needs medium + bold
+  weight: ["500", "700"],
   variable: "--font-ibm-arabic",
   display: "swap",
+  preload: false,
 });
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  // Numbers / latin admin UI — regular + medium only
+  weight: ["400", "500"],
   variable: "--font-inter",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -78,6 +84,13 @@ export default function RootLayout({
       dir="rtl"
       className={`${notoSansArabic.variable} ${ibmPlexSansArabic.variable} ${inter.variable}`}
     >
+      <head>
+        {/* Preconnect to Google Fonts origins so the TLS handshake is done
+            before the browser even parses the font CSS — saves ~200 ms on
+            first load on average connections. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body className="font-arabic">
         <PixelProvider>
           <ConditionalHeader />

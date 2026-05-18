@@ -48,13 +48,13 @@ export default function BackToOrderFAB({ watchId, scrollToId }: BackToOrderFABPr
           onClick={handleClick}
           aria-label="ارجعي لقسم العروض لتأكيد طلبك"
           className="fixed z-30 left-3 sm:left-5 bottom-24 sm:bottom-28"
-          style={{ marginBottom: "env(safe-area-inset-bottom)" }}
+          style={{ marginBottom: "env(safe-area-inset-bottom)", willChange: "transform, opacity" }}
         >
-          {/* Pulse ring */}
+          {/* Pulse ring — isolated on its own compositor layer */}
           <span
             aria-hidden="true"
             className="absolute inset-0 rounded-full bg-teal/25 animate-ping pointer-events-none"
-            style={{ animationDuration: "2.4s" }}
+            style={{ animationDuration: "2.4s", willChange: "transform, opacity" }}
           />
 
           {/* Pill */}
