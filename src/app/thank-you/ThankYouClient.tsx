@@ -545,48 +545,6 @@ export default function ThankYouClient() {
         </div>
       </section>
 
-      {/* ───── 7. SAVE OUR NUMBER ───── */}
-      <section className="px-4 pt-6">
-        <div className="container-max max-w-3xl">
-          <div className="bg-white rounded-3xl border border-border-soft p-6 md:p-7 shadow-sm">
-            <div className="flex items-start gap-3 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-teal/10 text-teal flex items-center justify-center flex-shrink-0">
-                <ContactRound className="w-5 h-5" />
-              </div>
-              <div className="flex-1">
-                <h2 className="font-display font-bold text-lg text-charcoal leading-tight">
-                  زيدي رقمنا فالهاتف ديالك
-                </h2>
-                <p className="text-sm text-muted mt-1 leading-relaxed">
-                  باش ما تفوتيش المكالمة وتعرفي أنه &laquo; أطلس بيور &raquo;
-                  هي اللي كتاصل بيك.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <a
-                href={`tel:${SITE_CONFIG.confirmationPhone.replace(/\s/g, "")}`}
-                className="flex items-center justify-center gap-2 bg-teal hover:bg-teal-hover text-ivory font-bold text-sm px-5 py-3 rounded-xl transition-colors"
-              >
-                <Phone className="w-4 h-4" />
-                <span dir="ltr" className="tabular-nums">
-                  {SITE_CONFIG.confirmationPhone}
-                </span>
-              </a>
-              <a
-                href={`https://wa.me/${SITE_CONFIG.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1fb955] text-white font-bold text-sm px-5 py-3 rounded-xl transition-colors"
-              >
-                <MessageCircle className="w-4 h-4" />
-                واتساب الدعم
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ───── 8. CROSS-SELL — "while you wait, add to your order" ───── */}
       {crossSell.length > 0 && (
