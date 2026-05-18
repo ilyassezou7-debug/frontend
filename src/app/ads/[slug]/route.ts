@@ -1,48 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SITE_CONFIG } from "@/config/site";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
   const slug = params.slug;
-  const searchParams = request.nextUrl.searchParams.toString();
-  
+  const incomingParams = request.nextUrl.searchParams;
+
   try {
     const res = await fetch(`${SITE_CONFIG.apiUrl}/api/redirects/${slug}/target`, {
-      next: { revalidate: 60 } // Cache for 60 seconds
+      cache: "no-store",
     });
-    
+
     if (res.ok) {
       const data = await res.json();
-      let targetUrl = data.target_url;
-      
-      // If targetUrl is a relative path, make it absolute based on current origin
-      if (targetUrl.startsWith('/')) {
-        targetUrl = new URL(targetUrl, request.nextUrl.origin).toString();
+      let targetUrl = data.target_url as string;
+
+      // Make relative paths absolute
+      if (targetUrl.startsWith("/")) {
+        targetUrl = `${request.nextUrl.origin}${targetUrl}`;
       }
-      
-      // Append query parameters if any
-      if (searchParams) {
-        const url = new URL(targetUrl);
-        const targetParams = new URLSearchParams(url.search);
-        
-        // Merge params
-        const incomingParams = new URLSearchParams(searchParams);
-        incomingParams.forEach((value, key) => {
-          targetParams.set(key, value);
-        });
-        
-        url.search = targetParams.toString();
-        targetUrl = url.toString();
-      }
-      
-      return NextResponse.redirect(targetUrl, 302);
+
+      // Merge incoming query params onto the target URL
+      const url = new URL(targetUrl);
+      incomingParams.forEach((value, key) => {
+        url.searchParams.set(key, value);
+      });
+
+      return NextResponse.redirect(url.toString(), { status: 302 });
     }
+
+    // Slug exists in the path but not in DB → clean 404
+    return new NextResponse("Redirect not found", { status: 404 });
   } catch (error) {
     console.error("Redirect error:", error);
+    return new NextResponse("Server error", { status: 500 });
   }
-  
-  // Fallback if redirect not found or error
-  return NextResponse.redirect(new URL('/', request.nextUrl.origin), 302);
 }

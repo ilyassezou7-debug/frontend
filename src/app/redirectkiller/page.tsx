@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Trash2, Edit } from "lucide-react";
+import { Trash2, Edit, LogOut } from "lucide-react";
 import { SITE_CONFIG } from "@/config/site";
 
 type Redirect = {
@@ -15,12 +16,19 @@ type Redirect = {
 };
 
 export default function RedirectAdmin() {
+  const router = useRouter();
   const [redirects, setRedirects] = useState<Redirect[]>([]);
   const [slug, setSlug] = useState("");
   const [targetUrl, setTargetUrl] = useState("");
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  const handleLogout = async () => {
+    await fetch("/api/redirect-auth", { method: "DELETE" });
+    router.push("/redirectkiller/login");
+    router.refresh();
+  };
 
   useEffect(() => {
     fetchRedirects();
@@ -116,6 +124,10 @@ export default function RedirectAdmin() {
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Redirect Management</h1>
+          <Button variant="outline" size="sm" onClick={handleLogout} className="gap-2">
+            <LogOut className="w-4 h-4" />
+            Logout
+          </Button>
         </div>
 
         <Card>
