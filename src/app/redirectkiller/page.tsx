@@ -28,7 +28,7 @@ export default function RedirectAdmin() {
 
   const fetchRedirects = async () => {
     try {
-      const res = await fetch(`${SITE_CONFIG.apiUrl}/api/redirects/`);
+      const res = await fetch(`${SITE_CONFIG.apiUrl}/api/redirects`);
       if (res.ok) {
         const data = await res.json();
         setRedirects(data);
@@ -50,7 +50,7 @@ export default function RedirectAdmin() {
       const method = editingSlug ? "PUT" : "POST";
       const url = editingSlug 
         ? `${SITE_CONFIG.apiUrl}/api/redirects/${editingSlug}` 
-        : `${SITE_CONFIG.apiUrl}/api/redirects/`;
+        : `${SITE_CONFIG.apiUrl}/api/redirects`;
         
       const res = await fetch(url, {
         method,
