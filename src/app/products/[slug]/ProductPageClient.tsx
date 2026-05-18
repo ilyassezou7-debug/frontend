@@ -52,7 +52,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
   useEffect(() => {
     const eventId = generateEventId();
-    trackViewContent(product.id, 199, eventId);
+    trackViewContent(product.id, 292, eventId);
   }, [product.id]);
 
   const offer = product.offers.find((o) => o.offerId === selectedOffer)!;

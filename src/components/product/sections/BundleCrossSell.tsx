@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Plus, ArrowLeft } from "lucide-react";
+import { Plus, ArrowLeft, ShoppingBag } from "lucide-react";
 import type { Product } from "@/types/product";
 import { formatMAD } from "@/lib/money";
+import { useCartStore } from "@/store/cart-store";
+import { useCheckoutStore } from "@/store/checkout-store";
 
 interface BundleCrossSellProps {
   primary: Product;
@@ -71,19 +73,29 @@ export default function BundleCrossSell({
                   <div className="flex items-center justify-between mt-auto">
                     <div>
                       <p className="text-[10px] text-muted line-through tabular-nums leading-none">
-                        {formatMAD(199)}
+                        {formatMAD(292)}
                       </p>
                       <p className="font-bold text-teal text-base tabular-nums leading-none mt-1">
-                        من {formatMAD(199)}
+                        + {formatMAD(149)}
                       </p>
                     </div>
-                    <Link
-                      href={`/products/${p.slug}`}
-                      className="inline-flex items-center gap-1 text-teal text-xs font-bold hover:gap-2 transition-all"
+                    <button
+                      onClick={() => {
+                        useCartStore.getState().addOffer({
+                          productId: p.id,
+                          offerId: "cross_sell",
+                          quantity: 1,
+                          unitCount: 1,
+                          price: 149,
+                          source: "cart_cross_sell",
+                        });
+                        useCheckoutStore.getState().openCart();
+                      }}
+                      className="inline-flex items-center gap-1 text-teal text-xs font-bold hover:gap-2 transition-all bg-teal/10 px-3 py-1.5 rounded-full"
                     >
-                      اكتشفي
-                      <ArrowLeft className="w-3.5 h-3.5" />
-                    </Link>
+                      أضيفي للسلة
+                      <ShoppingBag className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
               </div>

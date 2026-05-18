@@ -791,7 +791,7 @@ export default function CalculatorPage() {
                         type="number"
                         value={pUserPrice || ""}
                         onChange={(e) => setPUserPrice(Number(e.target.value))}
-                        placeholder="e.g. 199"
+                        placeholder="e.g. 292"
                         step={5}
                         min={0}
                         className="w-full border-2 border-slate-200 rounded-xl py-4 pl-5 pr-16 text-2xl font-black text-slate-900 bg-white focus:ring-0 focus:border-teal-400 focus:outline-none transition-colors placeholder:text-slate-300"

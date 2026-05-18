@@ -21,7 +21,7 @@ interface OfferSelectorProps {
   onChange: (offerId: OfferId) => void;
 }
 
-const UNIT_PRICE = 199;
+const UNIT_PRICE = 292;
 
 interface OfferMeta {
   title: string;

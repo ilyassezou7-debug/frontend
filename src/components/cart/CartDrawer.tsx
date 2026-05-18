@@ -221,11 +221,19 @@ export default function CartDrawer({
                                   ? p.crossSellText[cartProductIds[0]]
                                   : undefined;
                               return (
-                                <Link
+                                <button
                                   key={p.id}
-                                  href={`/products/${p.slug}`}
-                                  onClick={onClose}
-                                  className="flex items-center gap-3 bg-white rounded-xl p-3 border border-border-soft hover:border-teal/40 transition-colors"
+                                  onClick={() => {
+                                    addOffer({
+                                      productId: p.id,
+                                      offerId: "cross_sell",
+                                      quantity: 1,
+                                      unitCount: 1,
+                                      price: 149,
+                                      source: "cart_cross_sell",
+                                    });
+                                  }}
+                                  className="flex items-center gap-3 bg-white rounded-xl p-3 border border-border-soft hover:border-teal/40 transition-colors w-full text-right text-right"
                                 >
                                   <div className="w-12 h-12 rounded-lg overflow-hidden bg-sand flex-shrink-0 relative">
                                     <Image
@@ -246,10 +254,15 @@ export default function CartDrawer({
                                       </p>
                                     )}
                                   </div>
-                                  <span className="text-xs font-bold text-teal flex-shrink-0">
-                                    {formatMAD(199)}
-                                  </span>
-                                </Link>
+                                  <div className="flex flex-col items-end">
+                                    <span className="text-[10px] text-muted line-through">
+                                      {formatMAD(292)}
+                                    </span>
+                                    <span className="text-xs font-bold text-teal flex-shrink-0">
+                                      + {formatMAD(149)}
+                                    </span>
+                                  </div>
+                                </button>
                               );
                             })}
                           </div>

@@ -338,7 +338,7 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
                                   {formatMAD(UPSELL_PRICE)}
                                 </span>
                                 <span className="text-muted line-through text-sm">
-                                  {formatMAD(199)}
+                                  {formatMAD(292)}
                                 </span>
                                 <span className="bg-saffron text-white text-xs px-2 py-0.5 rounded-full font-bold">
                                   ‑50%
