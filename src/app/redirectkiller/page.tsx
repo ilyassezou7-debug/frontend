@@ -46,6 +46,7 @@ export default function RedirectAdmin() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     try {
       const method = editingSlug ? "PUT" : "POST";
       const url = editingSlug 
@@ -66,8 +67,12 @@ export default function RedirectAdmin() {
         setEditingSlug(null);
         fetchRedirects();
       } else {
-        const data = await res.json();
-        setError(data.detail || "Failed to save redirect");
+        let message = "Failed to save redirect";
+        try {
+          const data = await res.json();
+          message = data.detail || message;
+        } catch {}
+        setError(message);
       }
     } catch (err) {
       setError("Failed to save redirect");
@@ -82,12 +87,20 @@ export default function RedirectAdmin() {
 
   const handleDelete = async (slugToDelete: string) => {
     if (!confirm("Are you sure?")) return;
+    setError("");
     try {
       const res = await fetch(`${SITE_CONFIG.apiUrl}/api/redirects/${slugToDelete}`, {
         method: "DELETE"
       });
       if (res.ok) {
         fetchRedirects();
+      } else {
+        let message = "Failed to delete";
+        try {
+          const data = await res.json();
+          message = data.detail || message;
+        } catch {}
+        setError(message);
       }
     } catch (err) {
       setError("Failed to delete");
