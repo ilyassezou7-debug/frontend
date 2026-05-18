@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
   const { password } = body as { password?: string };
 
-  const expected = process.env.REDIRECT_ADMIN_PASSWORD ?? "secret_redirect_pass";
+  const expected = process.env.REDIRECT_ADMIN_PASSWORD ?? "123";
 
   if (!password || password !== expected) {
     return NextResponse.json({ error: "Wrong password" }, { status: 401 });

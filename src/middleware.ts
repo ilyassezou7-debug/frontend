@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 function expectedToken(): string {
-  const password = process.env.REDIRECT_ADMIN_PASSWORD ?? "secret_redirect_pass";
+  const password = process.env.REDIRECT_ADMIN_PASSWORD ?? "123";
   return btoa(`${password}:atlas-redirect-admin`);
 }
 
