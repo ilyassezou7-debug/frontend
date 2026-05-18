@@ -19,8 +19,11 @@ export async function GET(
       const data = await res.json();
       let targetUrl = data.target_url as string;
 
-      // Make relative paths absolute
-      if (targetUrl.startsWith("/")) {
+      // Make relative paths absolute (even if they forgot the / at the start)
+      if (!targetUrl.startsWith("http")) {
+        if (!targetUrl.startsWith("/")) {
+          targetUrl = "/" + targetUrl;
+        }
         targetUrl = `${request.nextUrl.origin}${targetUrl}`;
       }
 
