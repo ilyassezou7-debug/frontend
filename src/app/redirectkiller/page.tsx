@@ -43,9 +43,16 @@ export default function RedirectAdmin() {
         localStorage.setItem("redirect_admin_password", pass);
         setError("");
       } else {
+        const errorData = await res.json().catch(() => ({}));
         setIsAuthenticated(false);
         localStorage.removeItem("redirect_admin_password");
-        if (pass) setError("Invalid password");
+        if (pass) {
+          if (res.status === 401) {
+            setError("كلمة السر غالطة (Invalid password)");
+          } else {
+            setError(`خطأ فالسيرفر (${res.status}): ${errorData.detail || "تأكد بلي قاديتي قاعدة البيانات"}`);
+          }
+        }
       }
     } catch (err) {
       setError("Failed to connect to server");
