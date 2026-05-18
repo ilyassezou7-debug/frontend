@@ -6,7 +6,6 @@ import { Plus, ArrowLeft, ShoppingBag } from "lucide-react";
 import type { Product } from "@/types/product";
 import { formatMAD } from "@/lib/money";
 import { useCartStore } from "@/store/cart-store";
-import { useCheckoutStore } from "@/store/checkout-store";
 
 interface BundleCrossSellProps {
   primary: Product;
@@ -79,20 +78,20 @@ export default function BundleCrossSell({
                         + {formatMAD(149)}
                       </p>
                     </div>
-                    <button
-                      onClick={() => {
-                        useCartStore.getState().addOffer({
-                          productId: p.id,
-                          offerId: "cross_sell",
-                          quantity: 1,
-                          unitCount: 1,
-                          price: 149,
-                          source: "cart_cross_sell",
-                        });
-                        useCheckoutStore.getState().openCart();
-                      }}
-                      className="inline-flex items-center gap-1 text-teal text-xs font-bold hover:gap-2 transition-all bg-teal/10 px-3 py-1.5 rounded-full"
-                    >
+                      <button
+                        onClick={() => {
+                          useCartStore.getState().addOffer({
+                            productId: p.id,
+                            offerId: "cross_sell",
+                            quantity: 1,
+                            unitCount: 1,
+                            price: 149,
+                            source: "cart_cross_sell",
+                          });
+                          useCartStore.getState().openCart();
+                        }}
+                        className="inline-flex items-center gap-1 text-teal text-xs font-bold hover:gap-2 transition-all bg-teal/10 px-3 py-1.5 rounded-full"
+                      >
                       أضيفي للسلة
                       <ShoppingBag className="w-3.5 h-3.5" />
                     </button>
