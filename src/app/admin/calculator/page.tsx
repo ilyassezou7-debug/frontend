@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Calculator,
@@ -18,23 +18,65 @@ import {
   BadgeDollarSign,
   Gift,
   ShieldCheck,
+  CalendarRange,
 } from "lucide-react";
 import { adminApi, isAdminLoggedIn } from "@/lib/admin-api";
 import { Sidebar } from "@/components/admin/Sidebar";
 
 // ── Helpers ────────────────────────────────────────────────────────────
 
-function usd(n: number) {
-  return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
 function pct(n: number) {
   return `${n.toFixed(1)}%`;
 }
 
 function dh(n: number) {
+  if (!isFinite(n)) return "— DH";
   return `${n.toLocaleString("fr-MA", { minimumFractionDigits: 0, maximumFractionDigits: 0 })} DH`;
 }
+
+function dh2(n: number) {
+  if (!isFinite(n)) return "— DH";
+  return `${n.toLocaleString("fr-MA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} DH`;
+}
+
+// ── Date range helpers ─────────────────────────────────────────────────
+
+type RangePreset = "today" | "7d" | "30d" | "this_month" | "all" | "custom";
+
+function toISO(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function presetRange(preset: RangePreset): { start: string; end: string } {
+  const today = new Date();
+  const end = toISO(today);
+  if (preset === "today") return { start: end, end };
+  if (preset === "7d") {
+    const s = new Date(today); s.setDate(today.getDate() - 6);
+    return { start: toISO(s), end };
+  }
+  if (preset === "30d") {
+    const s = new Date(today); s.setDate(today.getDate() - 29);
+    return { start: toISO(s), end };
+  }
+  if (preset === "this_month") {
+    const s = new Date(today.getFullYear(), today.getMonth(), 1);
+    return { start: toISO(s), end };
+  }
+  return { start: "2020-01-01", end };
+}
+
+const PRESET_LABELS: Record<RangePreset, string> = {
+  today: "Today",
+  "7d": "Last 7 days",
+  "30d": "Last 30 days",
+  this_month: "This month",
+  all: "All time",
+  custom: "Custom",
+};
 
 // ── COD Pricing Rules (MAD) ────────────────────────────────────────────
 const PROFIT_RULES: Record<1 | 2 | 3, number> = {
@@ -55,11 +97,12 @@ interface InputFieldProps {
   max?: number;
   highlight?: boolean;
   badge?: string;
+  disabled?: boolean;
 }
 
 function InputField({
   label, sublabel, value, onChange, prefix, suffix, step = 0.01,
-  min = 0, max, highlight, badge,
+  min = 0, max, highlight, badge, disabled,
 }: InputFieldProps) {
   return (
     <div className={`rounded-xl p-3.5 border transition-all ${highlight ? "bg-teal-50/60 border-teal-200" : "bg-slate-50 border-slate-200"}`}>
@@ -81,7 +124,8 @@ function InputField({
           step={step}
           min={min}
           max={max}
-          className={`w-full border rounded-lg py-2.5 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-teal-500/40 focus:outline-none bg-white border-slate-200 transition-all ${prefix ? "pl-7" : "pl-3"} ${suffix ? "pr-8" : "pr-3"}`}
+          disabled={disabled}
+          className={`w-full border rounded-lg py-2.5 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-teal-500/40 focus:outline-none bg-white border-slate-200 transition-all ${prefix ? "pl-7" : "pl-3"} ${suffix ? "pr-8" : "pr-3"} ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
         />
         {suffix && (
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">{suffix}</span>
@@ -90,8 +134,6 @@ function InputField({
     </div>
   );
 }
-
-// ── Metric display row ─────────────────────────────────────────────────
 
 function Row({ label, value, sub, colored, positive }: {
   label: string; value: string; sub?: string;
@@ -130,8 +172,6 @@ function KpiCard({ label, value, sub, color = "slate" }: {
   );
 }
 
-// ── Funnel step ────────────────────────────────────────────────────────
-
 function FunnelStep({ label, count, rate, color }: {
   label: string; count: number; rate?: string; color: string;
 }) {
@@ -153,24 +193,29 @@ export default function CalculatorPage() {
   const [mounted, setMounted] = useState(false);
   const [loadingAov, setLoadingAov] = useState(true);
 
-  // ── Store data (pulled from API)
+  // ── Date range (drives AOV + Avg Units)
+  const [preset, setPreset] = useState<RangePreset>("30d");
+  const initial = useMemo(() => presetRange("30d"), []);
+  const [startDate, setStartDate] = useState<string>(initial.start);
+  const [endDate, setEndDate] = useState<string>(initial.end);
+
+  // ── Period metrics (from API, MAD)
   const [aovMad, setAovMad] = useState<number>(299);
   const [avgUnits, setAvgUnits] = useState<number>(1.5);
-
-  // ── Settings
-  const [exchangeRate, setExchangeRate] = useState<number>(10.0);
+  const [periodOrders, setPeriodOrders] = useState<number>(0);
+  const [periodRevenue, setPeriodRevenue] = useState<number>(0);
 
   // ── COD funnel
   const [confRate, setConfRate]     = useState<number>(60);
   const [deliveryRate, setDeliveryRate] = useState<number>(65);
 
-  // ── Costs
-  const [productCostUsd, setProductCostUsd] = useState<number>(3.0);
-  const [fixedCostsUsd, setFixedCostsUsd]   = useState<number>(7.06);
+  // ── Costs (MAD)
+  const [productCostMad, setProductCostMad] = useState<number>(30);
+  const [fixedCostsMad, setFixedCostsMad]   = useState<number>(70);
 
   // ── Scale scenario
   const [leads, setLeads] = useState<number>(200);
-  const [cpl, setCpl]     = useState<number>(2.5);
+  const [cpl, setCpl]     = useState<number>(25);
 
   // ── MAD Pricing Calculator
   const [pricingQty, setPricingQty]         = useState<1 | 2 | 3>(1);
@@ -185,46 +230,69 @@ export default function CalculatorPage() {
   useEffect(() => {
     setMounted(true);
     if (!isAdminLoggedIn()) { router.replace("/admin/login"); return; }
+  }, [router]);
 
-    adminApi.getMetrics({ start: "2020-01-01" })
+  // Reload metrics whenever date range changes
+  useEffect(() => {
+    if (!mounted) return;
+    if (!startDate || !endDate) return;
+    setLoadingAov(true);
+
+    adminApi.getMetrics({ start: startDate, end: endDate })
       .then((data) => {
-        if (data.avg_order_value > 0) setAovMad(data.avg_order_value);
+        setPeriodOrders(data.total_orders || 0);
+        setPeriodRevenue(data.total_revenue || 0);
+
+        // AOV = Total Revenue / Number of Orders within selected date range
+        const computedAov = data.total_orders > 0
+          ? data.total_revenue / data.total_orders
+          : data.avg_order_value || 0;
+        if (computedAov > 0) setAovMad(+computedAov.toFixed(0));
+
+        // Avg Units per Order = Total Units Sold / Number of Orders within selected date range
         if (data.top_products?.length) {
-          const tot = data.top_products.reduce((s, p) => s + p.orders, 0);
-          const units = data.top_products.reduce((s, p) => s + p.units, 0);
-          if (tot > 0) setAvgUnits(+(units / tot).toFixed(2));
+          const totOrders = data.top_products.reduce((s, p) => s + p.orders, 0);
+          const totUnits  = data.top_products.reduce((s, p) => s + p.units, 0);
+          if (totOrders > 0) setAvgUnits(+(totUnits / totOrders).toFixed(2));
         }
       })
       .catch(console.error)
       .finally(() => setLoadingAov(false));
-  }, [router]);
+  }, [mounted, startDate, endDate]);
 
   if (!mounted) return null;
 
-  // ── Derived: unit economics
-  const aovUsd        = aovMad / exchangeRate;
-  const cogsPerOrder  = productCostUsd * avgUnits;
-  const totalCostPerDelivered = cogsPerOrder + fixedCostsUsd;
-  const grossMargin   = aovUsd - totalCostPerDelivered;   // profit per delivered order BEFORE ads
+  // ── Range preset handlers
+  const applyPreset = (p: RangePreset) => {
+    setPreset(p);
+    if (p !== "custom") {
+      const { start, end } = presetRange(p);
+      setStartDate(start);
+      setEndDate(end);
+    }
+  };
+
+  // ── Derived: unit economics (all MAD)
+  const cogsPerOrder         = productCostMad * avgUnits;
+  const totalCostPerDelivered = cogsPerOrder + fixedCostsMad;
+  const grossMargin           = aovMad - totalCostPerDelivered;
 
   const cr = confRate   / 100;
   const dr = deliveryRate / 100;
 
-  // Break-even CPL: CPL where Net Profit = 0
-  // NetProfit = (leads * cr * dr * grossMargin) - (leads * CPL) = 0
-  // CPL_be = cr * dr * grossMargin
-  const beCpl  = cr * dr * grossMargin;           // break-even CPL ($)
-  const beCpa  = dr * grossMargin;                // break-even CPA on confirmed orders ($)
-  const beCpdo = grossMargin;                     // break-even cost per delivered order ($)
+  // Break-even thresholds (MAD)
+  const beCpl  = cr * dr * grossMargin;
+  const beCpa  = dr * grossMargin;
+  const beCpdo = grossMargin;
 
   // ── Derived: scale scenario
   const confirmed  = Math.round(leads * cr);
   const delivered  = Math.round(confirmed * dr);
 
-  const revenue    = delivered * aovUsd;
+  const revenue    = delivered * aovMad;
   const adSpend    = leads * cpl;
   const cogsCost   = delivered * cogsPerOrder;
-  const fixedCost  = delivered * fixedCostsUsd;
+  const fixedCost  = delivered * fixedCostsMad;
   const totalCost  = adSpend + cogsCost + fixedCost;
 
   const netProfit       = revenue - totalCost;
@@ -235,22 +303,20 @@ export default function CalculatorPage() {
   const realCpdo        = delivered > 0 ? adSpend / delivered : 0;
 
   const isProfit        = netProfit >= 0;
-  const cplVsBe         = cpl - beCpl;             // positive = losing, negative = profitable
+  const cplVsBe         = cpl - beCpl;
   const cplPctFromBe    = beCpl > 0 ? (cplVsBe / beCpl) * 100 : 0;
 
   // ── MAD Pricing Calculator derived values
-  // Dynamic CR/DR → shipments per delivery = 1/DR, leads per delivery = 1/(CR×DR)
   const pCr              = Math.max(pConfRate, 1) / 100;
   const pDr              = Math.max(pDelivRate, 1) / 100;
-  const pLeadsPerDel     = 1 / (pCr * pDr);          // e.g. CR=50%,DR=50% → 4
-  const pShipsPerDel     = 1 / pDr;                  // e.g. DR=50% → 2
+  const pLeadsPerDel     = 1 / (pCr * pDr);
+  const pShipsPerDel     = 1 / pDr;
   const pTargetProfit    = PROFIT_RULES[pricingQty];
   const pProductTotal    = pProductCost * pricingQty;
   const pShippingTotal   = pShippingCost * pShipsPerDel;
   const pAdTotal         = pCpl * pLeadsPerDel;
   const pBreakEven       = pProductTotal + pShippingTotal + pCodFees + pAdTotal;
   const pRecommended     = pBreakEven + pTargetProfit;
-  // Green-light: compare user's chosen price vs break-even
   const pUserProfit      = pUserPrice - pBreakEven;
   const pIsGreen         = pUserPrice > 0 && pUserProfit >= pTargetProfit;
   const pIsRed           = pUserPrice > 0 && pUserProfit < 0;
@@ -271,19 +337,23 @@ export default function CalculatorPage() {
               </div>
               <h1 className="text-3xl font-black text-white tracking-tight">Know Your Numbers.</h1>
               <p className="text-slate-400 text-sm mt-1">
-                Live unit economics pulled from your store. Edit any field — results update instantly.
+                AOV recalculated live from the date range you choose. Everything in MAD.
               </p>
             </div>
 
-            {/* Quick AOV pill */}
+            {/* Period AOV pill */}
             <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-center">
               {loadingAov ? (
                 <RefreshCw className="w-4 h-4 animate-spin text-teal-400 mx-auto" />
               ) : (
                 <>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Lifetime AOV</p>
-                  <p className="text-2xl font-black text-white">{usd(aovUsd)}</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">{aovMad.toFixed(0)} MAD · {avgUnits} units avg</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">
+                    Period AOV · {PRESET_LABELS[preset]}
+                  </p>
+                  <p className="text-2xl font-black text-white">{dh(aovMad)}</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    {periodOrders} orders · {avgUnits} units avg
+                  </p>
                 </>
               )}
             </div>
@@ -291,6 +361,69 @@ export default function CalculatorPage() {
         </div>
 
         <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-8 space-y-10">
+
+          {/* ═══════════════════════════════════════════════════════════
+              DATE RANGE SELECTOR
+          ═══════════════════════════════════════════════════════════ */}
+          <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <CalendarRange className="w-4 h-4 text-teal-600" />
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-700">Date Range</p>
+              <span className="text-[11px] text-slate-400">— AOV &amp; Avg Units recalculate automatically</span>
+              {loadingAov && <RefreshCw className="w-3.5 h-3.5 animate-spin text-teal-500 ml-1" />}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {(["today", "7d", "30d", "this_month", "all", "custom"] as RangePreset[]).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => applyPreset(p)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all ${
+                    preset === p
+                      ? "bg-slate-900 border-slate-900 text-white"
+                      : "bg-white border-slate-200 text-slate-600 hover:border-slate-400"
+                  }`}
+                >
+                  {PRESET_LABELS[p]}
+                </button>
+              ))}
+
+              <div className="flex items-center gap-2 ml-auto">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => { setStartDate(e.target.value); setPreset("custom"); }}
+                  className="border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-teal-400/40 focus:outline-none"
+                />
+                <span className="text-xs text-slate-400">→</span>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => { setEndDate(e.target.value); setPreset("custom"); }}
+                  className="border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-teal-400/40 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+              <div className="rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Orders</p>
+                <p className="text-lg font-black text-slate-900">{periodOrders.toLocaleString()}</p>
+              </div>
+              <div className="rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Revenue</p>
+                <p className="text-lg font-black text-slate-900">{dh(periodRevenue)}</p>
+              </div>
+              <div className="rounded-xl bg-teal-50 border border-teal-200 px-3 py-2">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-teal-600">AOV</p>
+                <p className="text-lg font-black text-teal-700">{dh(aovMad)}</p>
+              </div>
+              <div className="rounded-xl bg-teal-50 border border-teal-200 px-3 py-2">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-teal-600">Avg Units / Order</p>
+                <p className="text-lg font-black text-teal-700">{avgUnits.toFixed(2)}</p>
+              </div>
+            </div>
+          </div>
 
           {/* ═══════════════════════════════════════════════════════════
               SECTION 1 — BREAK-EVEN CALCULATOR
@@ -308,44 +441,38 @@ export default function CalculatorPage() {
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Your Variables</p>
 
                 <InputField
-                  label="Lifetime AOV (MAD)"
-                  sublabel={`= ${usd(aovUsd)} USD`}
+                  label={`Period AOV (MAD) · ${PRESET_LABELS[preset]}`}
+                  sublabel={`From ${periodOrders} orders in selected range`}
                   value={aovMad}
                   onChange={setAovMad}
-                  badge="From store"
+                  badge="Auto"
+                  suffix="DH"
                   step={1}
                   highlight
                 />
                 <InputField
                   label="Avg Units per Order"
-                  sublabel="Calculated from your order history"
+                  sublabel="Calculated from orders in selected range"
                   value={avgUnits}
                   onChange={setAvgUnits}
                   step={0.1}
-                  badge="From store"
+                  badge="Auto"
                   highlight
                 />
                 <InputField
-                  label="Exchange Rate"
-                  sublabel="1 USD = ? MAD"
-                  value={exchangeRate}
-                  onChange={setExchangeRate}
-                  step={0.1}
+                  label="Product Cost (MAD / unit)"
+                  value={productCostMad}
+                  onChange={setProductCostMad}
+                  suffix="DH"
+                  step={1}
                 />
                 <InputField
-                  label="Product Cost (USD / unit)"
-                  value={productCostUsd}
-                  onChange={setProductCostUsd}
-                  prefix="$"
-                  step={0.1}
-                />
-                <InputField
-                  label="Fixed Costs (USD / delivered order)"
+                  label="Fixed Costs (MAD / delivered order)"
                   sublabel="Shipping, packaging, call center, etc."
-                  value={fixedCostsUsd}
-                  onChange={setFixedCostsUsd}
-                  prefix="$"
-                  step={0.01}
+                  value={fixedCostsMad}
+                  onChange={setFixedCostsMad}
+                  suffix="DH"
+                  step={1}
                 />
                 <InputField
                   label="Confirmation Rate"
@@ -372,19 +499,19 @@ export default function CalculatorPage() {
                 <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
                   <div className="px-6 py-4 bg-slate-50 border-b border-slate-100">
                     <p className="text-sm font-bold text-slate-700">Unit Economics — per Delivered Order</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Where does every {usd(aovUsd)} go?</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Where does every {dh(aovMad)} go?</p>
                   </div>
                   <div className="px-6 py-4">
-                    <Row label="Revenue (AOV)" value={usd(aovUsd)} />
+                    <Row label="Revenue (AOV)" value={dh(aovMad)} />
                     <Row
                       label="COGS"
-                      sub={`${avgUnits} units × ${usd(productCostUsd)}`}
-                      value={`− ${usd(cogsPerOrder)}`}
+                      sub={`${avgUnits} units × ${dh(productCostMad)}`}
+                      value={`− ${dh(cogsPerOrder)}`}
                     />
                     <Row
                       label="Fixed Costs"
                       sub="Shipping · Packaging · Call center"
-                      value={`− ${usd(fixedCostsUsd)}`}
+                      value={`− ${dh(fixedCostsMad)}`}
                     />
                     <div className="mt-3 pt-3 border-t border-slate-200 flex items-center justify-between">
                       <div>
@@ -392,7 +519,7 @@ export default function CalculatorPage() {
                         <p className="text-[10px] text-slate-400 mt-0.5">Money left to pay for your ad spend</p>
                       </div>
                       <p className={`text-2xl font-black ${grossMargin > 0 ? "text-emerald-600" : "text-red-600"}`}>
-                        {usd(grossMargin)}
+                        {dh(grossMargin)}
                       </p>
                     </div>
                   </div>
@@ -408,24 +535,24 @@ export default function CalculatorPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-white/5 rounded-xl overflow-hidden relative z-10">
                     <div className="bg-slate-900/80 px-5 py-4">
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Max CPL</p>
-                      <p className="text-3xl font-black text-emerald-400">{usd(beCpl)}</p>
+                      <p className="text-3xl font-black text-emerald-400">{dh(beCpl)}</p>
                       <p className="text-[10px] text-slate-500 mt-1.5">Per lead — do not exceed</p>
                     </div>
                     <div className="bg-slate-900/80 px-5 py-4">
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Max CPA (Confirmed)</p>
-                      <p className="text-3xl font-black text-amber-400">{usd(beCpa)}</p>
+                      <p className="text-3xl font-black text-amber-400">{dh(beCpa)}</p>
                       <p className="text-[10px] text-slate-500 mt-1.5">Per confirmed order</p>
                     </div>
                     <div className="bg-slate-900/80 px-5 py-4">
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Max CPDO</p>
-                      <p className="text-3xl font-black text-blue-400">{usd(beCpdo)}</p>
+                      <p className="text-3xl font-black text-blue-400">{dh(beCpdo)}</p>
                       <p className="text-[10px] text-slate-500 mt-1.5">Per delivered order</p>
                     </div>
                   </div>
 
                   <p className="text-[11px] text-slate-600 mt-4 relative z-10">
                     <span className="font-bold text-slate-400">Formula:</span>{" "}
-                    Max CPL = CR × DR × Gross Margin = {pct(confRate)} × {pct(deliveryRate)} × {usd(grossMargin)} = <span className="text-emerald-400 font-bold">{usd(beCpl)}</span>
+                    Max CPL = CR × DR × Gross Margin = {pct(confRate)} × {pct(deliveryRate)} × {dh(grossMargin)} = <span className="text-emerald-400 font-bold">{dh(beCpl)}</span>
                   </p>
                 </div>
               </div>
@@ -462,8 +589,8 @@ export default function CalculatorPage() {
                   sublabel="Your current or target CPL"
                   value={cpl}
                   onChange={setCpl}
-                  prefix="$"
-                  step={0.1}
+                  suffix="DH"
+                  step={1}
                   min={0}
                 />
 
@@ -478,14 +605,13 @@ export default function CalculatorPage() {
                     </p>
                   </div>
                   <p className="text-[11px] font-medium text-slate-600">
-                    Your CPL <span className="font-bold text-slate-900">{usd(cpl)}</span> is{" "}
+                    Your CPL <span className="font-bold text-slate-900">{dh(cpl)}</span> is{" "}
                     <span className={`font-bold ${isProfit ? "text-emerald-700" : "text-red-700"}`}>
-                      {usd(Math.abs(cplVsBe))} {isProfit ? "below" : "above"}
+                      {dh(Math.abs(cplVsBe))} {isProfit ? "below" : "above"}
                     </span>{" "}
                     break-even CPL{" "}
-                    <span className="font-bold text-slate-900">{usd(beCpl)}</span>.
+                    <span className="font-bold text-slate-900">{dh(beCpl)}</span>.
                   </p>
-                  {/* Visual bar */}
                   <div className="mt-3">
                     <div className="h-2 bg-white/60 rounded-full overflow-hidden">
                       <div
@@ -494,8 +620,8 @@ export default function CalculatorPage() {
                       />
                     </div>
                     <div className="flex justify-between mt-1">
-                      <span className="text-[9px] text-slate-400">$0 CPL</span>
-                      <span className="text-[9px] text-emerald-600 font-bold">BE: {usd(beCpl)}</span>
+                      <span className="text-[9px] text-slate-400">0 DH CPL</span>
+                      <span className="text-[9px] text-emerald-600 font-bold">BE: {dh(beCpl)}</span>
                       <span className="text-[9px] text-red-500">Losing →</span>
                     </div>
                   </div>
@@ -537,7 +663,7 @@ export default function CalculatorPage() {
                     </div>
                     <div className={`rounded-2xl px-5 py-4 border-2 text-center ${isProfit ? "bg-emerald-50 border-emerald-400" : "bg-red-50 border-red-400"}`}>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Net Profit</p>
-                      <p className={`text-2xl font-black ${isProfit ? "text-emerald-700" : "text-red-700"}`}>{usd(netProfit)}</p>
+                      <p className={`text-2xl font-black ${isProfit ? "text-emerald-700" : "text-red-700"}`}>{dh(netProfit)}</p>
                     </div>
                   </div>
                 </div>
@@ -547,17 +673,17 @@ export default function CalculatorPage() {
                   {/* P&L Statement */}
                   <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
                     <div className="px-5 py-3.5 bg-slate-50 border-b border-slate-100">
-                      <p className="text-xs font-bold uppercase tracking-widest text-slate-500">P&L Statement (USD)</p>
+                      <p className="text-xs font-bold uppercase tracking-widest text-slate-500">P&amp;L Statement (MAD)</p>
                     </div>
                     <div className="px-5 py-4 space-y-0.5">
-                      <Row label="Gross Revenue" value={usd(revenue)} sub={`${delivered} orders × ${usd(aovUsd)}`} />
-                      <Row label="Ad Spend" value={`− ${usd(adSpend)}`} sub={`${leads} leads × ${usd(cpl)}`} />
-                      <Row label="COGS" value={`− ${usd(cogsCost)}`} sub={`${delivered} orders × ${usd(cogsPerOrder)}`} />
-                      <Row label="Fixed Costs" value={`− ${usd(fixedCost)}`} sub={`${delivered} × ${usd(fixedCostsUsd)}`} />
+                      <Row label="Gross Revenue" value={dh(revenue)} sub={`${delivered} orders × ${dh(aovMad)}`} />
+                      <Row label="Ad Spend" value={`− ${dh(adSpend)}`} sub={`${leads} leads × ${dh(cpl)}`} />
+                      <Row label="COGS" value={`− ${dh(cogsCost)}`} sub={`${delivered} orders × ${dh(cogsPerOrder)}`} />
+                      <Row label="Fixed Costs" value={`− ${dh(fixedCost)}`} sub={`${delivered} × ${dh(fixedCostsMad)}`} />
                       <div className="pt-3 mt-2 border-t-2 border-slate-200 flex justify-between items-center">
                         <p className="text-sm font-black text-slate-900">Net Profit</p>
                         <p className={`text-xl font-black ${isProfit ? "text-emerald-600" : "text-red-600"}`}>
-                          {usd(netProfit)}
+                          {dh(netProfit)}
                         </p>
                       </div>
                     </div>
@@ -587,20 +713,20 @@ export default function CalculatorPage() {
                       />
                       <KpiCard
                         label="Profit / Delivered"
-                        value={usd(profitPerDel)}
+                        value={dh(profitPerDel)}
                         sub="Net per order"
-                        color={profitPerDel >= 5 ? "green" : profitPerDel >= 0 ? "amber" : "red"}
+                        color={profitPerDel >= 50 ? "green" : profitPerDel >= 0 ? "amber" : "red"}
                       />
                       <KpiCard
                         label="CPA (Confirmed)"
-                        value={usd(confirmed > 0 ? adSpend / confirmed : 0)}
-                        sub={`BE: ${usd(beCpa)}`}
+                        value={dh(confirmed > 0 ? adSpend / confirmed : 0)}
+                        sub={`BE: ${dh(beCpa)}`}
                         color="blue"
                       />
                       <KpiCard
                         label="CPDO"
-                        value={usd(realCpdo)}
-                        sub={`BE: ${usd(beCpdo)}`}
+                        value={dh(realCpdo)}
+                        sub={`BE: ${dh(beCpdo)}`}
                         color="blue"
                       />
                     </div>
@@ -612,8 +738,8 @@ export default function CalculatorPage() {
                         : <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />}
                       <p className={`text-xs font-semibold leading-relaxed ${isProfit ? "text-emerald-800" : "text-red-800"}`}>
                         {isProfit
-                          ? `At ${usd(cpl)} CPL you make ${usd(netProfit)} net profit from ${leads} leads. Your CPL headroom is ${usd(Math.abs(cplVsBe))} before you break even.`
-                          : `At ${usd(cpl)} CPL you lose ${usd(Math.abs(netProfit))}. You need to get CPL below ${usd(beCpl)} to be profitable, or improve your confirmation / delivery rates.`}
+                          ? `At ${dh(cpl)} CPL you make ${dh(netProfit)} net profit from ${leads} leads. Your CPL headroom is ${dh(Math.abs(cplVsBe))} before you break even.`
+                          : `At ${dh(cpl)} CPL you lose ${dh(Math.abs(netProfit))}. You need to get CPL below ${dh(beCpl)} to be profitable, or improve your confirmation / delivery rates.`}
                       </p>
                     </div>
                   </div>
@@ -785,7 +911,6 @@ export default function CalculatorPage() {
                     <p className="text-[10px] text-slate-400 mt-0.5">Enter your selling price → instant profit verdict</p>
                   </div>
                   <div className="px-6 py-5">
-                    {/* Price input */}
                     <div className="relative mb-4">
                       <input
                         type="number"
@@ -799,7 +924,6 @@ export default function CalculatorPage() {
                       <span className="absolute right-5 top-1/2 -translate-y-1/2 text-lg font-black text-slate-400">DH</span>
                     </div>
 
-                    {/* Verdict */}
                     {pUserPrice <= 0 ? (
                       <div className="rounded-xl bg-slate-50 border border-slate-200 px-5 py-4 text-center">
                         <p className="text-sm text-slate-400 font-medium">Type your price above to see the verdict</p>
@@ -811,7 +935,7 @@ export default function CalculatorPage() {
                             <AlertTriangle className="w-5 h-5 text-white" />
                           </div>
                           <div>
-                            <p className="text-sm font-black text-red-700">LOSING MONEY 🔴</p>
+                            <p className="text-sm font-black text-red-700">LOSING MONEY</p>
                             <p className="text-xs text-red-600 mt-0.5">
                               You lose <span className="font-black">{dh(Math.abs(pUserProfit))}</span> per delivered order.
                               Raise price by at least <span className="font-black">{dh(pBreakEven - pUserPrice)}</span> to break even.
@@ -830,7 +954,7 @@ export default function CalculatorPage() {
                             <AlertTriangle className="w-5 h-5 text-white" />
                           </div>
                           <div>
-                            <p className="text-sm font-black text-amber-700">BREAKING EVEN 🟡</p>
+                            <p className="text-sm font-black text-amber-700">BREAKING EVEN</p>
                             <p className="text-xs text-amber-700 mt-0.5">
                               Profit is only <span className="font-black">{dh(pUserProfit)}</span> — below your target of <span className="font-black">{dh(pTargetProfit)}</span>.
                               Raise by <span className="font-black">{dh(pRecommended - pUserPrice)}</span> to hit target.
@@ -845,7 +969,7 @@ export default function CalculatorPage() {
                             <CheckCircle2 className="w-5 h-5 text-white" />
                           </div>
                           <div>
-                            <p className="text-sm font-black text-emerald-700">PROFITABLE — GREEN LIGHT 🟢</p>
+                            <p className="text-sm font-black text-emerald-700">PROFITABLE — GREEN LIGHT</p>
                             <p className="text-xs text-emerald-700 mt-0.5">
                               You make <span className="font-black">{dh(pUserProfit)}</span> net profit per delivered order. Go for it!
                             </p>
@@ -868,7 +992,6 @@ export default function CalculatorPage() {
                       </div>
                     )}
 
-                    {/* Profit targets reference */}
                     <div className="mt-4 pt-4 border-t border-slate-100">
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Target profits per quantity</p>
                       <div className="flex gap-2">
