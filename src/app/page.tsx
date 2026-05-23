@@ -80,15 +80,19 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-ivory via-mist/40 to-sand py-16 md:py-24 lg:py-32 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-ivory-2 via-mist/30 to-sand py-16 md:py-24 lg:py-32 overflow-hidden">
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          aria-hidden
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
             backgroundImage:
               "radial-gradient(circle at 1px 1px, #0E5C4A 1px, transparent 0)",
             backgroundSize: "24px 24px",
           }}
         />
+        {/* Premium ambient orbs */}
+        <div aria-hidden className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-saffron/10 blur-3xl pointer-events-none" />
+        <div aria-hidden className="absolute -bottom-32 -left-32 w-[28rem] h-[28rem] rounded-full bg-teal/10 blur-3xl pointer-events-none" />
         <div className="container-max relative">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
             {/* ───────── HERO IMAGE — premium pharma-apothecary frame ─────────
@@ -180,7 +184,11 @@ export default function HomePage() {
 
             {/* Text */}
             <div className="space-y-6 lg:space-y-8 order-2 md:order-1">
-              <div className="inline-flex items-center gap-2 bg-white border border-teal/20 text-teal text-xs lg:text-sm font-bold px-4 py-2 rounded-full shadow-sm">
+              <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-teal/20 text-teal text-xs lg:text-sm font-bold px-4 py-2 rounded-full shadow-soft">
+                <span className="relative flex w-2 h-2">
+                  <span className="absolute inline-flex w-full h-full rounded-full bg-saffron opacity-70 animate-ping" />
+                  <span className="relative inline-flex w-2 h-2 rounded-full bg-saffron" />
+                </span>
                 <ShieldCheck className="w-4 h-4 lg:w-5 lg:h-5" />
                 <span className="tracking-wide">عناية صيدلانية نباتية مغربية</span>
               </div>

@@ -2,14 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ────────────────────────────────────────────────────────────────
+   ATLAS PURE — Premium Design Tokens
+   A refined apothecary system: deep teal + gold + ivory, with
+   subtle gradients, soft shadows, and gentle motion. Tuned for
+   conversion, trust, and a luxury "beyond-2050" feel that stays
+   light and fast on mobile.
+   ──────────────────────────────────────────────────────────────── */
+:root {
+  --ap-ivory: #F7F5EF;
+  --ap-ivory-2: #FBFAF5;
+  --ap-sand: #EAE3D2;
+  --ap-mist: #EAF2EE;
+  --ap-teal: #0E5C4A;
+  --ap-teal-hover: #0C4F3F;
+  --ap-teal-dark: #0A3F33;
+  --ap-saffron: #B8862F;
+  --ap-saffron-2: #D4A24A;
+  --ap-charcoal: #102622;
+  --ap-muted: #5B6B65;
+  --ap-border: #E5DED1;
+
+  --ap-shadow-soft: 0 4px 20px -8px rgba(16, 38, 34, 0.10);
+  --ap-shadow-card: 0 10px 30px -12px rgba(16, 38, 34, 0.14);
+  --ap-shadow-lift: 0 24px 50px -18px rgba(16, 38, 34, 0.22);
+  --ap-shadow-cta: 0 16px 32px -12px rgba(14, 92, 74, 0.45),
+                   0 2px 6px -1px rgba(14, 92, 74, 0.20);
+  --ap-shadow-gold: 0 14px 30px -10px rgba(184, 134, 47, 0.40);
+
+  --ap-grad-page: radial-gradient(1200px 600px at 80% -10%, rgba(184,134,47,0.06), transparent 60%),
+                  radial-gradient(900px 500px at -10% 110%, rgba(14,92,74,0.05), transparent 55%);
+  --ap-grad-gold: linear-gradient(135deg, #D4A24A 0%, #B8862F 55%, #8C6420 100%);
+  --ap-grad-teal: linear-gradient(135deg, #0E5C4A 0%, #0A3F33 100%);
+  --ap-grad-ivory: linear-gradient(180deg, #FBFAF5 0%, #F7F5EF 100%);
+}
+
 html {
   direction: rtl;
   overflow-x: hidden;
-  /* Smooth scroll only for users who haven't requested reduced motion */
   scroll-behavior: auto;
-  /* Prevent scroll chaining / rubber-band bleed into parent scroller */
   overscroll-behavior-y: contain;
-  /* Hint to the browser to keep a dedicated composited layer for scrolling */
   -webkit-overflow-scrolling: touch;
 }
 
@@ -21,81 +53,75 @@ html {
 
 body {
   font-family: var(--font-noto-arabic), sans-serif;
-  background: #F7F5EF;
-  color: #102622;
+  background:
+    var(--ap-grad-page),
+    var(--ap-ivory);
+  color: var(--ap-charcoal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Prevent layout thrashing from text-size adjustments on mobile */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  font-feature-settings: "ss01", "cv11", "kern";
+  letter-spacing: -0.005em;
 }
 
 .font-display {
   font-family: var(--font-ibm-arabic), sans-serif;
+  letter-spacing: -0.018em;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+/* Selection */
+::selection {
+  background: rgba(14, 92, 74, 0.18);
+  color: var(--ap-charcoal);
 }
 
-::-webkit-scrollbar-track {
-  background: #EAE3D2;
-}
-
+/* Scrollbar — slim, premium */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: #0E5C4A;
-  border-radius: 3px;
+  background: linear-gradient(180deg, #0E5C4A, #0A3F33);
+  border-radius: 999px;
+  border: 2px solid var(--ap-ivory);
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #0C4F3F;
+  background: linear-gradient(180deg, #0C4F3F, #082E25);
 }
 
 /* Focus ring */
 *:focus-visible {
-  outline: 2px solid #0E5C4A;
-  outline-offset: 2px;
+  outline: 2px solid var(--ap-teal);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
-/* Apothecary divider — thin gold line for premium section breaks */
+/* Gold apothecary divider */
 .divider-gold {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  color: #B8862F;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
+  gap: 0.85rem;
+  color: var(--ap-saffron);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
 }
 .divider-gold::before,
 .divider-gold::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #B8862F, transparent);
+  background: linear-gradient(90deg, transparent, var(--ap-saffron), transparent);
 }
 
-/* Smooth transitions */
-/* Removed global transition on * as it causes severe scroll performance issues */
-/* Use Tailwind classes like transition-all or transition-colors where needed instead */
+*, *::before, *::after { box-sizing: border-box; }
 
-/* Override transition for elements that should not animate */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-/* Promote fixed/sticky elements to their own GPU compositing layer so the
-   browser can move them independently without triggering a main-thread repaint
-   on every scroll tick. */
 [style*="position: fixed"],
 .fixed {
   transform: translateZ(0);
   backface-visibility: hidden;
 }
 
-/* Respect user's motion preference — kill all CSS animations/transitions */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -105,35 +131,182 @@ body {
   }
 }
 
-/* Section paint containment: sections only re-paint their own box, not the
-   whole page, reducing the area the browser must rasterize on each frame. */
-section {
-  contain: layout style;
+section { contain: layout style; }
+
+/* ─── Subtle, premium keyframes ─── */
+@keyframes ap-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@keyframes ap-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes ap-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @layer utilities {
-  /* content-visibility removed: it causes layout-shift scroll jitter on iOS Safari */
   .content-auto {}
+
+  .text-balance { text-wrap: balance; }
+  .text-pretty  { text-wrap: pretty; }
+
+  .ap-fade-in { animation: ap-fade-up 0.5s ease-out both; }
+
+  /* Premium gold gradient text */
+  .text-gold-gradient {
+    background: var(--ap-grad-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Glass surface — used for floating elements */
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+  .glass-dark {
+    background: rgba(10, 63, 51, 0.55);
+    backdrop-filter: saturate(160%) blur(14px);
+    -webkit-backdrop-filter: saturate(160%) blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Hairline gold divider */
+  .hairline-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(184,134,47,0.55), transparent);
+  }
+
+  .shadow-cta  { box-shadow: var(--ap-shadow-cta); }
+  .shadow-lift { box-shadow: var(--ap-shadow-lift); }
+  .shadow-card-ap { box-shadow: var(--ap-shadow-card); }
+  .shadow-gold { box-shadow: var(--ap-shadow-gold); }
 }
 
 @layer components {
+  /* ─── PRIMARY CTA — premium, magnetic, clearly clickable ─── */
   .btn-primary {
-    @apply bg-teal text-ivory font-semibold rounded-2xl px-6 py-3 min-h-[48px] hover:bg-teal-hover active:scale-95 transition-all duration-150 shadow-sm;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #0E5C4A 0%, #0A3F33 100%);
+    color: var(--ap-ivory);
+    font-weight: 700;
+    border-radius: 9999px;
+    padding: 0.875rem 1.75rem;
+    min-height: 52px;
+    letter-spacing: -0.005em;
+    box-shadow: var(--ap-shadow-cta);
+    transition: transform 180ms cubic-bezier(.2,.7,.2,1),
+                box-shadow 220ms ease,
+                filter 180ms ease;
+    will-change: transform;
+    isolation: isolate;
+    overflow: hidden;
   }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 45%);
+    pointer-events: none;
+    z-index: -1;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.22) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 600ms ease;
+    pointer-events: none;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 22px 40px -14px rgba(14, 92, 74, 0.55),
+                0 2px 6px -1px rgba(14, 92, 74, 0.22);
+    filter: brightness(1.04);
+  }
+  .btn-primary:hover::after { transform: translateX(120%); }
+  .btn-primary:active { transform: translateY(0) scale(0.985); }
 
+  /* ─── SECONDARY CTA — refined outline ─── */
   .btn-secondary {
-    @apply bg-transparent border-2 border-teal text-teal font-semibold rounded-2xl px-6 py-3 min-h-[48px] hover:bg-teal hover:text-ivory active:scale-95 transition-all duration-150;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1.5px solid rgba(14, 92, 74, 0.30);
+    color: var(--ap-teal);
+    font-weight: 700;
+    border-radius: 9999px;
+    padding: 0.875rem 1.75rem;
+    min-height: 52px;
+    transition: all 200ms cubic-bezier(.2,.7,.2,1);
   }
+  .btn-secondary:hover {
+    background: var(--ap-teal);
+    color: var(--ap-ivory);
+    border-color: var(--ap-teal);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px -12px rgba(14, 92, 74, 0.35);
+  }
+  .btn-secondary:active { transform: translateY(0) scale(0.985); }
 
+  /* ─── PREMIUM CARD ─── */
   .card {
-    @apply bg-white rounded-3xl shadow-sm border border-border-soft;
+    position: relative;
+    background: linear-gradient(180deg, #FFFFFF 0%, #FCFBF7 100%);
+    border-radius: 1.5rem;
+    box-shadow: var(--ap-shadow-card);
+    border: 1px solid var(--ap-border);
+    transition: transform 280ms cubic-bezier(.2,.7,.2,1),
+                box-shadow 280ms ease,
+                border-color 280ms ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ap-shadow-lift);
+    border-color: rgba(14, 92, 74, 0.25);
   }
 
   .section-padding {
-    @apply px-4 py-12 md:py-20;
+    @apply px-4 py-14 md:py-24;
   }
 
   .container-max {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Premium pill / chip */
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold;
+    background: rgba(14, 92, 74, 0.08);
+    color: var(--ap-teal);
+    border: 1px solid rgba(14, 92, 74, 0.15);
+  }
+  .chip-gold {
+    background: rgba(184, 134, 47, 0.10);
+    color: var(--ap-saffron);
+    border-color: rgba(184, 134, 47, 0.25);
+  }
+
+  /* Section eyebrow */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[11px] sm:text-xs font-bold uppercase tracking-[0.28em];
+    color: var(--ap-saffron);
   }
 }

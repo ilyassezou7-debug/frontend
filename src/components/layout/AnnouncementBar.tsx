@@ -59,11 +59,13 @@ export default function AnnouncementBar() {
 
   return (
     <div
-      className="bg-gradient-to-l from-teal-dark via-teal to-teal-dark text-white border-b border-teal-dark/40 shadow-inner"
+      className="relative bg-gradient-to-l from-[#082E25] via-teal-dark to-[#082E25] text-white"
       role="region"
       aria-label="إشعارات الموقع"
       aria-live="polite"
     >
+      {/* Top gold hairline */}
+      <span aria-hidden className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-saffron/50 to-transparent" />
       <div className="relative max-w-7xl mx-auto px-4 py-2 sm:py-2.5 min-h-[2.25rem] sm:min-h-[2.5rem] flex items-center justify-center">
         {/* Left gold dot */}
         <span className="hidden sm:block absolute right-4 w-1.5 h-1.5 rounded-full bg-saffron animate-pulse" />

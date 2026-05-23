@@ -348,7 +348,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
                 <button
                   onClick={handleAddToCart}
-                  className="w-full flex items-center justify-center gap-2.5 bg-teal hover:bg-teal-hover text-ivory font-bold text-lg px-6 py-4 md:py-5 rounded-2xl shadow-xl shadow-teal/20 active:scale-[0.98] transition-all min-h-[60px] md:min-h-[64px]"
+                  className="btn-primary w-full text-lg md:text-xl py-4 md:py-5 min-h-[60px] md:min-h-[64px] rounded-2xl"
                 >
                   <ShoppingBag className="w-6 h-6" />
                   <span>أكدي طلبك الآن</span>

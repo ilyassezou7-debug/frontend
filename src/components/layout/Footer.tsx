@@ -21,9 +21,20 @@ export default function Footer({ isSoftPage = false }: { isSoftPage?: boolean })
     : SITE_CONFIG.trustBadges;
 
   return (
-    <footer className="bg-teal-dark text-ivory">
+    <footer className="relative bg-gradient-to-b from-teal-dark to-[#082E25] text-ivory overflow-hidden">
+      {/* Top gold gradient hairline */}
+      <div aria-hidden className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-saffron to-transparent" />
+      {/* Subtle dotted texture */}
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(circle at 1px 1px, #B8862F 1px, transparent 0)",
+          backgroundSize: "28px 28px",
+        }}
+      />
       {/* Brand Top Section */}
-      <div className="border-b border-teal/30">
+      <div className="relative border-b border-white/10">
         <div className="container-max py-12 flex flex-col items-center justify-center text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mb-5">
             <Image 
@@ -51,7 +62,7 @@ export default function Footer({ isSoftPage = false }: { isSoftPage?: boolean })
       </div>
 
       {/* Trust badges row */}
-      <div className="border-b border-teal/30">
+      <div className="relative border-b border-white/10">
         <div className="container-max py-6 px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-6">
             {badges.map((badge) => {
@@ -67,7 +78,7 @@ export default function Footer({ isSoftPage = false }: { isSoftPage?: boolean })
         </div>
       </div>
 
-      <div className="container-max py-10">
+      <div className="relative container-max py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 text-center sm:text-start">
           {/* Products */}
           {!isSoftPage && (
@@ -168,9 +179,15 @@ export default function Footer({ isSoftPage = false }: { isSoftPage?: boolean })
           </div>
         </div>
 
-        <div className="border-t border-teal/30 mt-8 pt-6 text-center">
-          <p className="text-ivory/60 text-sm">
-            جميع الحقوق محفوظة © 2026 أطلس بيور
+        <div className="mt-10 pt-6 text-center">
+          <div aria-hidden className="hairline-gold mb-6 opacity-60" />
+          <p className="text-ivory/60 text-sm tracking-wide">
+            جميع الحقوق محفوظة © 2026{" "}
+            <span className="text-gold-gradient font-bold">أطلس بيور</span>
+            <span className="hidden sm:inline text-ivory/30"> · </span>
+            <span className="hidden sm:inline text-[11px] uppercase tracking-[0.28em] text-saffron/80">
+              Pharma-Botanic
+            </span>
           </p>
         </div>
       </div>
