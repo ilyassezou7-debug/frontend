@@ -109,7 +109,7 @@ export default function CartDrawer({
       quantity: 1,
       unitCount: upgradeOffer.quantity,
       price: upgradeOffer.price,
-      source: "cart_upgrade_nudge",
+      source: "collection",
     });
   }
 
