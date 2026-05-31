@@ -38,6 +38,7 @@ import { formatMAD } from "@/lib/money";
 import { trackViewContent, trackAddToCart } from "@/lib/tracking";
 import { generateEventId } from "@/lib/event-id";
 import { PRODUCTS } from "@/config/products";
+import { motion } from "framer-motion";
 
 interface ProductPageClientProps {
   product: Product;
