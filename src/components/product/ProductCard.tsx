@@ -1,9 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/types/product";
 import StarRating from "@/components/ui/StarRating";
 import { formatMAD } from "@/lib/money";
 import { ShoppingBag, BadgeCheck, ArrowLeft } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface ProductCardProps {
   product: Product;
@@ -14,7 +17,13 @@ export default function ProductCard({ product }: ProductCardProps) {
   const basePrice = product.offers[0].price;
 
   return (
-    <div className="group card flex flex-col overflow-hidden relative">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="group card flex flex-col overflow-hidden relative"
+    >
       {/* Gold corner accents — appear on hover */}
       <span aria-hidden className="pointer-events-none absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-saffron/0 group-hover:border-saffron/70 rounded-tl-xl transition-colors duration-300 z-20" />
       <span aria-hidden className="pointer-events-none absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-saffron/0 group-hover:border-saffron/70 rounded-br-xl transition-colors duration-300 z-20" />
@@ -81,13 +90,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* CTA */}
         <Link
           href={`/products/${product.slug}`}
-          className="btn-primary w-full mt-auto group/cta"
+          className="btn-primary btn-shimmer-gold w-full mt-auto group/cta"
         >
           <ShoppingBag className="w-4 h-4" />
           <span>تسوقي الآن</span>
           <ArrowLeft className="w-4 h-4 -mr-1 opacity-70 group-hover/cta:-translate-x-0.5 transition-transform" />
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   Star,
@@ -244,9 +247,13 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {pillars.map((p) => (
-              <div
+            {pillars.map((p, index) => (
+              <motion.div
                 key={p.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="group bg-ivory rounded-2xl p-6 border border-border-soft hover:border-teal/40 hover:shadow-md transition-all"
               >
                 <div className="w-12 h-12 rounded-xl bg-teal/10 group-hover:bg-teal group-hover:text-white text-teal flex items-center justify-center mb-4 transition-colors">
@@ -256,7 +263,7 @@ export default function HomePage() {
                   {p.title}
                 </h3>
                 <p className="text-muted text-sm leading-relaxed">{p.desc}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -277,9 +284,13 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {problemCards.map((card) => (
-              <div
+            {problemCards.map((card, index) => (
+              <motion.div
                 key={card.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-white rounded-2xl p-6 space-y-4 border border-border-soft hover:border-teal/40 hover:shadow-md transition-all"
               >
                 <div className="w-12 h-12 bg-teal/10 rounded-2xl flex items-center justify-center">
@@ -296,7 +307,7 @@ export default function HomePage() {
                   {card.cta}
                   <ArrowLeft className="w-4 h-4" />
                 </Link>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -434,8 +445,12 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {howItWorks.map((step, i) => (
-              <div
+              <motion.div
                 key={i}
+                initial={{ opacity: 0, scale: 0.92, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="text-center space-y-3 bg-ivory rounded-2xl p-6 border border-border-soft"
               >
                 <div className="w-14 h-14 bg-teal text-ivory rounded-full flex items-center justify-center font-bold text-xl mx-auto font-display ring-4 ring-saffron/20">
@@ -445,7 +460,7 @@ export default function HomePage() {
                   {step.title}
                 </h3>
                 <p className="text-muted text-sm">{step.desc}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

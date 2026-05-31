@@ -369,7 +369,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                         type="submit"
                         disabled={isSubmitting}
                         whileTap={{ scale: 0.97 }}
-                        className="btn-primary w-full text-base font-bold min-h-[54px] rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-teal/20 disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
+                        className="btn-primary btn-shimmer-gold w-full text-base font-bold min-h-[54px] rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-teal/20 disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
                       >
                         <AnimatePresence mode="wait" initial={false}>
                           {isSubmitting ? (

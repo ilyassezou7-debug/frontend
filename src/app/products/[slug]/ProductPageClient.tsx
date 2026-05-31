@@ -348,7 +348,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
                 <button
                   onClick={handleAddToCart}
-                  className="btn-primary w-full text-lg md:text-xl py-4 md:py-5 min-h-[60px] md:min-h-[64px] rounded-2xl"
+                  className="btn-primary btn-shimmer-gold w-full text-lg md:text-xl py-4 md:py-5 min-h-[60px] md:min-h-[64px] rounded-2xl"
                 >
                   <ShoppingBag className="w-6 h-6" />
                   <span>أكدي طلبك الآن</span>
@@ -486,17 +486,24 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
               <ol className="relative space-y-5 pr-6 border-r-2 border-dashed border-teal/20">
                 {product.expectedTimeline.map((item, i) => (
-                  <li key={i} className="relative">
-                    <span className="absolute -right-[33px] top-1 w-5 h-5 rounded-full bg-white border-2 border-teal flex items-center justify-center">
-                      <span className="w-2 h-2 rounded-full bg-teal" />
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ duration: 0.5, delay: i * 0.15, ease: "easeOut" }}
+                    className="relative group/timeline-item cursor-pointer"
+                  >
+                    <span className="absolute -right-[33px] top-1 w-5 h-5 rounded-full bg-white border-2 border-teal flex items-center justify-center group-hover/timeline-item:scale-125 transition-transform duration-200">
+                      <span className="w-2 h-2 rounded-full bg-teal group-hover/timeline-item:bg-saffron transition-colors" />
                     </span>
-                    <p className="font-bold text-saffron text-sm mb-1">
+                    <p className="font-bold text-saffron text-sm mb-1 group-hover/timeline-item:text-teal transition-colors">
                       {item.when}
                     </p>
-                    <p className="text-charcoal leading-relaxed">
+                    <p className="text-charcoal leading-relaxed group-hover/timeline-item:translate-x-1 transition-transform duration-200">
                       {item.result}
                     </p>
-                  </li>
+                  </motion.li>
                 ))}
               </ol>
 

@@ -29,6 +29,7 @@ import { SITE_CONFIG } from "@/config/site";
 import { formatMAD } from "@/lib/money";
 import { useCartStore } from "@/store/cart-store";
 import StarRating from "@/components/ui/StarRating";
+import Confetti from "@/components/ui/Confetti";
 
 interface StoredOrder {
   orderId: string;
@@ -117,6 +118,7 @@ export default function ThankYouClient() {
 
   return (
     <div className="bg-ivory min-h-screen">
+      <Confetti duration={6000} />
       {/* ───── 1. SUCCESS HEADER ───── */}
       <section className="relative bg-white pt-12 pb-10 sm:pt-16 sm:pb-12 overflow-hidden border-b border-border-soft">
         {/* Subtle top accent line */}

@@ -364,7 +364,7 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
                             {/* Accept — primary CTA */}
                             <button
                               onClick={() => submitFinalOrder(true)}
-                              className="btn-primary w-full text-base min-h-[54px] flex items-center justify-center gap-2 active:scale-[0.98]"
+                              className="btn-primary btn-shimmer-gold w-full text-base min-h-[54px] flex items-center justify-center gap-2 active:scale-[0.98]"
                             >
                               <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
                               <span>
