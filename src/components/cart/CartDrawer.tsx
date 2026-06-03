@@ -194,12 +194,6 @@ export default function CartDrawer({
                         />
                       )}
                     </div>
-
-                    {/* Milestones indicators */}
-                    <div className="flex justify-between text-[10px] font-bold text-muted px-1">
-                      <span className={total >= freeShippingThreshold ? "text-teal" : ""}>شحن مجاني (290 د.م)</span>
-                      <span className={total >= giftThreshold ? "text-saffron" : ""}>هدية مجانية (359 د.م) 🎁</span>
-                    </div>
                   </div>
                 )}
 
