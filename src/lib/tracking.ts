@@ -37,7 +37,7 @@ function safeSnapTrack(event: string, params?: Record<string, unknown>) {
 
 export function identifyUser(phone: string) {
   if (typeof window === "undefined") return;
-  const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || "800384379801833";
   const snapPixelId = process.env.NEXT_PUBLIC_SNAP_PIXEL_ID;
   
   if (metaPixelId && window.fbq) {

@@ -4,7 +4,7 @@ import { useEffect, type ReactNode } from "react";
 import Script from "next/script";
 import { trackPageView, saveLandingUrl } from "@/lib/tracking";
 
-const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "800384379801833";
 const TIKTOK_PIXEL_ID = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID || "D8506I3C77U73K7PGR40";
 const SNAP_PIXEL_ID = process.env.NEXT_PUBLIC_SNAP_PIXEL_ID;
 
