@@ -31,7 +31,7 @@ export default function IngredientsSection({
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal leading-tight mb-3">
             مكونات نشطة –{" "}
-            <span className="text-teal">مدروسة، مش عشوائية.</span>
+            <span className="text-teal">مدروسة، لا عشوائية.</span>
           </h2>
           <p className="text-muted leading-relaxed">{intro}</p>
         </div>

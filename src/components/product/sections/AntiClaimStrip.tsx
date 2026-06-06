@@ -14,7 +14,7 @@ export default function AntiClaimStrip({ claims }: AntiClaimStripProps) {
       <div className="container-max">
         <div className="text-center mb-6">
           <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-saffron mb-2">
-            ما فيهاش
+            خالٍ تماماً من
           </p>
           <h2 className="font-display font-bold text-2xl md:text-3xl text-charcoal">
             تركيبة نقية بلا حشو ولا مفاجآت

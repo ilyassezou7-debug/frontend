@@ -27,13 +27,13 @@ export default function BundleCrossSell({
       <div className="container-max">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <p className="divider-gold mb-4 max-w-xs mx-auto">
-            <span>كملي روتينك</span>
+            <span>أكمل روتينك</span>
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal leading-tight mb-3">
-            الروتين الكامل ديال أطلس بيور
+            روتين أطلس بيور الكامل
           </h2>
           <p className="text-muted leading-relaxed">
-            النساء اللي اختارو الروتين الكامل، حسّو بفرق أكبر فأقل وقت.
+            من اختاروا الروتين الكامل لاحظوا فرقاً أكبر في وقت أقل.
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export default function BundleCrossSell({
 
                 <div className="flex-1 p-4 flex flex-col">
                   <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-saffron mb-1">
-                    أضيفي للروتين
+                    أضِف إلى روتينك
                   </p>
                   <h3 className="font-bold text-charcoal text-base leading-tight mb-1">
                     {p.shortName}
@@ -92,7 +92,7 @@ export default function BundleCrossSell({
                         }}
                         className="inline-flex items-center gap-1 text-teal text-xs font-bold hover:gap-2 transition-all bg-teal/10 px-3 py-1.5 rounded-full"
                       >
-                      أضيفي للسلة
+                      أضِف إلى السلة
                       <ShoppingBag className="w-3.5 h-3.5" />
                     </button>
                   </div>

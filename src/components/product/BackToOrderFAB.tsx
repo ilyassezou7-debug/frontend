@@ -46,7 +46,7 @@ export default function BackToOrderFAB({ watchId, scrollToId }: BackToOrderFABPr
           exit={{ opacity: 0, x: -24 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
           onClick={handleClick}
-          aria-label="ارجعي لقسم العروض لتأكيد طلبك"
+          aria-label="ارجع لقسم العروض لتأكيد طلبك"
           className="fixed z-30 left-3 sm:left-5 bottom-24 sm:bottom-28"
           style={{ marginBottom: "env(safe-area-inset-bottom)", willChange: "transform, opacity" }}
         >

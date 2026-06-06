@@ -53,8 +53,12 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
   useEffect(() => {
     const eventId = generateEventId();
-    trackViewContent(product.id, 292, eventId);
-  }, [product.id]);
+    const singlePrice =
+      product.offers.find((o) => o.offerId === "one")?.price ??
+      product.offers[0]?.price ??
+      0;
+    trackViewContent(product.id, singlePrice, eventId);
+  }, [product.id, product.offers]);
 
   const offer = product.offers.find((o) => o.offerId === selectedOffer)!;
 
@@ -222,7 +226,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                     <span className="tabular-nums font-bold text-charcoal">
                       {product.ratingCount}+
                     </span>{" "}
-                    تقييم زبونة
+                    تقييم موثّق
                   </span>
                 </div>
                 <p className="text-base lg:text-lg text-muted leading-relaxed">
@@ -246,7 +250,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               {/* Offer Selector */}
               <div id="offer-select">
                 <p className="font-semibold text-charcoal mb-3">
-                  اختاري الكمية:
+                  اختر الكمية:
                 </p>
                 <OfferSelector
                   offers={product.offers}
@@ -268,7 +272,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                       <ListChecks className="w-4 h-4 text-teal" />
                     </div>
                     <p className="font-display font-bold text-sm text-charcoal">
-                      كيفاش تطلبي – 3 خطوات فقط
+                      كيف تطلب — 3 خطوات فقط
                     </p>
                   </div>
                   <span className="inline-flex items-center gap-1 text-[10px] font-bold text-teal bg-teal/10 px-2 py-1 rounded-full">
@@ -281,19 +285,19 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   {[
                     {
                       n: 1,
-                      title: "اختاري الكمية",
-                      sub: "العرض اللي بغيتي",
+                      title: "اختر الكمية",
+                      sub: "العرض المناسب",
                       tone: "teal" as const,
                     },
                     {
                       n: 2,
                       title: "اسمك ورقمك",
-                      sub: "حقلين فقط",
+                      sub: "حقلان فقط",
                       tone: "teal" as const,
                     },
                     {
                       n: 3,
-                      title: "خلصي عند الباب",
+                      title: "ادفع عند الباب",
                       sub: "بدون بطاقة",
                       tone: "saffron" as const,
                     },
@@ -352,7 +356,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   className="btn-primary btn-shimmer-gold w-full text-lg md:text-xl py-4 md:py-5 min-h-[60px] md:min-h-[64px] rounded-2xl"
                 >
                   <ShoppingBag className="w-6 h-6" />
-                  <span>أكدي طلبك الآن</span>
+                  <span>أكّد طلبك الآن</span>
                   <span className="hidden sm:inline text-ivory/60 font-normal">
                     ·
                   </span>
@@ -362,7 +366,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 </button>
 
                 <p className="text-center text-[11px] text-muted leading-relaxed">
-                  بضغطة وحدة كنخدمو ليك السلة · بدون تسجيل · بدون بطاقة بنكية
+                  بضغطة واحدة نُجهّز لك طلبك · بدون تسجيل · بدون بطاقة بنكية
                 </p>
 
                 <div className="flex items-center justify-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-muted pt-1">
@@ -390,7 +394,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       {/* ───────── PAIN POINTS ───────── */}
       <div className="content-auto">
         <PainPointsList
-          title="فاهمين الإحساس ديالك"
+          title="نتفهّم ما تشعر به"
           intro={product.painSection}
           points={product.painPoints}
           image={product.images.lifestyle}
@@ -433,8 +437,8 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               ساهلة وبسيطة فـ 3 خطوات فقط
             </h2>
             <p className="text-muted leading-relaxed">
-              ما تحتاجي حتى خبرة – فدقائق غادي تكوني عارفة كيفاش تستعملي{" "}
-              {product.shortName} باش تحصلي على أحسن نتيجة.
+              لا تحتاج أي خبرة — في دقائق ستعرف كيف تستعمل{" "}
+              {product.shortName} للحصول على أفضل نتيجة.
             </p>
             <div className="inline-flex items-center gap-2 bg-white border border-border-soft rounded-full px-4 py-2 mt-5 shadow-sm">
               <Clock className="w-4 h-4 text-saffron" />
@@ -477,10 +481,10 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-xl text-charcoal">
-                    شنو غادي تحسي بيه؟
+                    ماذا ستلاحظ؟
                   </h3>
                   <p className="text-xs text-muted">
-                    نتائج فعّالة من أول استعمال – وكتزيد مع الوقت
+                    نتائج فعّالة من أول استعمال — وتزداد مع الوقت
                   </p>
                 </div>
               </div>
@@ -514,7 +518,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   <span className="font-semibold text-charcoal">
                     ضمان استرجاع الأموال 30 يوم
                   </span>{" "}
-                  – إلا ما لقيتيش الفرق، كنرجعو ليك الفلوس بلا أي أسئلة.
+                  — إن لم تلاحظ الفرق، نُعيد لك مالك دون أي أسئلة.
                 </p>
               </div>
             </div>
@@ -573,10 +577,10 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               <span>أسئلة شائعة</span>
             </p>
             <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal mb-3">
-              كل ما تحتاجي تعرفي على {product.shortName}
+              كل ما تحتاج معرفته عن {product.shortName}
             </h2>
             <p className="text-muted">
-              جوابات صريحة على الأسئلة اللي كتسولها زبوناتنا قبل الطلب.
+              إجابات صريحة عن الأسئلة التي يطرحها عملاؤنا قبل الطلب.
             </p>
           </div>
           <FAQAccordion items={product.productFaqs} />

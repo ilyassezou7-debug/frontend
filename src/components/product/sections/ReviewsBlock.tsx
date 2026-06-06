@@ -47,10 +47,10 @@ export default function ReviewsBlock({
       <div className="container-max">
         <div className="text-center mb-10">
           <p className="divider-gold mb-4 max-w-xs mx-auto">
-            <span>زبوناتنا كيحكيو</span>
+            <span>عملاؤنا يتحدّثون</span>
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal mb-3">
-            النساء المغربيات اللي اختارو الفرق
+مغاربة اختاروا الفرق
           </h2>
         </div>
 
@@ -64,7 +64,7 @@ export default function ReviewsBlock({
             <StarRating rating={rating} className="mb-2" />
             <p className="text-sm text-muted">
               من <span className="font-bold text-charcoal tabular-nums">{ratingCount}+</span>{" "}
-              تقييم زبونة
+              تقييم موثّق
             </p>
           </div>
 

@@ -55,7 +55,7 @@ export default function ComparisonTable({ rows }: ComparisonTableProps) {
             علاش <span className="text-teal">أطلس بيور</span> الأحسن؟
           </h2>
           <p className="text-muted leading-relaxed">
-            مقارنة بصيغة بسيطة بين الحلول المتاحة فالسوق – باش تختاري بثقة.
+            مقارنة بسيطة بين الحلول المتاحة في السوق — لتختار بثقة.
           </p>
         </div>
 

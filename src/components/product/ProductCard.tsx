@@ -84,7 +84,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Scarcity */}
         <p className="text-xs text-saffron font-semibold inline-flex items-center gap-1.5">
           <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-saffron animate-pulse" />
-          الطلبات كتيجي بزاف — التوصيل خلال 2-5 أيام
+          الطلب مرتفع — التوصيل خلال 2-5 أيام
         </p>
 
         {/* CTA */}
@@ -93,7 +93,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           className="btn-primary btn-shimmer-gold w-full mt-auto group/cta"
         >
           <ShoppingBag className="w-4 h-4" />
-          <span>تسوقي الآن</span>
+          <span>تسوّق الآن</span>
           <ArrowLeft className="w-4 h-4 -mr-1 opacity-70 group-hover/cta:-translate-x-0.5 transition-transform" />
         </Link>
       </div>

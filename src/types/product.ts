@@ -1,4 +1,9 @@
-export type ProductId = "breath_drops" | "foot_spray" | "nail_serum";
+export type ProductId =
+  | "breath_drops"
+  | "foot_spray"
+  | "nail_serum"
+  | "hair_serum"
+  | "joint_capsules";
 export type OfferId = "one" | "two" | "three" | "upsell_99";
 
 export interface ProductOffer {

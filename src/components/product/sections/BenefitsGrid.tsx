@@ -24,11 +24,11 @@ export default function BenefitsGrid({
             <span>التحول</span>
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal leading-tight mb-3">
-            شنو غادي يبدل ليك{" "}
+            ماذا سيتغيّر لك مع{" "}
             <span className="text-teal">{productShortName}</span>؟
           </h2>
           <p className="text-muted leading-relaxed">
-            ماشي وعود – نتائج حقيقية كتشوفيها فحياتك اليومية من أول استعمال.
+            ليست وعوداً — نتائج حقيقية تلاحظها في حياتك اليومية من أول استعمال.
           </p>
         </div>
 

@@ -21,8 +21,6 @@ interface OfferSelectorProps {
   onChange: (offerId: OfferId) => void;
 }
 
-const UNIT_PRICE = 292;
-
 interface OfferMeta {
   title: string;
   subtitle: string;
@@ -33,19 +31,19 @@ interface OfferMeta {
 
 const META: Record<string, OfferMeta> = {
   one: {
-    title: "علبة واحدة",
-    subtitle: "30 يوم استعمال",
+    title: "وحدة واحدة",
+    subtitle: "شهر كامل من الاستعمال",
   },
   two: {
-    title: "علبتين",
-    subtitle: "60 يوم • بلا انقطاع",
+    title: "وحدتان",
+    subtitle: "شهران دون انقطاع",
     ribbon: "الأكثر اختياراً",
     ribbonIcon: <Flame className="w-3.5 h-3.5" />,
     highlight: "popular",
   },
   three: {
-    title: "ثلاث علب + هدية",
-    subtitle: "90 يوم • البروتوكول الكامل",
+    title: "ثلاث وحدات + هدية",
+    subtitle: "البروتوكول الكامل · 3 أشهر",
     ribbon: "الأكثر توفيراً",
     ribbonIcon: <Crown className="w-3.5 h-3.5" />,
     highlight: "best",
@@ -57,6 +55,13 @@ export default function OfferSelector({
   selected,
   onChange,
 }: OfferSelectorProps) {
+  // Per-product unit anchor: the price of a single unit for THIS product.
+  // Used to compute the crossed-out "original" price and the savings pill.
+  const unitPrice =
+    offers.find((o) => o.offerId === "one")?.price ??
+    offers[0]?.price ??
+    0;
+
   return (
     <div className="space-y-4">
       {/* Speed promise — modern alert style */}
@@ -71,10 +76,10 @@ export default function OfferSelector({
         {offers.map((offer) => {
           const isSelected = selected === offer.offerId;
           const meta = META[offer.offerId] ?? {
-            title: `${offer.quantity} علب`,
+            title: `${offer.quantity} وحدات`,
             subtitle: "",
           };
-          const original = UNIT_PRICE * offer.quantity;
+          const original = unitPrice * offer.quantity;
           const savings = original - offer.price;
           const isBest = meta.highlight === "best";
           const isPopular = meta.highlight === "popular";

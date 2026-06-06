@@ -62,8 +62,8 @@ export default function PainPointsList({
             </ul>
 
             <p className="text-charcoal font-medium border-r-4 border-teal pr-4 py-2 bg-white/60 rounded-l-lg italic">
-              &laquo; ماشي بوحدك اللي كتعاني... آلاف النساء المغربيات جربو الحل
-              وارتاحو أخيراً. &raquo;
+              &laquo; لست وحدك... آلاف المغاربة جرّبوا الحل وارتاحوا
+              أخيراً. &raquo;
             </p>
           </div>
         </div>

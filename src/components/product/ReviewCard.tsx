@@ -23,7 +23,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         </span>
         <p className="text-charcoal text-xs font-semibold">{review.author}</p>
         <span className="mr-auto text-[10px] font-bold text-teal/70 uppercase tracking-wider">
-          زبونة موثقة
+          عميل موثّق
         </span>
       </div>
     </div>
