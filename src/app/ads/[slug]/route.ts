@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SITE_CONFIG } from "@/config/site";
+import { getProductBySlug } from "@/config/products";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,17 @@ export async function GET(
   const incomingParams = request.nextUrl.searchParams;
 
   try {
+    // 1. Check if it's a known product first (Automatic routing for all products)
+    const product = getProductBySlug(slug);
+    if (product) {
+      const url = new URL(`${request.nextUrl.origin}/products/${slug}`);
+      incomingParams.forEach((value, key) => {
+        url.searchParams.set(key, value);
+      });
+      return NextResponse.redirect(url.toString(), { status: 302 });
+    }
+
+    // 2. If not a product, check the database for custom redirects
     const res = await fetch(`${SITE_CONFIG.apiUrl}/api/redirects/${slug}/target`, {
       cache: "no-store",
     });
