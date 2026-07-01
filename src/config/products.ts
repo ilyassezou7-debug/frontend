@@ -839,9 +839,9 @@ export const PRODUCTS: Product[] = [
     offerNudge:
       "تدفع عند الاستلام بين يديك · توصيل مجاني · هدية مع البروتوكول الكامل · ضمان 30 يوماً.",
     images: {
-      hero: "/images/products/hair-serum/hero.webp",
-      ingredients: "/images/products/hair-serum/ingredients.webp",
-      lifestyle: "/images/products/hair-serum/lifestyle.webp",
+      hero: "/images/products/hair-serum/hero.png",
+      ingredients: "/images/products/hair-serum/ingredients.png",
+      lifestyle: "/images/products/hair-serum/lifestyle.png",
     },
     offers: [
       { offerId: "one", quantity: 1, price: 299, label: "تجربة أولى" },
@@ -1065,9 +1065,9 @@ export const PRODUCTS: Product[] = [
     offerNudge:
       "تدفع عند الاستلام بين يديك · توصيل مجاني · هدية مع بروتوكول الـ 3 أشهر · ضمان 30 يوماً.",
     images: {
-      hero: "/images/products/joint-capsules/hero.webp",
-      ingredients: "/images/products/joint-capsules/ingredients.webp",
-      lifestyle: "/images/products/joint-capsules/lifestyle.webp",
+      hero: "/images/products/joint-capsules/hero.png",
+      ingredients: "/images/products/joint-capsules/ingredients.png",
+      lifestyle: "/images/products/joint-capsules/lifestyle.png",
     },
     offers: [
       { offerId: "one", quantity: 1, price: 299, label: "تجربة أولى" },
