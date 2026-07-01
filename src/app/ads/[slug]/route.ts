@@ -11,18 +11,21 @@ export async function GET(
   const slug = params.slug;
   const incomingParams = request.nextUrl.searchParams;
 
-  try {
-    // 1. Check if it's a known product first (Automatic routing for all products)
-    const product = getProductBySlug(slug);
-    if (product) {
-      const url = new URL(`${request.nextUrl.origin}/products/${slug}`);
-      incomingParams.forEach((value, key) => {
-        url.searchParams.set(key, value);
-      });
-      return NextResponse.redirect(url.toString(), { status: 302 });
-    }
+  // Helper: append the incoming query params (utm_*, fbclid, ttclid, ...) onto
+  // the destination so ad tracking is preserved through the redirect.
+  const withParams = (target: string) => {
+    const url = new URL(target);
+    incomingParams.forEach((value, key) => {
+      url.searchParams.set(key, value);
+    });
+    return url.toString();
+  };
 
-    // 2. If not a product, check the database for custom redirects
+  try {
+    // 1. Admin-configured redirect ALWAYS wins.
+    //    The ad link (/ads/<slug>) must stay stable while the destination is
+    //    editable from the /redirectkiller admin panel, so a saved redirect
+    //    takes priority over the default product auto-routing below.
     const res = await fetch(`${SITE_CONFIG.apiUrl}/api/redirects/${slug}/target`, {
       cache: "no-store",
     });
@@ -31,7 +34,8 @@ export async function GET(
       const data = await res.json();
       let targetUrl = data.target_url as string;
 
-      // Make relative paths absolute
+      // Accept both absolute URLs (https://atlaspure.shop/lp) and relative
+      // paths (/lp) — normalise a relative path to an absolute URL.
       if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
         if (!targetUrl.startsWith("/")) {
           targetUrl = "/" + targetUrl;
@@ -39,19 +43,28 @@ export async function GET(
         targetUrl = `${request.nextUrl.origin}${targetUrl}`;
       }
 
-      // Merge incoming query params onto the target URL
-      const url = new URL(targetUrl);
-      incomingParams.forEach((value, key) => {
-        url.searchParams.set(key, value);
-      });
-
-      return NextResponse.redirect(url.toString(), { status: 302 });
+      return NextResponse.redirect(withParams(targetUrl), { status: 302 });
     }
 
-    // Slug exists in the path but not in DB → clean 404
-    return new NextResponse("Redirect not found", { status: 404 });
+    // 2. Fallback: if no admin redirect is saved but the slug matches a real
+    //    product, send visitors straight to that product page.
+    const product = getProductBySlug(slug);
+    if (product) {
+      return NextResponse.redirect(
+        withParams(`${request.nextUrl.origin}/products/${slug}`),
+        { status: 302 }
+      );
+    }
+
+    // 3. Unknown slug → send to the homepage (safest for live ad traffic so a
+    //    paid click never lands on an error page).
+    return NextResponse.redirect(
+      withParams(request.nextUrl.origin + "/"),
+      { status: 302 }
+    );
   } catch (error) {
     console.error("Redirect error:", error);
-    return new NextResponse("Server error", { status: 500 });
+    // On any unexpected failure, never break the ad click — go home.
+    return NextResponse.redirect(request.nextUrl.origin + "/", { status: 302 });
   }
 }

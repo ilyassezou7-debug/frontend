@@ -15,6 +15,22 @@ type Redirect = {
   target_url: string;
 };
 
+// FastAPI returns `detail` as a string for HTTPExceptions and as an array of
+// {loc, msg} objects for 422 validation errors — normalise both to a message.
+async function parseError(res: Response, fallback: string): Promise<string> {
+  try {
+    const data = await res.json();
+    const detail = data?.detail;
+    if (typeof detail === "string") return detail;
+    if (Array.isArray(detail) && detail.length > 0) {
+      return detail.map((d) => d?.msg).filter(Boolean).join(", ") || fallback;
+    }
+  } catch {
+    /* ignore */
+  }
+  return fallback;
+}
+
 export default function RedirectAdmin() {
   const router = useRouter();
   const [redirects, setRedirects] = useState<Redirect[]>([]);
@@ -55,23 +71,43 @@ export default function RedirectAdmin() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    const cleanSlug = slug.trim().toLowerCase();
+    const cleanTarget = targetUrl.trim();
+
+    // Client-side validation (mirrors the backend rules)
+    if (!cleanSlug) {
+      setError("Slug is required");
+      return;
+    }
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(cleanSlug)) {
+      setError(
+        "Slug must be URL-safe: lowercase letters, numbers and single dashes only (e.g. breath-drops, argan-oil)"
+      );
+      return;
+    }
+    if (!cleanTarget) {
+      setError("Target URL is required");
+      return;
+    }
+
     try {
       const method = editingSlug ? "PUT" : "POST";
       const url = editingSlug 
         ? `${SITE_CONFIG.apiUrl}/api/redirects/${editingSlug}` 
         : `${SITE_CONFIG.apiUrl}/api/redirects`;
-        
+
+      const normalizedTarget =
+        cleanTarget.startsWith("http") || cleanTarget.startsWith("/")
+          ? cleanTarget
+          : `/${cleanTarget}`;
+
       const res = await fetch(url, {
         method,
         headers: { 
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ 
-          slug: slug.trim(), 
-          target_url: targetUrl.trim().startsWith('http') || targetUrl.trim().startsWith('/') 
-            ? targetUrl.trim() 
-            : `/${targetUrl.trim()}` 
-        }),
+        body: JSON.stringify({ slug: cleanSlug, target_url: normalizedTarget }),
       });
 
       if (res.ok) {
@@ -80,12 +116,7 @@ export default function RedirectAdmin() {
         setEditingSlug(null);
         fetchRedirects();
       } else {
-        let message = "Failed to save redirect";
-        try {
-          const data = await res.json();
-          message = data.detail || message;
-        } catch {}
-        setError(message);
+        setError(await parseError(res, "Failed to save redirect"));
       }
     } catch (err) {
       setError("Failed to save redirect");
@@ -108,12 +139,7 @@ export default function RedirectAdmin() {
       if (res.ok) {
         fetchRedirects();
       } else {
-        let message = "Failed to delete";
-        try {
-          const data = await res.json();
-          message = data.detail || message;
-        } catch {}
-        setError(message);
+        setError(await parseError(res, "Failed to delete"));
       }
     } catch (err) {
       setError("Failed to delete");
@@ -143,22 +169,31 @@ export default function RedirectAdmin() {
             <form onSubmit={handleSave} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Slug</label>
+                  <label className="text-sm font-medium">Slug (ad identifier)</label>
                   <Input
-                    placeholder="e.g. killer"
+                    placeholder="e.g. breath-drops"
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
                     required
                   />
+                  <p className="text-xs text-gray-500">
+                    Public ad link:{" "}
+                    <span className="font-mono">
+                      {SITE_CONFIG.siteUrl}/ads/{slug.trim().toLowerCase() || "your-slug"}
+                    </span>
+                  </p>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Target URL</label>
+                  <label className="text-sm font-medium">Target URL (destination)</label>
                   <Input
-                    placeholder="e.g. /products/breath-drops"
+                    placeholder="e.g. /lp or https://atlaspure.shop/lp"
                     value={targetUrl}
                     onChange={(e) => setTargetUrl(e.target.value)}
                     required
                   />
+                  <p className="text-xs text-gray-500">
+                    Where visitors land. You can change this anytime without touching the ad.
+                  </p>
                 </div>
               </div>
               {error && <p className="text-red-500 text-sm">{error}</p>}
