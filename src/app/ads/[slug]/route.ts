@@ -11,6 +11,26 @@ export async function GET(
   const slug = params.slug;
   const incomingParams = request.nextUrl.searchParams;
 
+  // Use the canonical public domain as the base for absolute redirect URLs.
+  // In production the app runs behind a proxy, so request.nextUrl.origin can
+  // resolve to the internal host (e.g. http://0.0.0.0:3000) which is not
+  // reachable by visitors. Prefer the proxy's forwarded host, then fall back
+  // to the configured site URL (https://atlaspure.shop).
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const forwardedProto = request.headers.get("x-forwarded-proto") ?? "https";
+  let baseOrigin: string;
+  if (forwardedHost) {
+    // Behind a proxy in production: trust the public host it forwards.
+    baseOrigin = `${forwardedProto}://${forwardedHost}`;
+  } else {
+    // No proxy (e.g. local dev): use the request origin, but guard against the
+    // unreachable internal bind address (0.0.0.0) by falling back to the domain.
+    const reqOrigin = request.nextUrl.origin;
+    baseOrigin = /0\.0\.0\.0/.test(reqOrigin)
+      ? `https://${SITE_CONFIG.domain}`
+      : reqOrigin;
+  }
+
   // Helper: append the incoming query params (utm_*, fbclid, ttclid, ...) onto
   // the destination so ad tracking is preserved through the redirect.
   const withParams = (target: string) => {
@@ -40,7 +60,7 @@ export async function GET(
         if (!targetUrl.startsWith("/")) {
           targetUrl = "/" + targetUrl;
         }
-        targetUrl = `${request.nextUrl.origin}${targetUrl}`;
+        targetUrl = `${baseOrigin}${targetUrl}`;
       }
 
       return NextResponse.redirect(withParams(targetUrl), { status: 302 });
@@ -51,20 +71,17 @@ export async function GET(
     const product = getProductBySlug(slug);
     if (product) {
       return NextResponse.redirect(
-        withParams(`${request.nextUrl.origin}/products/${slug}`),
+        withParams(`${baseOrigin}/products/${slug}`),
         { status: 302 }
       );
     }
 
     // 3. Unknown slug → send to the homepage (safest for live ad traffic so a
     //    paid click never lands on an error page).
-    return NextResponse.redirect(
-      withParams(request.nextUrl.origin + "/"),
-      { status: 302 }
-    );
+    return NextResponse.redirect(withParams(`${baseOrigin}/`), { status: 302 });
   } catch (error) {
     console.error("Redirect error:", error);
     // On any unexpected failure, never break the ad click — go home.
-    return NextResponse.redirect(request.nextUrl.origin + "/", { status: 302 });
+    return NextResponse.redirect(`${baseOrigin}/`, { status: 302 });
   }
 }
