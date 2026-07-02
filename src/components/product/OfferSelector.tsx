@@ -184,6 +184,16 @@ export default function OfferSelector({
                     {/* Bottom Row: Subtitle & Savings Pill */}
                     <div className="flex items-center justify-between gap-2">
                       <p className="text-[11px] sm:text-xs text-muted leading-tight truncate">
+                        {offer.title && (
+                          <span className="font-bold text-teal">
+                            {offer.quantity === 1
+                              ? "علبة واحدة"
+                              : offer.quantity === 2
+                                ? "علبتان"
+                                : "ثلاث علب"}
+                          </span>
+                        )}
+                        {offer.title && meta.subtitle ? " · " : ""}
                         {meta.subtitle}
                       </p>
                       
