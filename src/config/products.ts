@@ -849,6 +849,7 @@ export const PRODUCTS: Product[] = [
         quantity: 1,
         price: 249,
         label: "تجربة أولى",
+        title: "باقة التجربة",
         subtitle: "شهر كامل تبدأ فيه بإيقاف التساقط من الجذور",
       },
       {
@@ -858,6 +859,7 @@ export const PRODUCTS: Product[] = [
         label: "الأكثر طلباً",
         badge: "الأكثر طلباً",
         ribbon: "الأكثر طلباً",
+        title: "باقة النتائج",
         subtitle: "شهران بلا انقطاع — الوقت الكافي لتعود الكثافة",
       },
       {
@@ -867,6 +869,7 @@ export const PRODUCTS: Product[] = [
         label: "البروتوكول الكامل + هدية",
         badge: "أفضل قيمة",
         ribbon: "أفضل قيمة + هدية",
+        title: "الباقة الكاملة + هدية",
         subtitle: "بروتوكول 3 أشهر الكامل + هدية مجانية لنتيجة تدوم",
       },
     ],
@@ -1085,6 +1088,7 @@ export const PRODUCTS: Product[] = [
         quantity: 1,
         price: 249,
         label: "تجربة أولى",
+        title: "باقة التجربة",
         subtitle: "شهر كامل تبدأ فيه تحسّ بالفرق في حركتك",
       },
       {
@@ -1094,6 +1098,7 @@ export const PRODUCTS: Product[] = [
         label: "الأكثر طلباً",
         badge: "الأكثر طلباً",
         ribbon: "الأكثر طلباً",
+        title: "باقة النتائج",
         subtitle: "شهران متواصلان — الألم يتراجع والمرونة ترجع",
       },
       {
@@ -1103,6 +1108,7 @@ export const PRODUCTS: Product[] = [
         label: "بروتوكول العلاج الكامل + هدية",
         badge: "أفضل قيمة",
         ribbon: "أفضل قيمة + هدية",
+        title: "الباقة الكاملة + هدية",
         subtitle: "بروتوكول 3 أشهر الكامل + هدية مجانية لدعم يدوم",
       },
     ],
