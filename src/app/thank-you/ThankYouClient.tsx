@@ -24,7 +24,7 @@ import {
   ContactRound,
   MapPin,
 } from "lucide-react";
-import { PRODUCTS } from "@/config/products";
+import { PRODUCTS, getSinglePrice } from "@/config/products";
 import { SITE_CONFIG } from "@/config/site";
 import { formatMAD } from "@/lib/money";
 import { useCartStore } from "@/store/cart-store";
@@ -593,7 +593,7 @@ export default function ThankYouClient() {
                     </p>
                     <div className="flex items-center justify-between mt-2">
                       <span className="font-bold text-teal text-sm tabular-nums">
-                        من {formatMAD(292)}
+                        من {formatMAD(getSinglePrice(p))}
                       </span>
                       <span className="text-teal text-xs font-bold inline-flex items-center gap-1 group-hover:gap-2 transition-all">
                         اكتشفي

@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, Minus, Plus, Trash2, ShoppingBag, Lock, Gift, Sparkles, ArrowLeft, TrendingUp } from "lucide-react";
+import { X, Minus, Plus, Trash2, ShoppingBag, Lock, Sparkles, ArrowLeft, TrendingUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartStore } from "@/store/cart-store";
-import { PRODUCTS } from "@/config/products";
+import { PRODUCTS, getSinglePrice } from "@/config/products";
 import { formatMAD } from "@/lib/money";
 import { trackInitiateCheckout } from "@/lib/tracking";
 import { generateEventId } from "@/lib/event-id";
@@ -47,15 +47,6 @@ export default function CartDrawer({
     const secs = seconds % 60;
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
-
-  // Gamified Progress Bar Thresholds
-  // Tier 1: Free Shipping (any purchase has it, but let's gamify it at 290 MAD to encourage buying at least 1 full product)
-  // Tier 2: Free Mystery Gift (e.g. at 359 MAD - which is exactly the price of 2 items "Most Popular" bundle!)
-  const freeShippingThreshold = 290;
-  const giftThreshold = 359;
-
-  const shippingProgress = Math.min((total / freeShippingThreshold) * 100, 100);
-  const giftProgress = Math.min((total / giftThreshold) * 100, 100);
 
   function handleQuantityChange(
     productId: string,
@@ -152,50 +143,6 @@ export default function CartDrawer({
                     <X className="w-5 h-5 text-charcoal" />
                   </button>
                 </div>
-
-                {/* Gamified Progress Bar */}
-                {items.length > 0 && (
-                  <div className="bg-white px-5 py-4 border-b border-border-soft shadow-sm space-y-3">
-                    <div className="flex items-center justify-between text-xs font-bold text-charcoal">
-                      {total < freeShippingThreshold ? (
-                        <span className="flex items-center gap-1">
-                          <Gift className="w-4 h-4 text-saffron animate-bounce" />
-                          باقي ليك <span className="text-teal text-sm">{formatMAD(freeShippingThreshold - total)}</span> وتستفدي من الشحن المجاني!
-                        </span>
-                      ) : total < giftThreshold ? (
-                        <span className="flex items-center gap-1 text-teal">
-                          <Sparkles className="w-4 h-4 text-saffron animate-pulse" />
-                          حصلت على شحن مجاني! باقي ليك <span className="text-saffron text-sm">{formatMAD(giftThreshold - total)}</span> وتحصلي على هدية مفاجأة مجانية! 🎁
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1.5 rounded-xl w-full justify-center">
-                          <Gift className="w-4.5 h-4.5 text-saffron animate-bounce" />
-                          مبروك! حصلت على الشحن المجاني + هدية مفاجأة مجانية مع طلبيتك! 🎉
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Progress Bar Track */}
-                    <div className="relative h-3 bg-sand rounded-full overflow-hidden">
-                      {/* Shipping progress */}
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${shippingProgress}%` }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-teal to-teal-hover rounded-full"
-                      />
-                      {/* Gift progress */}
-                      {total >= freeShippingThreshold && (
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${giftProgress}%` }}
-                          transition={{ duration: 0.5, ease: "easeOut" }}
-                          className="absolute top-0 left-0 h-full bg-gradient-to-r from-teal-hover via-saffron to-saffron-2 rounded-full"
-                        />
-                      )}
-                    </div>
-                  </div>
-                )}
 
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto">
@@ -378,7 +325,7 @@ export default function CartDrawer({
                                   </div>
                                   <div className="flex flex-col items-end">
                                     <span className="text-[10px] text-muted line-through">
-                                      {formatMAD(292)}
+                                      {formatMAD(getSinglePrice(p))}
                                     </span>
                                     <span className="text-xs font-bold text-teal flex-shrink-0">
                                       + {formatMAD(149)}

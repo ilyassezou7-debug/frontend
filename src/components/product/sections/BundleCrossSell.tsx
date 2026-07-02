@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Plus, ArrowLeft, ShoppingBag } from "lucide-react";
 import type { Product } from "@/types/product";
 import { formatMAD } from "@/lib/money";
+import { getSinglePrice } from "@/config/products";
 import { useCartStore } from "@/store/cart-store";
 
 interface BundleCrossSellProps {
@@ -72,7 +73,7 @@ export default function BundleCrossSell({
                   <div className="flex items-center justify-between mt-auto">
                     <div>
                       <p className="text-[10px] text-muted line-through tabular-nums leading-none">
-                        {formatMAD(292)}
+                        {formatMAD(getSinglePrice(p))}
                       </p>
                       <p className="font-bold text-teal text-base tabular-nums leading-none mt-1">
                         + {formatMAD(149)}

@@ -1179,6 +1179,16 @@ export function getProductById(id: ProductId): Product | undefined {
   return PRODUCTS.find((p) => p.id === id);
 }
 
+/** Single-unit ("one" offer) price for a product — used as the anchor/regular
+ *  price in cross-sell and upsell displays so it always matches real pricing. */
+export function getSinglePrice(product: Product): number {
+  return (
+    product.offers.find((o) => o.offerId === "one")?.price ??
+    product.offers[0]?.price ??
+    0
+  );
+}
+
 export function getUpsellProduct(cartProductIds: ProductId[]): ProductId | null {
   if (cartProductIds.length === 0) return null;
   const allIds: ProductId[] = [

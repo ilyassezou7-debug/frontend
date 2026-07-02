@@ -8,7 +8,7 @@ import Image from "next/image";
 import { Timer, CheckCircle2, Package } from "lucide-react";
 import { useCartStore } from "@/store/cart-store";
 import { useCheckoutStore } from "@/store/checkout-store";
-import { getProductById } from "@/config/products";
+import { getProductById, getSinglePrice } from "@/config/products";
 import { submitOrder } from "@/lib/api";
 import { formatMAD } from "@/lib/money";
 import { generateEventId } from "@/lib/event-id";
@@ -200,6 +200,13 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
 
   const progressPercent = (countdown / COUNTDOWN_SECONDS) * 100;
   const isSubmitting = phase !== "idle";
+  // Anchor price = the product's normal single price; the upsell offers it at
+  // UPSELL_PRICE, so the shown discount stays truthful for every product.
+  const anchorPrice = getSinglePrice(upsellProduct);
+  const discountPercent =
+    anchorPrice > UPSELL_PRICE
+      ? Math.round((1 - UPSELL_PRICE / anchorPrice) * 100)
+      : 0;
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={() => {}}>
@@ -338,11 +345,13 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
                                   {formatMAD(UPSELL_PRICE)}
                                 </span>
                                 <span className="text-muted line-through text-sm">
-                                  {formatMAD(292)}
+                                  {formatMAD(anchorPrice)}
                                 </span>
-                                <span className="bg-saffron text-white text-xs px-2 py-0.5 rounded-full font-bold">
-                                  ‑50%
-                                </span>
+                                {discountPercent > 0 && (
+                                  <span className="bg-saffron text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                                    ‑{discountPercent}%
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
