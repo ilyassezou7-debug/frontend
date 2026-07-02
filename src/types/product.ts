@@ -12,6 +12,11 @@ export interface ProductOffer {
   price: number;
   label: string;
   badge?: string;
+  /** Optional per-product marketing copy shown in the offer selector.
+   *  When set, these override the shared defaults for this product only. */
+  title?: string;
+  subtitle?: string;
+  ribbon?: string;
 }
 
 export interface ProductReview {

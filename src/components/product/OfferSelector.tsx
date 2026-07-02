@@ -75,9 +75,17 @@ export default function OfferSelector({
       <div className="space-y-3.5">
         {offers.map((offer) => {
           const isSelected = selected === offer.offerId;
-          const meta = META[offer.offerId] ?? {
+          const base = META[offer.offerId] ?? {
             title: `${offer.quantity} وحدات`,
             subtitle: "",
+          };
+          // Per-product copy (from the product config) overrides the shared
+          // defaults so each product can have its own persuasive wording.
+          const meta = {
+            ...base,
+            ...(offer.title ? { title: offer.title } : {}),
+            ...(offer.subtitle ? { subtitle: offer.subtitle } : {}),
+            ...(offer.ribbon ? { ribbon: offer.ribbon } : {}),
           };
           const original = unitPrice * offer.quantity;
           const savings = original - offer.price;
