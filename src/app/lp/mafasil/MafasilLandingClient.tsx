@@ -195,13 +195,19 @@ export default function MafasilLandingClient() {
 
           {/* End screen */}
           {ended && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white gap-4 px-6">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/75 text-white gap-4 px-6">
               <p className="font-bold text-lg">شفتي الفيديو كامل 👏</p>
+              <a
+                href="/lp/wasfa"
+                className="bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-4 rounded-2xl shadow-lg text-lg animate-pulse"
+              >
+                🎁 اطلب الوصفة دابا — الكمية محدودة
+              </a>
               <button
                 onClick={replay}
-                className="bg-white/90 text-charcoal font-bold px-6 py-3 rounded-full shadow-lg"
+                className="text-white/70 underline text-sm"
               >
-                🔁 عاود شاهد
+                🔁 عاود شاهد الفيديو
               </button>
             </div>
           )}
@@ -264,10 +270,20 @@ export default function MafasilLandingClient() {
         </div>
 
         {/* Social-proof nudge under the box */}
-        {!ended && (
+        {!ended && !nearEnd && (
           <p className="mt-3 text-xs text-muted">
             👁️ أغلب الناس لي شافو هاد الفيديو كملوه للآخر... لا تكن الاستثناء
           </p>
+        )}
+
+        {/* Delayed-reveal CTA: appears only near the end of the video */}
+        {(nearEnd || ended) && (
+          <a
+            href="/lp/wasfa"
+            className="mt-4 block w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-2xl text-lg shadow-lift animate-pulse"
+          >
+            🎁 اطلب الوصفة دابا — متبقي علب قليلة
+          </a>
         )}
       </div>
     </div>
