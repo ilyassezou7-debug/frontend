@@ -235,28 +235,29 @@ export default function MafasilLandingClient() {
             </div>
           )}
 
-          {/* Soft CTA ON the video — visible without any scrolling */}
+          {/* Soft CTA ON the video — top area so it never covers the burned-in
+              captions at the bottom of the video */}
           {softCta && !ended && (
             <a
               href={OFFER_URL}
-              className="absolute bottom-16 inset-x-4 bg-white/95 text-teal-dark font-bold py-3 rounded-2xl text-sm sm:text-base text-center shadow-lift"
+              className="absolute top-14 inset-x-4 bg-white/95 text-teal-dark font-bold py-3 rounded-2xl text-sm sm:text-base text-center shadow-lift"
             >
               👀 شوف المنتج لي كتهضر عليه الدكتورة
             </a>
           )}
 
-          {/* Hard CTA ON the video + instruction, glued above the progress bar */}
+          {/* Hard CTA ON the video — top area, captions stay visible */}
           {started && !ended && nearEnd && (
-            <div className="absolute bottom-8 inset-x-4 flex flex-col items-center gap-2">
-              <span className="bg-black/60 text-white text-xs font-bold px-4 py-1.5 rounded-full backdrop-blur-sm pointer-events-none">
-                اضغط على الزر الأحمر 👇 باش تطلب الوصفة
-              </span>
+            <div className="absolute top-14 inset-x-4 flex flex-col items-center gap-2">
               <a
                 href={OFFER_URL}
-                className="w-full bg-red-600 text-white font-bold py-4 rounded-2xl text-base text-center shadow-lift animate-pulse"
+                className="w-full bg-red-600 text-white font-bold py-3.5 rounded-2xl text-base text-center shadow-lift animate-pulse"
               >
                 🎁 اطلب الوصفة دابا — متبقي علب قليلة
               </a>
+              <span className="bg-black/60 text-white text-xs font-bold px-4 py-1.5 rounded-full backdrop-blur-sm pointer-events-none">
+                ☝️ اضغط على الزر الأحمر باش تطلب
+              </span>
             </div>
           )}
 
