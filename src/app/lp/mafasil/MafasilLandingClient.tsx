@@ -5,6 +5,14 @@ import { Volume2, VolumeX, Pause, Play, Lock, Gift } from "lucide-react";
 
 const VIDEO_URL = "/videos/mafasil.mp4";
 const POSTER_URL = "/videos/mafasil-poster.jpg";
+const OFFER_URL = "/lp/wasfa";
+
+/** CTA timing (fraction of video watched).
+ *  SOFT: quiet button for impatient buyers (after product is revealed).
+ *  HARD: red pulsing button + on-video arrow (price/scarcity moment).
+ *  Adjust these two numbers to sync with the exact moments in the video. */
+const SOFT_CTA_AT = 0.62;
+const HARD_CTA_AT = 0.88;
 
 /** Curiosity messages that rotate as the video advances — each stage
  *  teases what is coming next so the visitor keeps watching. */
@@ -115,7 +123,8 @@ export default function MafasilLandingClient() {
 
   const stage =
     STAGES.find((s) => progress <= s.upTo) ?? STAGES[STAGES.length - 1];
-  const nearEnd = progress > 0.92;
+  const softCta = progress >= SOFT_CTA_AT && progress < HARD_CTA_AT;
+  const nearEnd = progress >= HARD_CTA_AT;
 
   return (
     <div
@@ -198,7 +207,7 @@ export default function MafasilLandingClient() {
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/75 text-white gap-4 px-6">
               <p className="font-bold text-lg">شفتي الفيديو كامل 👏</p>
               <a
-                href="/lp/wasfa"
+                href={OFFER_URL}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-4 rounded-2xl shadow-lg text-lg animate-pulse"
               >
                 🎁 اطلب الوصفة دابا — الكمية محدودة
@@ -223,6 +232,16 @@ export default function MafasilLandingClient() {
             <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full animate-pulse">
               <Gift className="w-3.5 h-3.5" />
               <span>المفاجأة دابا!</span>
+            </div>
+          )}
+
+          {/* On-video arrow cue during the hard-CTA window: points to the button below */}
+          {started && !ended && nearEnd && (
+            <div className="absolute bottom-8 inset-x-0 flex flex-col items-center pointer-events-none">
+              <span className="bg-black/60 text-white text-xs font-bold px-4 py-1.5 rounded-full backdrop-blur-sm mb-1">
+                الطلب من الزر لي تحت 👇
+              </span>
+              <span className="text-3xl animate-bounce">⬇️</span>
             </div>
           )}
 
@@ -276,10 +295,20 @@ export default function MafasilLandingClient() {
           </p>
         )}
 
-        {/* Delayed-reveal CTA: appears only near the end of the video */}
+        {/* Soft CTA: quiet link for impatient buyers, after the product reveal */}
+        {softCta && !ended && (
+          <a
+            href={OFFER_URL}
+            className="mt-4 block w-full bg-white border-2 border-teal text-teal-dark font-bold py-3.5 rounded-2xl text-base shadow-soft hover:bg-mist transition-colors"
+          >
+            👀 شوف المنتج لي كتهضر عليه الدكتورة
+          </a>
+        )}
+
+        {/* Hard CTA: red pulsing button during the scarcity/price moment + after end */}
         {(nearEnd || ended) && (
           <a
-            href="/lp/wasfa"
+            href={OFFER_URL}
             className="mt-4 block w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-2xl text-lg shadow-lift animate-pulse"
           >
             🎁 اطلب الوصفة دابا — متبقي علب قليلة
