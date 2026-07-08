@@ -235,19 +235,34 @@ export default function MafasilLandingClient() {
             </div>
           )}
 
-          {/* On-video arrow cue during the hard-CTA window: points to the button below */}
+          {/* Soft CTA ON the video — visible without any scrolling */}
+          {softCta && !ended && (
+            <a
+              href={OFFER_URL}
+              className="absolute bottom-16 inset-x-4 bg-white/95 text-teal-dark font-bold py-3 rounded-2xl text-sm sm:text-base text-center shadow-lift"
+            >
+              👀 شوف المنتج لي كتهضر عليه الدكتورة
+            </a>
+          )}
+
+          {/* Hard CTA ON the video + instruction, glued above the progress bar */}
           {started && !ended && nearEnd && (
-            <div className="absolute bottom-8 inset-x-0 flex flex-col items-center pointer-events-none">
-              <span className="bg-black/60 text-white text-xs font-bold px-4 py-1.5 rounded-full backdrop-blur-sm mb-1">
-                الطلب من الزر لي تحت 👇
+            <div className="absolute bottom-8 inset-x-4 flex flex-col items-center gap-2">
+              <span className="bg-black/60 text-white text-xs font-bold px-4 py-1.5 rounded-full backdrop-blur-sm pointer-events-none">
+                اضغط على الزر الأحمر 👇 باش تطلب الوصفة
               </span>
-              <span className="text-3xl animate-bounce">⬇️</span>
+              <a
+                href={OFFER_URL}
+                className="w-full bg-red-600 text-white font-bold py-4 rounded-2xl text-base text-center shadow-lift animate-pulse"
+              >
+                🎁 اطلب الوصفة دابا — متبقي علب قليلة
+              </a>
             </div>
           )}
 
-          {/* Minimal custom controls (bottom corner, above the bar) */}
+          {/* Minimal custom controls (top-left corner, away from CTAs) */}
           {started && !ended && (
-            <div className="absolute bottom-4 left-3 flex gap-2">
+            <div className="absolute top-3 left-3 flex gap-2">
               <button
                 onClick={toggleMute}
                 className="w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center backdrop-blur-sm"
@@ -315,6 +330,18 @@ export default function MafasilLandingClient() {
           </a>
         )}
       </div>
+
+      {/* Fixed bottom bar: always on screen once the reveal moment arrives,
+          no matter where the visitor is on the page */}
+      {(nearEnd || ended) && (
+        <a
+          href={OFFER_URL}
+          className="fixed bottom-0 inset-x-0 z-50 bg-red-600 text-white font-bold py-4 px-4 text-center text-base shadow-lift animate-pulse"
+        >
+          🎁 اضغط هنا باش تطلب الوصفة — قبل ما تسالي الكمية
+        </a>
+      )}
+      {(nearEnd || ended) && <div className="h-16" />}
     </div>
   );
 }
