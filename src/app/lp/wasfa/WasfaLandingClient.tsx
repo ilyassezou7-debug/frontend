@@ -119,7 +119,9 @@ export default function WasfaLandingClient() {
         {
           product_id: PRODUCT.id,
           offer_id: selected.offerId,
-          quantity: selected.quantity,
+          // quantity = how many times this offer was added (always 1 here);
+          // unit_count = boxes inside the offer. Backend multiplies them.
+          quantity: 1,
           unit_count: selected.quantity,
           price: selected.price,
           source: "product_page",
