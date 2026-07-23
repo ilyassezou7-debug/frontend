@@ -186,7 +186,7 @@ export default function WasfaLandingClient() {
             </div>
             <div>
               <p className="font-display font-bold text-teal-dark text-lg">
-                رسالة من الدكتورة أسماء
+                رسالة من الدكتورة فتيحة الزعيم
               </p>
               <p className="text-muted text-sm">
                 إلى كل واحد شاف الفيديو وكيعاني من آلام المفاصل
