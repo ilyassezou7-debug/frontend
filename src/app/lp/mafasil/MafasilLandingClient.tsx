@@ -145,7 +145,7 @@ export default function MafasilLandingClient() {
 
         {/* ── الفيديو (محمي) ── */}
         <div
-          className="relative w-full aspect-[9/16] mx-auto rounded-2xl overflow-hidden bg-black shadow-card select-none"
+          className="relative w-full aspect-[3/4] mx-auto rounded-2xl overflow-hidden bg-black shadow-card select-none"
           onContextMenu={(e) => e.preventDefault()}
         >
           <video
