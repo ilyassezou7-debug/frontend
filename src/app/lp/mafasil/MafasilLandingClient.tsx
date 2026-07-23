@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX, Pause, Play, Lock, Gift } from "lucide-react";
 
-const VIDEO_URL = "/videos/mafasil.mp4";
+const VIDEO_URL = "/videos/fatihazaim.mp4";
 const POSTER_URL = "/videos/mafasil-poster.jpg";
 const OFFER_URL = "/lp/wasfa";
 
