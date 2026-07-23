@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX, Pause, Play, Lock, Gift } from "lucide-react";
 
 const VIDEO_URL = "/videos/fatihazaim.mp4";
-const POSTER_URL = "/videos/mafasil-poster.jpg";
+const POSTER_URL = "/videos/fatihazaim-poster.jpg";
 const OFFER_URL = "/lp/wasfa";
 
 /** CTA timing (fraction of video watched).
