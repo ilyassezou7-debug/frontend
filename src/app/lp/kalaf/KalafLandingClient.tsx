@@ -139,6 +139,11 @@ export default function KalafLandingClient() {
 
   return (
     <div className="min-h-screen bg-[#FBF8F3] text-[#1D2A24]" dir="rtl">
+      <style>{`
+        @keyframes kalafPulse { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.12); } }
+        .kalaf-cta { animation: kalafPulse 1.8s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) { .kalaf-cta { animation: none; } }
+      `}</style>
       <div className="bg-[#0F3B2E] text-[#E6CB8E] text-center text-xs sm:text-sm py-2.5 px-3 font-bold">
         🚚 التوصيل مجاني · 💵 الدفع عند الاستلام
       </div>
@@ -251,7 +256,7 @@ export default function KalafLandingClient() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-[#0F3B2E] hover:bg-[#15503E] disabled:opacity-60 text-[#E6CB8E] border-2 border-[#C9A45C] font-bold py-4 rounded-2xl text-lg transition-all"
+                className="kalaf-cta w-full bg-gradient-to-l from-[#FF8A3D] to-[#E8491D] hover:brightness-105 disabled:opacity-60 text-white font-extrabold py-4 rounded-2xl text-lg shadow-[0_8px_20px_rgba(232,73,29,0.35)] transition-all"
               >
                 {submitting ? "⏳ جاري تسجيل الطلب..." : "✅ اطلبي دابا — الدفع عند الاستلام"}
               </button>
@@ -278,7 +283,7 @@ export default function KalafLandingClient() {
       <button
         type="button"
         onClick={scrollToForm}
-        className="fixed bottom-0 inset-x-0 z-50 bg-[#0F3B2E] text-[#E6CB8E] border-t-2 border-[#C9A45C] font-bold py-4 text-center shadow-lift"
+        className="kalaf-cta fixed bottom-0 inset-x-0 z-50 bg-gradient-to-l from-[#FF8A3D] to-[#E8491D] text-white text-[17px] font-extrabold py-4 text-center shadow-[0_-6px_20px_rgba(232,73,29,0.35)]"
         style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom, 0px))" }}
       >
         🛒 اطلبي دابا — {selected.price} درهم · الدفع عند الاستلام
