@@ -25,6 +25,11 @@ import {
   MapPin,
 } from "lucide-react";
 import { PRODUCTS, getSinglePrice } from "@/config/products";
+
+/** Products sold only on an /lp/ page, not in the PRODUCTS catalogue. */
+const LP_PRODUCTS: Record<string, { name: string; image: string }> = {
+  melasma_cream: { name: "كريم الكلف · Atlas Pure", image: "/images/lp/kalaf/12_close.webp" },
+};
 import { SITE_CONFIG } from "@/config/site";
 import { formatMAD } from "@/lib/money";
 import { useCartStore } from "@/store/cart-store";
@@ -417,10 +422,10 @@ export default function ThankYouClient() {
                   return (
                     <li key={i} className="flex items-center gap-3 sm:gap-4 px-5 py-4">
                       <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-sand flex-shrink-0">
-                        {product && (
+                        {(product || LP_PRODUCTS[item.product_id]) && (
                           <Image
-                            src={product.images.hero}
-                            alt={product.shortName}
+                            src={product?.images.hero ?? LP_PRODUCTS[item.product_id].image}
+                            alt={product?.shortName ?? LP_PRODUCTS[item.product_id].name}
                             fill
                             className="object-cover"
                             sizes="64px"
@@ -429,7 +434,7 @@ export default function ThankYouClient() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-charcoal text-sm sm:text-base truncate leading-tight">
-                          {product?.shortName ?? item.product_id}
+                          {product?.shortName ?? LP_PRODUCTS[item.product_id]?.name ?? item.product_id}
                         </p>
                         <p className="text-xs text-muted mt-1 leading-snug">
                           {item.unit_count} {item.unit_count === 1 ? "علبة" : "علب"}
