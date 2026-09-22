@@ -2,17 +2,25 @@
 
 import { useEffect, type ReactNode } from "react";
 import Script from "next/script";
+import { usePathname } from "next/navigation";
 import { trackPageView, saveLandingUrl } from "@/lib/tracking";
 
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "800384379801833";
 const TIKTOK_PIXEL_ID = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID || "D8506I3C77U73K7PGR40";
 const SNAP_PIXEL_ID = process.env.NEXT_PUBLIC_SNAP_PIXEL_ID;
 
+/** Speed-critical ad bridge pages (German Amazon books): no TikTok, and instead of Meta's 250 KB library (≈2.8 s of
+ *  phone CPU) a 1 KB sender posts events straight to facebook.com/tr. It creates _fbp/_fbc exactly like fbevents.js
+ *  (incl. fbclid from the ad click), so attribution keeps working; keepalive requests survive the redirect to Amazon. */
+const DEFERRED_PATHS = ["/lp/bestie-duell"];
+
 interface PixelProviderProps {
   children: ReactNode;
 }
 
 export default function PixelProvider({ children }: PixelProviderProps) {
+  const pathname = usePathname() || "";
+  const deferred = DEFERRED_PATHS.some((p) => pathname.startsWith(p));
   useEffect(() => {
     saveLandingUrl();
     trackPageView();
@@ -21,7 +29,30 @@ export default function PixelProvider({ children }: PixelProviderProps) {
   return (
     <>
       {/* Meta Pixel */}
-      {META_PIXEL_ID && (
+      {META_PIXEL_ID && deferred && (
+        <Script
+          id="meta-pixel-lite"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              !function(f,b){if(f.fbq)return;var id='${META_PIXEL_ID}',now=Date.now();
+              function ck(n){var m=b.cookie.match('(?:^|; )'+n+'=([^;]+)');return m?m[1]:null}
+              function set(n,v){b.cookie=n+'='+v+';path=/;max-age=7776000;SameSite=Lax'}
+              var fbp=ck('_fbp');if(!fbp){fbp='fb.1.'+now+'.'+Math.floor(Math.random()*2147483647);set('_fbp',fbp)}
+              var cl=new URLSearchParams(location.search).get('fbclid'),fbc=ck('_fbc');
+              if(cl&&(!fbc||fbc.split('.').pop()!==cl)){fbc='fb.1.'+now+'.'+cl;set('_fbc',fbc)}
+              var pv=0;f.fbq=function(cmd,ev,cd,opt){if(cmd!=='track')return;if(ev==='PageView'){if(pv)return;pv=1}
+                var q=new URLSearchParams({id:id,ev:ev,dl:location.href,rl:b.referrer,ts:String(Date.now()),fbp:fbp});
+                if(fbc)q.set('fbc',fbc);if(opt&&opt.eventID)q.set('eid',opt.eventID);
+                if(cd)for(var k in cd){var v=cd[k];q.set('cd['+k+']',typeof v==='object'?JSON.stringify(v):String(v))}
+                var u='https://www.facebook.com/tr?'+q.toString();
+                try{fetch(u,{mode:'no-cors',keepalive:true,credentials:'include'})}catch(e){new Image().src=u}};
+              f.fbq.lite=1;f.fbq('track','PageView')}(window,document);
+            `,
+          }}
+        />
+      )}
+      {META_PIXEL_ID && !deferred && (
         <>
           <Script
             id="meta-pixel"
@@ -56,7 +87,7 @@ export default function PixelProvider({ children }: PixelProviderProps) {
       )}
 
       {/* TikTok Pixel */}
-      {TIKTOK_PIXEL_ID && (
+      {TIKTOK_PIXEL_ID && !deferred && (
         <Script
           id="tiktok-pixel"
           strategy="afterInteractive"

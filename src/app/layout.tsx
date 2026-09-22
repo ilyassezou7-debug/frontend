@@ -11,7 +11,9 @@ const notoSansArabic = Noto_Sans_Arabic({
   weight: ["400", "600", "700"],
   variable: "--font-noto-arabic",
   display: "swap",
-  preload: true,
+  // Not preloaded: a preload would force this 160 KB Arabic font onto every page, including the German /lp/ pages.
+  // Arabic pages still fetch it as soon as their text renders (display: swap).
+  preload: false,
 });
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({

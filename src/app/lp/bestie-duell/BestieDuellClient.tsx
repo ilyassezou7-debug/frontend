@@ -15,30 +15,22 @@ const ASIN = "B0HGTZ5PN3";
 const PRICE = 9.99;
 /** Swap in the Amazon Attribution link (Amazon Ads -> Attribution) once it exists, to see which clicks became sales. */
 const AMAZON_URL = `https://www.amazon.de/dp/${ASIN}`;
-const IMG = (n: string) => `/images/lp/bestie/${n}.webp`;
 
 type Fbq = (...args: unknown[]) => void;
-type Ttq = { track: (...args: unknown[]) => void };
 
-function track(event: "ViewContent" | "InitiateCheckout") {
+function track(event: "ViewContent") {
   if (typeof window === "undefined") return;
   const params = { value: PRICE, currency: "EUR", content_ids: [ASIN], content_type: "product", content_name: "DAS BESTIE-DUELL" };
   const eventID = generateEventId();
-  const w = window as unknown as { fbq?: Fbq; ttq?: Ttq };
+  const w = window as unknown as { fbq?: Fbq };
   try { w.fbq?.("track", event, params, { eventID }); } catch { /* pixel blocked */ }
-  try { w.ttq?.track(event, { value: PRICE, currency: "EUR", content_id: ASIN }, { event_id: eventID }); } catch { /* pixel blocked */ }
 }
 
 function AmazonButton({ label = "Jetzt bei Amazon ansehen", big = false }: { label?: string; big?: boolean }) {
-  const go = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    track("InitiateCheckout");
-    setTimeout(() => { window.location.href = AMAZON_URL; }, 280);   // give the pixel a moment to send
-  };
   return (
     <a
       href={AMAZON_URL}
-      onClick={go}
+      onClick={goAmazon}
       rel="noopener"
       className={`bd-cta flex w-full max-w-[460px] whitespace-nowrap items-center justify-center gap-3 rounded-full bg-[#E8356D] hover:bg-[#D12A60] text-white font-[family-name:var(--font-bd-display)] font-extrabold shadow-[0_10px_24px_rgba(232,53,109,0.35)] transition-colors focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[#2A1B3D] ${
         big ? "text-xl px-6 py-5" : "text-[17px] px-5 py-4"
@@ -67,25 +59,49 @@ const FAQ = [
   ["Wie läuft Bestellung und Versand?", "Du bestellst direkt bei Amazon. Zahlung, Versand und Rückgabe laufen komplett über Amazon – mit dem gewohnten Käuferschutz."],
 ];
 
-const SECTION = (n: string) => `/images/lp/bestie/s_${n}.webp`;
 const SIZES: Record<string, [number, number]> = {
   "01_hero": [1080, 1920], "02_stats": [1080, 1620], "03_how": [1080, 1620], "04_inside": [1080, 1620],
   "05_moments": [1080, 1920], "06_trust": [1080, 1620], "07_final": [1080, 1620],
 };
 
+/** One InitiateCheckout per click through the lightweight Meta sender (keepalive request, survives the redirect),
+ *  then go to Amazon. */
 function goAmazon(e?: React.MouseEvent) {
   e?.preventDefault();
-  track("InitiateCheckout");
-  setTimeout(() => { window.location.href = AMAZON_URL; }, 280);   // give the pixel a moment to send
+  const w = window as unknown as { fbq?: Fbq };
+  try {
+    w.fbq?.("track", "InitiateCheckout",
+      { value: PRICE, currency: "EUR", content_ids: [ASIN], content_type: "product", content_name: "DAS BESTIE-DUELL" },
+      { eventID: generateEventId() });
+  } catch { /* blocked */ }
+  setTimeout(() => { window.location.href = AMAZON_URL; }, 150);
+}
+
+/** Responsive AVIF/WebP: phones get the 480/720 px file instead of the 1080 px master. */
+function Pic({ base, widths, sizes, w, h, alt, eager = false, className = "block w-full h-auto" }: {
+  base: string; widths: number[]; sizes: string; w: number; h: number; alt: string; eager?: boolean; className?: string;
+}) {
+  const set = (ext: string) => widths.map((x) => `${base}-${x}.${ext} ${x}w`).join(", ");
+  // The first-screen image stays WebP: AVIF is smaller but decodes much slower on budget phones, which delayed its paint.
+  return (
+    <picture>
+      {!eager && <source type="image/avif" srcSet={set("avif")} sizes={sizes} />}
+      <img src={`${base}-${widths[widths.length - 1]}.webp`} srcSet={set("webp")} sizes={sizes} alt={alt} width={w} height={h}
+           loading={eager ? "eager" : "lazy"} decoding="async" fetchPriority={eager ? "high" : "low"} className={className} />
+    </picture>
+  );
 }
 
 /** A designed section image (German text written in by gpt-image-2). Sections with a drawn button open Amazon on tap. */
 function Section({ n, alt, cta = false, eager = false }: { n: string; alt: string; cta?: boolean; eager?: boolean }) {
   const [w, h] = SIZES[n];
-  const img = <img src={SECTION(n)} alt={alt} width={w} height={h} loading={eager ? "eager" : "lazy"}
-                   fetchPriority={eager ? "high" : undefined} className="block w-full h-auto" />;
+  const img = <Pic base={`/images/lp/bestie/s_${n}`} widths={[480, 720, 828, 1080]} sizes="(max-width: 540px) 100vw, 540px" w={w} h={h} alt={alt} eager={eager} />;
   return cta ? <a href={AMAZON_URL} onClick={goAmazon} aria-label={alt} className="block">{img}</a> : img;
 }
+
+const PAGE = (n: string, alt: string, cls: string) => (
+  <Pic base={`/images/lp/bestie/${n}`} widths={[400, 700]} sizes="(max-width: 540px) 50vw, 270px" w={1320} h={960} alt={alt} className={cls} />
+);
 
 export default function BestieDuellClient() {
   useEffect(() => {
@@ -112,15 +128,15 @@ export default function BestieDuellClient() {
           <h2 className={`${display} font-black text-3xl text-center mt-1`}>Echte Seiten, genau so gedruckt.</h2>
           <figure className="mt-6 bg-white rounded-2xl p-2 border border-[#EDE0F1]">
             <div className="grid grid-cols-2 gap-1.5">
-              <img src={IMG("p010")} alt="Echte Buchseite: Spielfeld der ersten Spielerin" width={1320} height={960} loading="lazy" className="w-full h-auto rounded-md" />
-              <img src={IMG("p011")} alt="Echte Buchseite: Spielfeld der zweiten Spielerin" width={1320} height={960} loading="lazy" className="w-full h-auto rounded-md" />
+              {PAGE("p010", "Echte Buchseite: Spielfeld der ersten Spielerin", "block w-full h-auto rounded-md")}
+              {PAGE("p011", "Echte Buchseite: Spielfeld der zweiten Spielerin", "block w-full h-auto rounded-md")}
             </div>
             <figcaption className="text-center text-xs text-[#7A6A86] pt-2 pb-1">Echte Doppelseite – Spiel 1 „Armband-Muster“, jede hat ihre Seite</figcaption>
           </figure>
           <div className="mt-4 grid grid-cols-2 gap-3">
             {PAGES.map((p) => (
               <figure key={p.n} className="bg-white rounded-xl overflow-hidden border border-[#EDE0F1]">
-                <img src={IMG(p.n)} alt={p.t} width={1320} height={960} loading="lazy" className="w-full h-auto border-b border-[#EDE0F1]" />
+                {PAGE(p.n, p.t, "block w-full h-auto border-b border-[#EDE0F1]")}
                 <figcaption className="p-3"><p className={`${display} font-extrabold text-sm leading-tight`}>{p.t}</p><p className="text-xs text-[#4B3A5C] mt-1 leading-snug">{p.d}</p></figcaption>
               </figure>
             ))}
@@ -155,7 +171,7 @@ export default function BestieDuellClient() {
       </main>
 
       {/* ── sticky CTA ── */}
-      <div className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-t border-[#F2E4EC] px-4 pt-3" style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))" }}>
+      <div className="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-[#F2E4EC] px-4 pt-3" style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))" }}>
         <a href={AMAZON_URL} onClick={goAmazon}
            className={`${display} bd-cta flex items-center justify-center gap-3 max-w-[508px] mx-auto rounded-full bg-[#E8356D] text-white font-extrabold text-lg py-3.5`}>
           Jetzt bei Amazon ansehen · {PRICE.toFixed(2).replace(".", ",")} €
