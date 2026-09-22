@@ -27,7 +27,7 @@ for (const page of PAGES) {
     .replace(/<script\b[^>]*noModule[^>]*><\/script>/gi, "")
     .replace(/\/lp-src\//g, "/lp/");
   if (/_next\/static\/chunks|__next_f/.test(html)) throw new Error(`${page}: framework scripts left in the export`);
-  if (!/fbq\('track','ViewContent'/.test(html) || !/a\[data-amz\]/.test(html)) throw new Error(`${page}: tracking script missing`);
+  if (!/__send\('ViewContent'/.test(html) || !/a\[data-amz\]/.test(html)) throw new Error(`${page}: tracking script missing`);
   const out = join(ROOT, "public", "lp", `${page}.html`);
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, html);

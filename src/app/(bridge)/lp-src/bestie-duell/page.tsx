@@ -85,7 +85,7 @@ export default function BestieDuellPage() {
   return (
     <>
       <script dangerouslySetInnerHTML={{
-        __html: `window.__product=${JSON.stringify(PRODUCT)};try{fbq('track','ViewContent',window.__product,{eventID:__eid()})}catch(e){}`,
+        __html: `window.__product=${JSON.stringify(PRODUCT)};try{__send('ViewContent',window.__product,__eid())}catch(e){}`,
       }} />
       <main className="wrap">
         <Section n="01_hero" alt="DAS BESTIE-DUELL – Wer kennt wen wirklich besser? Jetzt bei Amazon kaufen, 9,99 €" cta eager />
