@@ -13,7 +13,9 @@ const ASIN = "B0HGTZ5PN3";
 const PRICE = 9.99;
 const PRICE_DE = "9,99 €";
 /** Swap in the Amazon Attribution link (Amazon Ads -> Attribution) to see which clicks became sales. */
-const AMAZON_URL = `https://www.amazon.de/dp/${ASIN}`;
+/** Canonical product URL (with the title slug): the bare /dp/ link is more often swallowed by the Amazon app,
+ *  which then opens its homepage instead of the book. */
+const AMAZON_URL = `https://www.amazon.de/DAS-BESTIE-DUELL-Freundinnen-Bildschirm-Geschenk/dp/${ASIN}`;
 const PRODUCT = { value: PRICE, currency: "EUR", content_ids: [ASIN], content_type: "product", content_name: "DAS BESTIE-DUELL" };
 
 export const metadata: Metadata = {
@@ -69,7 +71,7 @@ function Pic({ base, widths, sizes, w, h, alt, eager = false }: {
 function Section({ n, alt, cta = false, eager = false }: { n: string; alt: string; cta?: boolean; eager?: boolean }) {
   const [w, h] = SIZES[n];
   const img = <Pic base={`/images/lp/bestie/s_${n}`} widths={[480, 640, 750, 828, 1080]} sizes="(max-width: 540px) 100vw, 540px" w={w} h={h} alt={alt} eager={eager} />;
-  return cta ? <a href={AMAZON_URL} data-amz="" aria-label={alt} className="blk">{img}</a> : img;
+  return cta ? <a href={AMAZON_URL} data-amz="" rel="noopener noreferrer" aria-label={alt} className="blk">{img}</a> : img;
 }
 
 const Page = (n: string, alt: string) => (
@@ -78,7 +80,7 @@ const Page = (n: string, alt: string) => (
 
 function AmazonButton({ label = "Jetzt bei Amazon kaufen" }: { label?: string }) {
   return (
-    <a href={AMAZON_URL} data-amz="" rel="noopener" className="btn pulse">
+    <a href={AMAZON_URL} data-amz="" rel="noopener noreferrer" className="btn pulse">
       {label}<i>{PRICE_DE}</i>
     </a>
   );
@@ -139,7 +141,7 @@ export default function BestieDuellPage() {
       </main>
 
       <div className="sticky">
-        <a href={AMAZON_URL} data-amz="" className="btn pulse nu">Jetzt bei Amazon kaufen · {PRICE_DE}</a>
+        <a href={AMAZON_URL} data-amz="" rel="noopener noreferrer" className="btn pulse nu">Jetzt bei Amazon kaufen · {PRICE_DE}</a>
       </div>
       <div className="spacer" />
     </>

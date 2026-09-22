@@ -105,6 +105,9 @@ export default function BridgeLayout({ children }: Readonly<{ children: React.Re
   return (
     <html lang="de" dir="ltr">
       <head>
+        {/* No referrer to Amazon: some traffic from unknown referrers gets Amazon's "Weiter shoppen" interstitial
+            instead of the product page. Harmless for our own tracking (the pixel fires before the redirect). */}
+        <meta name="referrer" content="no-referrer" />
         <link rel="preload" href="/fonts/nunito-latin-var.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <style dangerouslySetInnerHTML={{ __html: CSS }} />
         <script dangerouslySetInnerHTML={{ __html: PIXEL }} />
