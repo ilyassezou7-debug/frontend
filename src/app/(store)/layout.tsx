@@ -1,38 +1,12 @@
 import type { Metadata } from "next";
-import { Noto_Sans_Arabic, IBM_Plex_Sans_Arabic, Inter } from "next/font/google";
+import "./fonts.css";
 import "./globals.css";
 import { ConditionalHeader, ConditionalFooter, ConditionalAnnouncementBar } from "@/components/layout/ConditionalLayout";
 import PixelProvider from "@/components/tracking/PixelProvider";
 import { SITE_CONFIG } from "@/config/site";
 
-const notoSansArabic = Noto_Sans_Arabic({
-  subsets: ["arabic"],
-  // Trimmed from 6 weights to 3 — covers body (400), semi-bold (600), bold (700)
-  weight: ["400", "600", "700"],
-  variable: "--font-noto-arabic",
-  display: "swap",
-  // Not preloaded: a preload would force this 160 KB Arabic font onto every page, including the German /lp/ pages.
-  // Arabic pages still fetch it as soon as their text renders (display: swap).
-  preload: false,
-});
-
-const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
-  subsets: ["arabic"],
-  // Display font only needs medium + bold
-  weight: ["500", "700"],
-  variable: "--font-ibm-arabic",
-  display: "swap",
-  preload: false,
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  // Numbers / latin admin UI — regular + medium only
-  weight: ["400", "500"],
-  variable: "--font-inter",
-  display: "swap",
-  preload: false,
-});
+// Fonts are self-hosted in public/fonts (see fonts.css): next/font/google downloads at build time, and that
+// download failed a deploy on 2026-09-22.
 
 export const metadata: Metadata = {
   title: {
@@ -81,17 +55,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ar"
-      dir="rtl"
-      className={`${notoSansArabic.variable} ${ibmPlexSansArabic.variable} ${inter.variable}`}
-    >
+    <html lang="ar" dir="rtl">
       <head>
-        {/* Preconnect to Google Fonts origins so the TLS handshake is done
-            before the browser even parses the font CSS — saves ~200 ms on
-            first load on average connections. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/noto-arabic-0.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className="font-arabic">
         <PixelProvider>
