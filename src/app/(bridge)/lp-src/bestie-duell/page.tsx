@@ -13,9 +13,12 @@ const ASIN = "B0HGTZ5PN3";
 const PRICE = 9.99;
 const PRICE_DE = "9,99 €";
 /** Swap in the Amazon Attribution link (Amazon Ads -> Attribution) to see which clicks became sales. */
-/** Canonical product URL (with the title slug): the bare /dp/ link is more often swallowed by the Amazon app,
- *  which then opens its homepage instead of the book. */
-const AMAZON_URL = `https://www.amazon.de/DAS-BESTIE-DUELL-Freundinnen-Bildschirm-Geschenk/dp/${ASIN}`;
+/** Amazon Attribution link for the Meta campaign "Bestie Momente - Facebook" (Amazon Ads -> Attribution), so
+ *  Amazon reports which clicks became sales. The tracking parameters are appended to the CANONICAL product path:
+ *  the bare /dp/ form gets swallowed by the Amazon app, which then opens its homepage instead of the book. */
+const AMAZON_ATTRIBUTION = "maas=maas_adg_FA49BBCBF667C60BFDA595FFE2A61E81_afap_abs&ref_=aa_maas&tag=maas";
+const AMAZON_URL = `https://www.amazon.de/DAS-BESTIE-DUELL-Freundinnen-Bildschirm-Geschenk/dp/${ASIN}?${AMAZON_ATTRIBUTION}`;
+
 const PRODUCT = { value: PRICE, currency: "EUR", content_ids: [ASIN], content_type: "product", content_name: "DAS BESTIE-DUELL" };
 
 export const metadata: Metadata = {
