@@ -48,15 +48,18 @@ const FAQ = [
   ["Wie läuft Bestellung und Versand?", "Du bestellst direkt bei Amazon. Zahlung, Versand und Rückgabe laufen komplett über Amazon – mit dem gewohnten Käuferschutz."],
 ];
 
+/** Bump when a section image is regenerated: /images/* is cached for 30 days, so the URL has to change. */
+const V = "2";
+
 /** Responsive AVIF/WebP. The first-screen image stays WebP: AVIF decodes much slower on budget phones. */
 function Pic({ base, widths, sizes, w, h, alt, eager = false }: {
   base: string; widths: number[]; sizes: string; w: number; h: number; alt: string; eager?: boolean;
 }) {
-  const set = (ext: string) => widths.map((x) => `${base}-${x}.${ext} ${x}w`).join(", ");
+  const set = (ext: string) => widths.map((x) => `${base}-${x}.${ext}?v=${V} ${x}w`).join(", ");
   return (
     <picture>
       {!eager && <source type="image/avif" srcSet={set("avif")} sizes={sizes} />}
-      <img src={`${base}-${widths[widths.length - 1]}.webp`} srcSet={set("webp")} sizes={sizes} alt={alt} width={w} height={h}
+      <img src={`${base}-${widths[widths.length - 1]}.webp?v=${V}`} srcSet={set("webp")} sizes={sizes} alt={alt} width={w} height={h}
            loading={eager ? "eager" : "lazy"} decoding="async" fetchPriority={eager ? "high" : "low"} />
     </picture>
   );
