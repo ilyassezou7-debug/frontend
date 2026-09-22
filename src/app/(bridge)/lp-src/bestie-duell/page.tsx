@@ -73,7 +73,7 @@ const Page = (n: string, alt: string) => (
   <Pic base={`/images/lp/bestie/${n}`} widths={[400, 560, 700]} sizes="(max-width: 540px) 50vw, 270px" w={1320} h={960} alt={alt} />
 );
 
-function AmazonButton({ label = "Jetzt bei Amazon ansehen" }: { label?: string }) {
+function AmazonButton({ label = "Jetzt bei Amazon kaufen" }: { label?: string }) {
   return (
     <a href={AMAZON_URL} data-amz="" rel="noopener" className="btn pulse">
       {label}<i>{PRICE_DE}</i>
@@ -88,7 +88,7 @@ export default function BestieDuellPage() {
         __html: `window.__product=${JSON.stringify(PRODUCT)};try{fbq('track','ViewContent',window.__product,{eventID:__eid()})}catch(e){}`,
       }} />
       <main className="wrap">
-        <Section n="01_hero" alt="DAS BESTIE-DUELL – Wer kennt wen wirklich besser? Jetzt bei Amazon ansehen, 9,99 €" cta eager />
+        <Section n="01_hero" alt="DAS BESTIE-DUELL – Wer kennt wen wirklich besser? Jetzt bei Amazon kaufen, 9,99 €" cta eager />
         <Section n="02_stats" alt="Handys weg. Duell an. 25 Spiele, 120 Seiten, 2 Spielerinnen, 0 Bildschirme" />
         <Section n="03_how" alt="So funktioniert's: gegenübersetzen, Buch drehen, gleichzeitig spielen" />
 
@@ -117,7 +117,7 @@ export default function BestieDuellPage() {
         <div className="row"><AmazonButton /></div>
         <Section n="05_moments" alt="Für jeden besonderen Moment: Geburtstag, Übernachtungsparty, Ferien und Autofahrten, Nachmittage ohne Handy" />
         <Section n="06_trust" alt="Sicher bestellen über Amazon – Produktdetails: Ilyass Zouhri, Taschenbuch 21 × 15 cm, 120 Seiten, ab 10 Jahren, ISBN 979-8170276127" />
-        <div className="row dark"><AmazonButton label="Zum Buch auf Amazon" /></div>
+        <div className="row dark"><AmazonButton label="Buch jetzt kaufen" /></div>
 
         <section className="faq">
           <h2 className="h2">Häufige Fragen</h2>
@@ -129,14 +129,14 @@ export default function BestieDuellPage() {
           ))}
         </section>
 
-        <Section n="07_final" alt="Handys weg. Duell an. Jetzt bei Amazon ansehen, 9,99 €" cta />
+        <Section n="07_final" alt="Handys weg. Duell an. Jetzt bei Amazon kaufen, 9,99 €" cta />
         <footer className="foot">
           © {new Date().getFullYear()} Ilyass Zouhri · DAS BESTIE-DUELL<br />Amazon und das Amazon-Logo sind Marken von Amazon.com, Inc. oder verbundenen Unternehmen.
         </footer>
       </main>
 
       <div className="sticky">
-        <a href={AMAZON_URL} data-amz="" className="btn pulse nu">Jetzt bei Amazon ansehen · {PRICE_DE}</a>
+        <a href={AMAZON_URL} data-amz="" className="btn pulse nu">Jetzt bei Amazon kaufen · {PRICE_DE}</a>
       </div>
       <div className="spacer" />
     </>
