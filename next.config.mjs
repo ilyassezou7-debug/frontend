@@ -35,8 +35,20 @@ const nextConfig = {
     scrollRestoration: true,
   },
 
+  // German Amazon bridge pages are served as fully static HTML (no framework JS) - see tools/export-bridge.mjs
+  async rewrites() {
+    return {
+      beforeFiles: [{ source: "/lp/bestie-duell", destination: "/lp/bestie-duell.html" }],
+    };
+  },
+
   async headers() {
     return [
+      {
+        // Static bridge pages: short browser cache so edits show up quickly
+        source: "/lp/:page*.html",
+        headers: [{ key: "Cache-Control", value: "public, max-age=300, stale-while-revalidate=3600" }],
+      },
       {
         // Immutable cache for all Next.js hashed static chunks (_next/static)
         source: "/_next/static/:path*",

@@ -2,8 +2,10 @@
 import type { Metadata } from "next";
 
 /**
- * Bridge page for the German KDP book DAS BESTIE-DUELL (atlaspure.shop/lp/bestie-duell): persuades, then sends the
- * visitor to Amazon.de. Pure server-rendered HTML - no page JavaScript, no stylesheet file (see (bridge)/layout.tsx).
+ * TEMPLATE for the German bridge page DAS BESTIE-DUELL. Visitors never see this route (/lp-src/bestie-duell):
+ * `node tools/export-bridge.mjs` renders it and writes public/lp/bestie-duell.html without any Next.js framework
+ * scripts, and next.config.mjs serves that static file at /lp/bestie-duell. After editing this file:
+ * npm run build && npm run start, then node tools/export-bridge.mjs, then commit public/lp/bestie-duell.html.
  * Tracking: PageView (layout), ViewContent (script below), InitiateCheckout on every a[data-amz] click (layout).
  * Only real facts: real page renders from the print PDF, real specs from the Amazon listing, no invented reviews.
  */
@@ -63,12 +65,12 @@ function Pic({ base, widths, sizes, w, h, alt, eager = false }: {
 /** A designed section image (German text written in by gpt-image-2). Sections with a drawn button open Amazon. */
 function Section({ n, alt, cta = false, eager = false }: { n: string; alt: string; cta?: boolean; eager?: boolean }) {
   const [w, h] = SIZES[n];
-  const img = <Pic base={`/images/lp/bestie/s_${n}`} widths={[480, 720, 828, 1080]} sizes="(max-width: 540px) 100vw, 540px" w={w} h={h} alt={alt} eager={eager} />;
+  const img = <Pic base={`/images/lp/bestie/s_${n}`} widths={[480, 640, 750, 828, 1080]} sizes="(max-width: 540px) 100vw, 540px" w={w} h={h} alt={alt} eager={eager} />;
   return cta ? <a href={AMAZON_URL} data-amz="" aria-label={alt} className="blk">{img}</a> : img;
 }
 
 const Page = (n: string, alt: string) => (
-  <Pic base={`/images/lp/bestie/${n}`} widths={[400, 700]} sizes="(max-width: 540px) 50vw, 270px" w={1320} h={960} alt={alt} />
+  <Pic base={`/images/lp/bestie/${n}`} widths={[400, 560, 700]} sizes="(max-width: 540px) 50vw, 270px" w={1320} h={960} alt={alt} />
 );
 
 function AmazonButton({ label = "Jetzt bei Amazon ansehen" }: { label?: string }) {
