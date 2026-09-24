@@ -37,9 +37,10 @@ const config: Config = {
         gold: "0 14px 30px -10px rgba(184, 134, 47, 0.40)",
       },
       fontFamily: {
-        arabic: ["var(--font-noto-arabic)", "sans-serif"],
-        display: ["var(--font-ibm-arabic)", "sans-serif"],
-        sans: ["var(--font-inter)", "sans-serif"],
+        // One family for the whole store (see (store)/fonts.css)
+        arabic: ["var(--font-plex)"],
+        display: ["var(--font-plex)"],
+        sans: ["var(--font-plex)"],
       },
       borderRadius: {
         "2xl": "1rem",
@@ -60,6 +61,7 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-up": "ap-fade-up 0.5s ease-out both",
         "float": "ap-float 6s ease-in-out infinite",
+        "pop": "ap-pop 0.25s cubic-bezier(.2,1.4,.4,1) both",
       },
     },
   },

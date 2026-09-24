@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./fonts.css";
 import "./globals.css";
 import { ConditionalHeader, ConditionalFooter, ConditionalAnnouncementBar } from "@/components/layout/ConditionalLayout";
-import PixelProvider from "@/components/tracking/PixelProvider";
+import PixelProvider, { PIXEL_BOOT } from "@/components/tracking/PixelProvider";
 import { SITE_CONFIG } from "@/config/site";
 
 // Fonts are self-hosted in public/fonts (see fonts.css): next/font/google downloads at build time, and that
@@ -57,9 +57,13 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <link rel="preload" href="/fonts/noto-arabic-0.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/plex-arabic-400.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/plex-arabic-700.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <script dangerouslySetInnerHTML={{ __html: PIXEL_BOOT }} />
       </head>
       <body className="font-arabic">
+        {/* No <noscript> pixel: React requested its image on every visit (a second PageView), and nobody can order
+            without JavaScript anyway. */}
         <PixelProvider>
           <ConditionalHeader />
           <div className="relative z-40">

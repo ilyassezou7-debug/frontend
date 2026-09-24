@@ -2,15 +2,17 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { ShoppingBag, ArrowUp, ListChecks } from "lucide-react";
+import { ListChecks } from "lucide-react";
 import type { Product, OfferId } from "@/types/product";
 import { formatMAD } from "@/lib/money";
 
 interface StickyBuyBarProps {
-  product: Product;
+  product: Pick<Product, "shortName" | "offers"> & { images: { hero: string } };
   selectedOffer: OfferId;
-  /** DOM id of the element to scroll to (the offer block heading). */
+  /** DOM id of the offer block: the bar hides while it is on screen. */
   targetId: string;
+  /** Opens the order form for the selected offer. Without it the bar scrolls back to the offers. */
+  onBuy?: () => void;
 }
 
 /**
@@ -18,13 +20,13 @@ interface StickyBuyBarProps {
  * the user is browsing content sections. Hidden when the offer block
  * (targetId) is in the viewport so it doesn't double-up with the inline CTA.
  *
- * Click → smooth scroll back to the offer block. The block uses `scroll-mt-*`
- * so the heading lands just under the sticky header (not page top).
+ * Tap → straight to the order form with the offer the shopper picked (default: the popular 2-pack).
  */
 export default function StickyBuyBar({
   product,
   selectedOffer,
   targetId,
+  onBuy,
 }: StickyBuyBarProps) {
   const [hidden, setHidden] = useState(true);
   const offer = product.offers.find((o) => o.offerId === selectedOffer)!;
@@ -44,6 +46,7 @@ export default function StickyBuyBar({
   }, [targetId]);
 
   function handleClick() {
+    if (onBuy) return onBuy();
     // Scroll to the offer selector specifically; fall back to the section
     const target =
       document.getElementById("offer-select") ??
@@ -100,12 +103,11 @@ export default function StickyBuyBar({
             <button
               type="button"
               onClick={handleClick}
-              aria-label="اطلب الآن – ارجع لاختيار العرض"
-              className="flex-shrink-0 inline-flex items-center gap-1.5 sm:gap-2 bg-teal hover:bg-teal-hover text-ivory font-bold text-sm sm:text-base px-3.5 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-md shadow-teal/20 active:scale-95 transition-all whitespace-nowrap"
+              tabIndex={hidden ? -1 : 0}
+              aria-label="اطلب الآن – الدفع عند الاستلام"
+              className="flex-shrink-0 inline-flex items-center gap-1.5 sm:gap-2 bg-teal hover:bg-teal-hover text-ivory font-bold text-base px-5 sm:px-7 min-h-[48px] rounded-xl shadow-md shadow-teal/20 active:scale-95 transition-all whitespace-nowrap"
             >
-              <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>اطلب الآن</span>
-              <ArrowUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
         </div>

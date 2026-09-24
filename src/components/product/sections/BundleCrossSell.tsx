@@ -3,24 +3,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Plus, ArrowLeft, ShoppingBag } from "lucide-react";
-import type { Product } from "@/types/product";
+import type { ProductId } from "@/types/product";
 import { formatMAD } from "@/lib/money";
-import { getSinglePrice } from "@/config/products";
 import { useCartStore } from "@/store/cart-store";
 
+/** Just what the card shows. (Importing the catalogue here used to ship all five products' copy to the phone.) */
+export interface CrossSellItem {
+  id: ProductId;
+  shortName: string;
+  hero: string;
+  /** Why this product completes the one being viewed */
+  pitch: string;
+  /** Regular single-unit price, shown struck through */
+  regularPrice: number;
+}
+
 interface BundleCrossSellProps {
-  primary: Product;
-  others: Product[];
+  others: CrossSellItem[];
 }
 
 /**
  * Bundle cross-sell — frames adding another product as a "complete routine"
  * with a (mock) bundle-style discount visual to lift AOV without changing real prices.
  */
-export default function BundleCrossSell({
-  primary,
-  others,
-}: BundleCrossSellProps) {
+export default function BundleCrossSell({ others }: BundleCrossSellProps) {
   if (others.length === 0) return null;
 
   return (
@@ -48,7 +54,7 @@ export default function BundleCrossSell({
                 {/* Combined image — current + the cross-sell */}
                 <div className="relative w-28 sm:w-32 flex-shrink-0 bg-sand">
                   <Image
-                    src={p.images.hero}
+                    src={p.hero}
                     alt={p.shortName}
                     fill
                     className="object-cover"
@@ -60,20 +66,20 @@ export default function BundleCrossSell({
                 </div>
 
                 <div className="flex-1 p-4 flex flex-col">
-                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-saffron mb-1">
+                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-saffron-dark mb-1">
                     أضِف إلى روتينك
                   </p>
                   <h3 className="font-bold text-charcoal text-base leading-tight mb-1">
                     {p.shortName}
                   </h3>
                   <p className="text-xs text-muted line-clamp-2 mb-3 flex-1">
-                    {primary.crossSellText[p.id] ?? p.headline}
+                    {p.pitch}
                   </p>
 
                   <div className="flex items-center justify-between mt-auto">
                     <div>
                       <p className="text-[10px] text-muted line-through tabular-nums leading-none">
-                        {formatMAD(getSinglePrice(p))}
+                        {formatMAD(p.regularPrice)}
                       </p>
                       <p className="font-bold text-teal text-base tabular-nums leading-none mt-1">
                         + {formatMAD(149)}

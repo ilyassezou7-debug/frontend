@@ -44,7 +44,7 @@ export default function BenefitsGrid({
                   <Icon className="w-5 h-5" />
                 </div>
                 <div className="pt-3">
-                  <p className="text-[10px] font-bold tracking-[0.2em] text-saffron mb-2">
+                  <p className="text-[11px] font-bold text-saffron-dark mb-2">
                     0{i + 1}
                   </p>
                   <h3 className="font-display font-bold text-xl text-charcoal mb-2 leading-tight">

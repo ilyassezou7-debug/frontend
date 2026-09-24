@@ -13,7 +13,7 @@ export default function AntiClaimStrip({ claims }: AntiClaimStripProps) {
     <section className="bg-white py-10 border-y border-border-soft">
       <div className="container-max">
         <div className="text-center mb-6">
-          <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-saffron mb-2">
+          <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-saffron-dark mb-2">
             خالٍ تماماً من
           </p>
           <h2 className="font-display font-bold text-2xl md:text-3xl text-charcoal">

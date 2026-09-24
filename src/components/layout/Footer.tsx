@@ -185,7 +185,7 @@ export default function Footer({ isSoftPage = false }: { isSoftPage?: boolean })
             جميع الحقوق محفوظة © 2026{" "}
             <span className="text-gold-gradient font-bold">أطلس بيور</span>
             <span className="hidden sm:inline text-ivory/30"> · </span>
-            <span className="hidden sm:inline text-[11px] uppercase tracking-[0.28em] text-saffron/80">
+            <span className="hidden sm:inline text-[11px] uppercase tracking-[0.28em] latin-tracking text-saffron/80">
               Pharma-Botanic
             </span>
           </p>

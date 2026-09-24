@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProductBySlug, PRODUCTS } from "@/config/products";
-import ProductPageClient from "./ProductPageClient";
+import ProductPageView from "./ProductPageView";
 
 interface ProductPageProps {
   params: { slug: string };
@@ -29,5 +29,5 @@ export async function generateMetadata({
 export default function ProductPage({ params }: ProductPageProps) {
   const product = getProductBySlug(params.slug);
   if (!product) notFound();
-  return <ProductPageClient product={product!} />;
+  return <ProductPageView product={product!} />;
 }

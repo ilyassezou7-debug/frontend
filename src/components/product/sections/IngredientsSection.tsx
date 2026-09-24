@@ -69,7 +69,7 @@ export default function IngredientsSection({
                         {ing.name}
                       </h3>
                       {ing.origin && (
-                        <p className="text-[11px] text-saffron font-semibold mt-0.5">
+                        <p className="text-[11px] text-saffron-dark font-semibold mt-0.5">
                           {ing.origin}
                         </p>
                       )}

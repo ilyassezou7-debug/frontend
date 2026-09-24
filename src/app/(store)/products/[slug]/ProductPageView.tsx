@@ -1,10 +1,6 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   CheckCircle2,
-  ShoppingBag,
   Sparkles,
   Clock,
   CalendarCheck,
@@ -17,9 +13,7 @@ import {
   Timer,
 } from "lucide-react";
 import type { Product } from "@/types/product";
-import type { OfferId } from "@/types/product";
-import OfferSelector from "@/components/product/OfferSelector";
-import BackToOrderFAB from "@/components/product/BackToOrderFAB";
+import BuyBox from "./BuyBox";
 import StarRating from "@/components/ui/StarRating";
 import FAQAccordion from "@/components/ui/FAQAccordion";
 
@@ -33,12 +27,7 @@ import GoldenGuaranteeSeal from "@/components/product/sections/GoldenGuaranteeSe
 import BundleCrossSell from "@/components/product/sections/BundleCrossSell";
 import FinalCTA from "@/components/product/sections/FinalCTA";
 
-import { useCartStore } from "@/store/cart-store";
-import { formatMAD } from "@/lib/money";
-import { trackViewContent, trackAddToCart } from "@/lib/tracking";
-import { generateEventId } from "@/lib/event-id";
-import { PRODUCTS } from "@/config/products";
-import { motion } from "framer-motion";
+import { PRODUCTS, getSinglePrice } from "@/config/products";
 
 interface ProductPageClientProps {
   product: Product;
@@ -46,36 +35,8 @@ interface ProductPageClientProps {
 
 const OFFER_BLOCK_ID = "offer-block";
 
-export default function ProductPageClient({ product }: ProductPageClientProps) {
-  const [selectedOffer, setSelectedOffer] = useState<OfferId>("two");
-  const addOffer = useCartStore((s) => s.addOffer);
-  const openCart = useCartStore((s) => s.openCart);
-
-  useEffect(() => {
-    const eventId = generateEventId();
-    const singlePrice =
-      product.offers.find((o) => o.offerId === "one")?.price ??
-      product.offers[0]?.price ??
-      0;
-    trackViewContent(product.id, singlePrice, eventId);
-  }, [product.id, product.offers]);
-
-  const offer = product.offers.find((o) => o.offerId === selectedOffer)!;
-
-  function handleAddToCart() {
-    addOffer({
-      productId: product.id,
-      offerId: offer.offerId,
-      quantity: 1,
-      unitCount: offer.quantity,
-      price: offer.price,
-      source: "product_page",
-    });
-    const eventId = generateEventId();
-    trackAddToCart(product.id, offer.price, eventId);
-    openCart();
-  }
-
+/** Server-rendered product page; the only client JS is <BuyBox> (plus the FAQ and cross-sell widgets). */
+export default function ProductPageView({ product }: ProductPageClientProps) {
   const crossSellProducts = product.crossSellPriority
     .map((id) => PRODUCTS.find((p) => p.id === id))
     .filter(Boolean)
@@ -86,17 +47,12 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       {/* ───────── HERO + OFFER ───────── */}
       <section
         id={OFFER_BLOCK_ID}
-        className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-ivory via-mist/30 to-sand scroll-mt-28 md:scroll-mt-32 overflow-hidden"
+        className="pt-4 pb-10 md:py-16 lg:py-20 bg-gradient-to-b from-ivory-2 to-ivory scroll-mt-20 md:scroll-mt-28"
       >
         <div className="container-max">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
             {/* ───────── PRODUCT IMAGE — Pharma-apothecary frame ───────── */}
-            <div className="relative aspect-square max-w-md mx-auto md:max-w-none w-full md:sticky md:top-32">
-              {/* Soft ambient halo behind the frame (premium feel, no perf cost) */}
-              <div
-                aria-hidden="true"
-                className="absolute -inset-6 sm:-inset-8 bg-gradient-to-br from-saffron/10 via-transparent to-teal/10 rounded-[2.5rem] blur-2xl opacity-70 pointer-events-none"
-              />
+            <div className="relative aspect-square max-w-md mx-auto md:max-w-none w-full md:sticky md:top-28">
 
               {/* Frame */}
               <div className="relative aspect-square w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-ivory to-white shadow-[0_30px_60px_-15px_rgba(16,38,34,0.18)] ring-1 ring-saffron/25 border border-white">
@@ -105,6 +61,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   alt={product.displayName}
                   fill
                   priority
+                  quality={62}
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
@@ -127,7 +84,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                     أطلس بيور
                   </span>
                   <span className="w-px h-3 bg-white/50" />
-                  <span className="font-sans text-[9px] sm:text-[10px] tracking-[0.25em] font-semibold uppercase">
+                  <span className="font-sans text-[9px] sm:text-[10px] latin-tracking font-semibold uppercase">
                     Pharma-Botanic
                   </span>
                 </div>
@@ -160,13 +117,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 role="img"
                 aria-label="مصادق عليه من ONSSA"
               >
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-24 md:h-24">
-                  {/* Subtle, slow pulse — drawing the eye without being noisy */}
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 rounded-full bg-saffron/25 animate-ping"
-                    style={{ animationDuration: "3s" }}
-                  />
+                <div className="relative w-[4.5rem] h-[4.5rem] sm:w-24 sm:h-24">
 
                   {/* The seal */}
                   <div className="relative w-full h-full rounded-full bg-gradient-to-br from-saffron via-saffron to-saffron-dark shadow-xl ring-4 ring-ivory">
@@ -179,7 +130,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                       <p className="font-display text-[10px] sm:text-[11px] md:text-xs font-extrabold leading-none">
                         مصادق عليه
                       </p>
-                      <p className="text-[8px] sm:text-[9px] md:text-[10px] font-bold tracking-[0.25em] mt-0.5 leading-none">
+                      <p className="text-[8px] sm:text-[9px] md:text-[10px] font-bold latin-tracking mt-0.5 leading-none">
                         ONSSA
                       </p>
                     </div>
@@ -187,36 +138,12 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 </div>
               </div>
 
-              {/* Mobile-only mini trust strip directly under the frame.
-                  Reassures phone visitors before they scroll into the body
-                  content. Hidden on md+ since the desktop info column already
-                  shows the same trust signals. */}
-              <div className="md:hidden mt-4 grid grid-cols-3 gap-2">
-                <div className="flex flex-col items-center justify-center gap-1 bg-white/80 backdrop-blur-sm border border-border-soft rounded-xl py-2 px-1 text-center">
-                  <Banknote className="w-4 h-4 text-teal" />
-                  <span className="text-[10px] font-semibold text-charcoal leading-tight">
-                    دفع عند الاستلام
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center gap-1 bg-white/80 backdrop-blur-sm border border-border-soft rounded-xl py-2 px-1 text-center">
-                  <Truck className="w-4 h-4 text-teal" />
-                  <span className="text-[10px] font-semibold text-charcoal leading-tight">
-                    توصيل مجاني
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center gap-1 bg-white/80 backdrop-blur-sm border border-border-soft rounded-xl py-2 px-1 text-center">
-                  <ShieldCheck className="w-4 h-4 text-teal" />
-                  <span className="text-[10px] font-semibold text-charcoal leading-tight">
-                    ضمان 30 يوم
-                  </span>
-                </div>
-              </div>
             </div>
 
             {/* Product Info */}
             <div className="space-y-5 lg:space-y-6">
               <div>
-                <h1 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-charcoal leading-[1.15] mb-3 lg:mb-4">
+                <h1 className="font-display font-bold text-[1.75rem] leading-[1.3] sm:text-4xl lg:text-5xl text-charcoal mb-3 lg:mb-4 text-balance">
                   {product.heroPromise}
                 </h1>
                 <div className="flex items-center gap-2 mb-3 lg:mb-4">
@@ -247,145 +174,16 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 ))}
               </div>
 
-              {/* Offer Selector */}
-              <div id="offer-select">
-                <p className="font-semibold text-charcoal mb-3">
-                  اختر الكمية:
-                </p>
-                <OfferSelector
-                  offers={product.offers}
-                  selected={selectedOffer}
-                  onChange={setSelectedOffer}
-                />
-              </div>
-
-              {/* Offer nudge */}
-              <p className="text-base text-saffron font-semibold bg-saffron/10 rounded-xl px-5 py-4 border border-saffron/20 leading-relaxed shadow-sm">
-                ⚡ {product.offerNudge}
-              </p>
-
-              {/* ───────── HOW-TO-ORDER MINI GUIDE ───────── */}
-              <div className="bg-white border border-border-soft rounded-2xl shadow-sm overflow-hidden">
-                <div className="flex items-center justify-between gap-2 px-4 pt-3.5 pb-2 border-b border-border-soft/70">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-teal/10 flex items-center justify-center">
-                      <ListChecks className="w-4 h-4 text-teal" />
-                    </div>
-                    <p className="font-display font-bold text-sm text-charcoal">
-                      كيف تطلب — 3 خطوات فقط
-                    </p>
-                  </div>
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-teal bg-teal/10 px-2 py-1 rounded-full">
-                    <Timer className="w-3 h-3" />
-                    أقل من دقيقة
-                  </span>
-                </div>
-
-                <ol className="grid grid-cols-3 gap-0 p-3">
-                  {[
-                    {
-                      n: 1,
-                      title: "اختر الكمية",
-                      sub: "العرض المناسب",
-                      tone: "teal" as const,
-                    },
-                    {
-                      n: 2,
-                      title: "اسمك ورقمك",
-                      sub: "حقلان فقط",
-                      tone: "teal" as const,
-                    },
-                    {
-                      n: 3,
-                      title: "ادفع عند الباب",
-                      sub: "بدون بطاقة",
-                      tone: "saffron" as const,
-                    },
-                  ].map((step, i, arr) => (
-                    <li
-                      key={step.n}
-                      className={`relative flex flex-col items-center text-center px-1.5 ${
-                        i < arr.length - 1
-                          ? "after:content-[''] after:absolute after:top-4 after:left-0 after:w-[calc(50%-1rem)] after:h-px after:border-t after:border-dashed after:border-teal/30"
-                          : ""
-                      } ${
-                        i > 0
-                          ? "before:content-[''] before:absolute before:top-4 before:right-0 before:w-[calc(50%-1rem)] before:h-px before:border-t before:border-dashed before:border-teal/30"
-                          : ""
-                      }`}
-                    >
-                      <div
-                        className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center font-bold text-[11px] shadow-sm ring-2 ring-white tabular-nums ${
-                          step.tone === "saffron"
-                            ? "bg-saffron text-ivory"
-                            : "bg-teal text-ivory"
-                        }`}
-                      >
-                        {step.n}
-                      </div>
-                      <p className="text-[11px] font-bold text-charcoal leading-tight mt-2">
-                        {step.title}
-                      </p>
-                      <p className="text-[10px] text-muted leading-tight mt-0.5">
-                        {step.sub}
-                      </p>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              {/* ───────── PRIMARY CTA ───────── */}
-              {/* Single unified CTA for mobile + desktop. The price is shown
-                  prominently above, the button copy commits to the action. */}
-              <div className="space-y-3">
-                <div className="flex items-baseline justify-between gap-3 px-1">
-                  <div className="flex items-baseline gap-2 tabular-nums">
-                    <span className="text-[11px] text-muted">المجموع:</span>
-                    <span className="font-display font-extrabold text-2xl text-teal">
-                      {formatMAD(offer.price)}
-                    </span>
-                  </div>
-                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/70 rounded-full px-2.5 py-1 inline-flex items-center gap-1">
-                    <Truck className="w-3 h-3" />
-                    التوصيل مجاني
-                  </span>
-                </div>
-
-                <button
-                  onClick={handleAddToCart}
-                  className="btn-primary btn-shimmer-gold w-full text-lg md:text-xl py-4 md:py-5 min-h-[60px] md:min-h-[64px] rounded-2xl"
-                >
-                  <ShoppingBag className="w-6 h-6" />
-                  <span>أكّد طلبك الآن</span>
-                  <span className="hidden sm:inline text-ivory/60 font-normal">
-                    ·
-                  </span>
-                  <span className="hidden sm:inline text-ivory/90 font-semibold">
-                    الدفع عند الاستلام
-                  </span>
-                </button>
-
-                <p className="text-center text-[11px] text-muted leading-relaxed">
-                  بضغطة واحدة نُجهّز لك طلبك · بدون تسجيل · بدون بطاقة بنكية
-                </p>
-
-                <div className="flex items-center justify-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-muted pt-1">
-                  <span className="inline-flex items-center gap-1">
-                    <Banknote className="w-3.5 h-3.5 text-teal" />
-                    الدفع عند الاستلام
-                  </span>
-                  <span className="text-border-soft">•</span>
-                  <span className="inline-flex items-center gap-1">
-                    <Truck className="w-3.5 h-3.5 text-teal" />
-                    توصيل مجاني
-                  </span>
-                  <span className="text-border-soft">•</span>
-                  <span className="inline-flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-teal" />
-                    ضمان 30 يوم
-                  </span>
-                </div>
-              </div>
+              <BuyBox
+                offerBlockId={OFFER_BLOCK_ID}
+                product={{
+                  id: product.id,
+                  shortName: product.shortName,
+                  offers: product.offers,
+                  offerNudge: product.offerNudge,
+                  images: { hero: product.images.hero },
+                }}
+              />
             </div>
           </div>
         </div>
@@ -491,14 +289,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
               <ol className="relative space-y-5 pr-6 border-r-2 border-dashed border-teal/20">
                 {product.expectedTimeline.map((item, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ duration: 0.5, delay: i * 0.15, ease: "easeOut" }}
-                    className="relative group/timeline-item cursor-pointer"
-                  >
+                  <li key={i} className="relative group/timeline-item">
                     <span className="absolute -right-[33px] top-1 w-5 h-5 rounded-full bg-white border-2 border-teal flex items-center justify-center group-hover/timeline-item:scale-125 transition-transform duration-200">
                       <span className="w-2 h-2 rounded-full bg-teal group-hover/timeline-item:bg-saffron transition-colors" />
                     </span>
@@ -508,7 +299,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                     <p className="text-charcoal leading-relaxed group-hover/timeline-item:translate-x-1 transition-transform duration-200">
                       {item.result}
                     </p>
-                  </motion.li>
+                  </li>
                 ))}
               </ol>
 
@@ -589,7 +380,15 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
       {/* ───────── BUNDLE CROSS-SELL ───────── */}
       <div className="content-auto">
-        <BundleCrossSell primary={product} others={crossSellProducts} />
+        <BundleCrossSell
+          others={crossSellProducts.map((p) => ({
+            id: p.id,
+            shortName: p.shortName,
+            hero: p.images.hero,
+            pitch: product.crossSellText[p.id] ?? p.headline,
+            regularPrice: getSinglePrice(p),
+          }))}
+        />
       </div>
 
       {/* ───────── FINAL CTA ───────── */}
@@ -601,10 +400,6 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         />
       </div>
 
-      {/* ───────── SIDE FAB ─────────
-          Watches the hero section for visibility, scrolls directly to the
-          offer selector cards so the customer lands on the packages. */}
-      <BackToOrderFAB watchId={OFFER_BLOCK_ID} scrollToId="offer-select" />
     </div>
   );
 }

@@ -14,6 +14,31 @@ const SNAP_PIXEL_ID = process.env.NEXT_PUBLIC_SNAP_PIXEL_ID;
  *  (incl. fbclid from the ad click), so attribution keeps working; keepalive requests survive the redirect to Amazon. */
 const DEFERRED_PATHS = ["/lp/bestie-duell"];
 
+/** Store pages: runs in <head> before React. It creates the fbq/ttq queues at once (so the ViewContent that a product
+ *  page fires during hydration can never be dropped), writes _fbp/_fbc like fbevents.js would (so an fbclid survives a
+ *  client-side navigation), and downloads the two ~250 KB ad libraries only after the first interaction or 3.5 s after
+ *  load - they no longer compete with the product photo for the phone's bandwidth and CPU. Queued events flush on load. */
+export const PIXEL_BOOT = `!function(w,d){
+var now=Date.now();function ck(n){var m=d.cookie.match('(?:^|; )'+n+'=([^;]+)');return m?m[1]:null}
+function sc(n,v){d.cookie=n+'='+v+';path=/;max-age=7776000;SameSite=Lax'}
+if(!ck('_fbp'))sc('_fbp','fb.1.'+now+'.'+Math.floor(Math.random()*2147483647));
+var cl=new URLSearchParams(location.search).get('fbclid'),fbc=ck('_fbc');
+if(cl&&(!fbc||fbc.split('.').pop()!==cl))sc('_fbc','fb.1.'+now+'.'+cl);
+if(!w.fbq){var n=w.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!w._fbq)w._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];n('init','${META_PIXEL_ID}')}
+var tq=w.ttq=w.ttq||[];tq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];
+tq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
+for(var i=0;i<tq.methods.length;i++)tq.setAndDefer(tq,tq.methods[i]);
+var go=0;function load(){if(go)return;go=1;
+ var s=d.createElement('script');s.async=1;s.src='https://connect.facebook.net/en_US/fbevents.js';d.head.appendChild(s);
+ w.TiktokAnalyticsObject='ttq';tq._i=tq._i||{};tq._i['${TIKTOK_PIXEL_ID}']=[];tq._i['${TIKTOK_PIXEL_ID}']._u='https://analytics.tiktok.com/i18n/pixel/events.js';
+ tq._t=tq._t||{};tq._t['${TIKTOK_PIXEL_ID}']=+new Date;tq._o=tq._o||{};tq._o['${TIKTOK_PIXEL_ID}']={};
+ tq.instance=function(t){for(var e=tq._i[t]||[],k=0;k<tq.methods.length;k++)tq.setAndDefer(e,tq.methods[k]);return e};
+ var t=d.createElement('script');t.async=1;t.src='https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=${TIKTOK_PIXEL_ID}&lib=ttq';d.head.appendChild(t)}
+['pointerdown','touchstart','scroll','keydown','mousemove'].forEach(function(e){w.addEventListener(e,load,{once:!0,passive:!0})});
+w.addEventListener('load',function(){setTimeout(load,3500)});
+tq.page()}(window,document);`;
+
 interface PixelProviderProps {
   children: ReactNode;
 }
@@ -52,64 +77,7 @@ export default function PixelProvider({ children }: PixelProviderProps) {
           }}
         />
       )}
-      {META_PIXEL_ID && !deferred && (
-        <>
-          <Script
-            id="meta-pixel"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-                !function(f,b,e,v,n,t,s)
-                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                n.queue=[];t=b.createElement(e);t.async=!0;
-                t.src=v;s=b.getElementsByTagName(e)[0];
-                s.parentNode.insertBefore(t,s)}(window, document,'script',
-                'https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', '${META_PIXEL_ID}');
-                fbq('track', 'PageView');
-              `,
-            }}
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <noscript>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              height="1"
-              width="1"
-              style={{ display: "none" }}
-              src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
-              alt=""
-            />
-          </noscript>
-        </>
-      )}
-
-      {/* TikTok Pixel */}
-      {TIKTOK_PIXEL_ID && !deferred && (
-        <Script
-          id="tiktok-pixel"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              !function (w, d, t) {
-                w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];
-                ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];
-                ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
-                for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);
-                ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};
-                ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";
-                ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};
-                var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;
-                var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
-                ttq.load('${TIKTOK_PIXEL_ID}');
-                ttq.page();
-              }(window, document, 'ttq');
-            `,
-          }}
-        />
-      )}
+      {/* Meta + TikTok for store pages: queues and deferred loader are in <head>, see PIXEL_BOOT */}
 
       {/* Snapchat Pixel — lowest priority, deferred until browser is idle */}
       {SNAP_PIXEL_ID && (

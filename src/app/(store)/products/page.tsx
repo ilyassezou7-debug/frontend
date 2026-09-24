@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { CheckCircle2, FlaskConical, BadgeCheck, Lock } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
+import GuaranteeTile from "@/components/product/GuaranteeTile";
+import { CONCERNS } from "@/config/concerns";
 import TrustBadges from "@/components/ui/TrustBadges";
 import FAQAccordion from "@/components/ui/FAQAccordion";
 import ReviewCard from "@/components/product/ReviewCard";
@@ -10,23 +12,24 @@ import { SITE_CONFIG } from "@/config/site";
 export const metadata: Metadata = {
   title: "المنتجات",
   description:
-    "تصفحي جميع منتجات أطلس بيور: قطرات النفس، بخاخ القدمين، وسيروم الأظافر. مكونات طبيعية، الدفع عند الاستلام.",
+    "تصفحي جميع منتجات أطلس بيور: تساقط الشعر، رائحة الفم، رائحة القدمين، فطريات الأظافر وآلام المفاصل. مكونات نباتية، الدفع عند الاستلام.",
 };
 
 export default function ProductsPage() {
   const allReviews = PRODUCTS.flatMap((p) => p.reviews).slice(0, 3);
+  const products = CONCERNS.map((c) => PRODUCTS.find((p) => p.slug === c.slug)).filter(Boolean) as typeof PRODUCTS;
 
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-ivory via-mist/40 to-sand section-padding">
+      <section className="bg-gradient-to-b from-ivory-2 to-ivory px-4 pt-10 pb-8 md:py-16">
         <div className="container-max text-center max-w-2xl">
           <p className="divider-gold mb-4 max-w-xs mx-auto">
             <span>تركيباتنا</span>
           </p>
-          <h1 className="font-display font-bold text-4xl md:text-5xl text-charcoal mb-4 leading-tight">
-            ثلاث تركيبات صيدلانية.{" "}
-            <span className="text-teal">حل واحد لكل مشكل.</span>
+          <h1 className="font-display font-bold text-3xl md:text-5xl text-charcoal mb-4 leading-tight">
+            خمس تركيبات.{" "}
+            <span className="text-teal">حل مدروس لكل مشكل.</span>
           </h1>
           <p className="text-lg text-muted">
             كل منتج مصمم بمشاركة صيادلة لهدف واحد دقيق – بلا تشتيت، بلا حشو، بنتائج مضمونة.
@@ -40,10 +43,11 @@ export default function ProductsPage() {
       {/* Products grid */}
       <section className="section-padding bg-ivory">
         <div className="container-max">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {PRODUCTS.map((product) => (
-              <ProductCard key={product.id} product={product} showFullSelector />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
+            {products.map((product, i) => (
+              <ProductCard key={product.id} product={product} priority={i < 2} />
             ))}
+            <GuaranteeTile />
           </div>
         </div>
       </section>
@@ -72,7 +76,7 @@ export default function ProductsPage() {
               {
                 icon: BadgeCheck,
                 title: "مصادق عليها رسمياً",
-                desc: "جميع تركيباتنا مصادق عليها من الهيئة العامة للغداء والدواء المغربية (ONSSA).",
+                desc: "مصادق عليها (ONSSA)، ومصنوعة فالمغرب وفق معايير الجودة.",
               },
               {
                 icon: Lock,

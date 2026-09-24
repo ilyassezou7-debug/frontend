@@ -4,15 +4,10 @@ import type { ProductOffer } from "@/types/product";
 import type { OfferId } from "@/types/product";
 import { formatMAD } from "@/lib/money";
 import { cn } from "@/lib/cn";
-import { motion } from "framer-motion";
 import {
   Check,
-  Truck,
-  ShieldCheck,
-  Banknote,
   Flame,
   Crown,
-  Zap,
 } from "lucide-react";
 
 interface OfferSelectorProps {
@@ -64,14 +59,6 @@ export default function OfferSelector({
 
   return (
     <div className="space-y-4">
-      {/* Speed promise — modern alert style */}
-      <div className="flex items-center justify-center gap-2 bg-emerald-50/80 border border-emerald-200/60 rounded-xl px-3 py-2.5 mb-2 shadow-sm">
-        <Zap className="w-4 h-4 text-emerald-600 flex-shrink-0" fill="currentColor" />
-        <p className="text-xs font-bold text-emerald-800 leading-tight">
-          نتائج فعّالة من أول أسبوع
-        </p>
-      </div>
-
       <div className="space-y-3.5">
         {offers.map((offer) => {
           const isSelected = selected === offer.offerId;
@@ -125,7 +112,7 @@ export default function OfferSelector({
                   "transition-all duration-300 ease-out",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                   isSelected
-                    ? cn("border-2", activeBorder, activeBg, activeShadow, "scale-[1.02] sm:scale-100 z-0")
+                    ? cn("border-2", activeBorder, activeBg, activeShadow, "z-0")
                     : "border-2 border-border-soft bg-white hover:border-teal/30 hover:bg-mist/10 scale-100 z-0",
                   meta.ribbon ? "pt-5 pb-4 px-4" : "p-4"
                 )}
@@ -141,13 +128,7 @@ export default function OfferSelector({
                     )}
                   >
                     {isSelected && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                      >
-                        <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" strokeWidth={3.5} />
-                      </motion.div>
+                      <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white animate-pop" strokeWidth={3.5} />
                     )}
                   </div>
 
@@ -155,17 +136,17 @@ export default function OfferSelector({
                   <div className="flex-1 min-w-0 text-right">
                     {/* Top Row: Title & Price */}
                     <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <h3 className={cn(
+                      <p className={cn(
                         "font-bold font-display text-[15px] sm:text-base leading-tight truncate transition-colors duration-300",
                         isSelected ? "text-charcoal" : "text-charcoal/80"
                       )}>
                         {meta.title}
-                      </h3>
+                      </p>
                       
                       <div className="text-left flex flex-col items-end flex-shrink-0 tabular-nums">
                         <div className="flex items-center gap-1.5">
                           {savings > 0 && (
-                            <span className="text-[11px] sm:text-xs text-muted/60 line-through font-medium">
+                            <span className="text-[11px] sm:text-xs text-muted line-through font-medium">
                               {formatMAD(original)}
                             </span>
                           )}
@@ -202,7 +183,7 @@ export default function OfferSelector({
                           "text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 tabular-nums transition-colors duration-300",
                           isSelected
                             ? isBest ? "bg-saffron/20 text-saffron-dark" : "bg-teal/15 text-teal-dark"
-                            : "bg-sand text-muted"
+                            : "bg-sand text-charcoal/80"
                         )}>
                           وفر {savings} د.م
                         </div>
@@ -216,21 +197,6 @@ export default function OfferSelector({
         })}
       </div>
 
-      {/* Reassurance footer — Modern Pill Style */}
-      <div className="flex items-center justify-center gap-2 sm:gap-4 pt-2 text-[10px] sm:text-[11px] font-medium text-muted">
-        <span className="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-border-soft shadow-sm">
-          <Banknote className="w-3.5 h-3.5 text-teal" />
-          الدفع عند الاستلام
-        </span>
-        <span className="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-border-soft shadow-sm">
-          <Truck className="w-3.5 h-3.5 text-teal" />
-          توصيل مجاني
-        </span>
-        <span className="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-border-soft shadow-sm">
-          <ShieldCheck className="w-3.5 h-3.5 text-teal" />
-          ضمان 30 يوم
-        </span>
-      </div>
     </div>
   );
 }

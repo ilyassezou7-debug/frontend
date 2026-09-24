@@ -52,7 +52,7 @@ html {
 }
 
 body {
-  font-family: var(--font-noto-arabic), sans-serif;
+  font-family: var(--font-plex);
   background:
     var(--ap-grad-page),
     var(--ap-ivory);
@@ -61,14 +61,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  font-feature-settings: "ss01", "cv11", "kern";
-  letter-spacing: -0.005em;
+  font-feature-settings: "kern";
+  line-height: 1.7;
 }
 
 .font-display {
-  font-family: var(--font-ibm-arabic), sans-serif;
-  letter-spacing: -0.018em;
+  font-family: var(--font-plex);
+  line-height: 1.3;
 }
+
+/* Arabic is a joined script: letter-spacing pulls a word's letters apart. Neutralise every tracking utility on
+   the Arabic store and opt the few Latin wordmarks back in with .latin-tracking. */
+html[lang="ar"] [class*="tracking-"] { letter-spacing: normal; }
+html[lang="ar"] .latin-tracking { letter-spacing: 0.22em; }
 
 /* Selection */
 ::selection {
@@ -100,10 +105,8 @@ body {
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  color: var(--ap-saffron);
-  font-size: 0.72rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
+  color: #8C6420; /* saffron-dark: the lighter gold is under 4.5:1 on ivory at this size */
+  font-size: 0.8rem;
   font-weight: 700;
 }
 .divider-gold::before,
@@ -116,11 +119,6 @@ body {
 
 *, *::before, *::after { box-sizing: border-box; }
 
-[style*="position: fixed"],
-.fixed {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -142,13 +140,24 @@ section { contain: layout style; }
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+@keyframes ap-sheen {
+  0%, 55% { transform: translateX(-100%); }
+  100%    { transform: translateX(100%); }
+}
+@keyframes ap-pop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
 @keyframes ap-fade-up {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @layer utilities {
-  .content-auto {}
+  .content-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
 
   .text-balance { text-wrap: balance; }
   .text-pretty  { text-wrap: pretty; }
@@ -203,7 +212,6 @@ section { contain: layout style; }
     border-radius: 9999px;
     padding: 0.875rem 1.75rem;
     min-height: 52px;
-    letter-spacing: -0.005em;
     box-shadow: var(--ap-shadow-cta);
     transition: transform 180ms cubic-bezier(.2,.7,.2,1),
                 box-shadow 220ms ease,
@@ -284,8 +292,8 @@ section { contain: layout style; }
       rgba(212, 162, 74, 0.35) 60%,
       transparent 85%
     );
-    background-size: 200% 100%;
-    animation: ap-shimmer 3.5s infinite linear;
+    transform: translateX(-100%);
+    animation: ap-sheen 4.5s ease-in-out infinite;
     pointer-events: none;
     z-index: 1;
   }
@@ -330,7 +338,7 @@ section { contain: layout style; }
 
   /* Section eyebrow */
   .eyebrow {
-    @apply inline-flex items-center gap-2 text-[11px] sm:text-xs font-bold uppercase tracking-[0.28em];
-    color: var(--ap-saffron);
+    @apply inline-flex items-center gap-2 text-xs sm:text-sm font-bold;
+    color: #8C6420;
   }
 }

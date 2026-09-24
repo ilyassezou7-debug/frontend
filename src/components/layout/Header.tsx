@@ -30,6 +30,24 @@ export default function Header({ isSoftPage = false }: { isSoftPage?: boolean })
     setMounted(true);
   }, []);
 
+  // The cart drawer + checkout modals (animation library + catalogue) load on the first interaction or when the
+  // browser is idle - ready well before anyone taps "order", but out of the page's first seconds on a phone.
+  const isCheckoutOpen = useCheckoutStore((s) => s.isCheckoutOpen);
+  const [modalsReady, setModalsReady] = useState(false);
+  useEffect(() => {
+    if (modalsReady) return;
+    const go = () => setModalsReady(true);
+    const events = ["pointerdown", "touchstart", "scroll", "keydown"] as const;
+    events.forEach((e) => window.addEventListener(e, go, { once: true, passive: true }));
+    const idle = window.requestIdleCallback ? window.requestIdleCallback(go, { timeout: 4000 }) : window.setTimeout(go, 2500);
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, go));
+      if (window.cancelIdleCallback) window.cancelIdleCallback(idle as number);
+      else window.clearTimeout(idle as number);
+    };
+  }, [modalsReady]);
+  const showModals = modalsReady || isCartOpen || isCheckoutOpen;
+
   const navLinks = [
     { href: "/", label: "الرئيسية" },
     ...(!isSoftPage ? [{ href: "/products", label: "المجموعة" }] : []),
@@ -39,9 +57,9 @@ export default function Header({ isSoftPage = false }: { isSoftPage?: boolean })
 
   return (
     <>
-      <header className="sticky top-0 z-50 will-change-transform">
-        {/* Glass surface */}
-        <div className="absolute inset-0 bg-white/75 backdrop-blur-xl backdrop-saturate-150 border-b border-border-soft/70 supports-[backdrop-filter]:bg-white/65" />
+      <header className="sticky top-0 z-50">
+        {/* Solid surface: a backdrop blur is re-rendered on every scroll frame and stutters on mid-range phones */}
+        <div className="absolute inset-0 bg-white/[0.97] border-b border-border-soft/70" />
         {/* Gold hairline underline */}
         <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-saffron/50 to-transparent" />
 
@@ -51,7 +69,6 @@ export default function Header({ isSoftPage = false }: { isSoftPage?: boolean })
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-2.5 group">
                 <div className="relative">
-                  <span aria-hidden className="absolute inset-0 rounded-full bg-saffron/15 blur-md scale-110 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <Image
                     src="/logo.png"
                     alt="Atlas Pure Logo"
@@ -61,10 +78,10 @@ export default function Header({ isSoftPage = false }: { isSoftPage?: boolean })
                   />
                 </div>
                 <div className="leading-tight text-right">
-                  <p className="font-bold text-lg sm:text-xl text-charcoal font-display leading-none tracking-wide">
+                  <p className="font-bold text-lg sm:text-xl text-charcoal font-display leading-none">
                     أطلس بيور
                   </p>
-                  <p className="text-[9px] sm:text-[10px] font-bold text-saffron tracking-[0.22em] mt-1 uppercase">
+                  <p className="text-[9px] sm:text-[10px] font-bold text-saffron-dark tracking-[0.22em] latin-tracking mt-1 uppercase">
                     Atlas&nbsp;Pure
                   </p>
                 </div>
@@ -144,15 +161,14 @@ export default function Header({ isSoftPage = false }: { isSoftPage?: boolean })
         </div>
       </header>
 
-      {/* Cart Drawer */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={closeCart}
-        onCheckout={openCheckout}
-      />
-
-      {/* Checkout Flow (modal + upsell) */}
-      <CheckoutFlow />
+      {showModals && (
+        <>
+          {/* Cart Drawer */}
+          <CartDrawer isOpen={isCartOpen} onClose={closeCart} onCheckout={openCheckout} />
+          {/* Checkout Flow (modal + upsell) */}
+          <CheckoutFlow />
+        </>
+      )}
     </>
   );
 }
