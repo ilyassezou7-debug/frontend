@@ -29,7 +29,8 @@ const schema = z.object({
     .string()
     .min(2, "الاسم قصير جداً")
     .max(80, "الاسم طويل جداً")
-    .regex(/^[a-zA-Z\u0600-\u06FF\s]+$/, "الاسم يحتوي على رموز غير مسموحة"),
+    // any letter in any script (Aïcha, Hélène), plus spaces ' - . as in "Ait M'barek" / "Ben-Ali"
+    .regex(new RegExp("^[\\p{L}\\p{M}\\s'’.\\-]+$", "u"), "الاسم يحتوي على رموز غير مسموحة"),
   phone: z
     .string()
     .min(9, "رقم الهاتف قصير جداً")
@@ -57,6 +58,10 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const setCustomer = useCheckoutStore((s) => s.setCustomer);
   const setStep = useCheckoutStore((s) => s.setStep);
   const setUpsellProduct = useCheckoutStore((s) => s.setUpsellProduct);
+  const step = useCheckoutStore((s) => s.step);
+  const submitError = useCheckoutStore((s) => s.submitError);
+  const savedCustomer = useCheckoutStore((s) => s.customer);
+  const sending = step === "submitting";
   const nameInputRef = useRef<HTMLInputElement | null>(null);
   const [activeField, setActiveField] = useState<"name" | "phone" | null>(null);
 
@@ -87,14 +92,21 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
   useEffect(() => {
     if (isOpen) {
+      // Back here after a failed send: give the customer their details back so a retry is one tap.
+      if (savedCustomer && submitError) {
+        reset({ full_name: savedCustomer.full_name, phone: savedCustomer.phone.replace(/^\+212/, "0") });
+        return;
+      }
       const timer = setTimeout(() => nameInputRef.current?.focus(), 350);
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const { ref: nameRegRef, ...nameRegProps } = register("full_name");
 
   function onSubmit(data: FormValues) {
+    if (sending) return;
     const normalizedPhone = normalizeMoroccanPhone(data.phone) || data.phone;
     setCustomer({ full_name: data.full_name, phone: normalizedPhone });
 
@@ -364,15 +376,22 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                         )}
                       </div>
 
+                      {/* Sending failed: say so plainly (the details above are kept) */}
+                      {submitError && !sending && (
+                        <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700 leading-relaxed">
+                          {submitError}
+                        </div>
+                      )}
+
                       {/* CTA */}
                       <motion.button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || sending}
                         whileTap={{ scale: 0.97 }}
                         className="btn-primary btn-shimmer-gold w-full text-base font-bold min-h-[54px] rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-teal/20 disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
                       >
                         <AnimatePresence mode="wait" initial={false}>
-                          {isSubmitting ? (
+                          {isSubmitting || sending ? (
                             <motion.span
                               key="loading"
                               initial={{ opacity: 0 }}
@@ -389,7 +408,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                                 }}
                                 className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full flex-shrink-0"
                               />
-                              جاري التحقق...
+                              {sending ? "جاري إرسال الطلب..." : "جاري التحقق..."}
                             </motion.span>
                           ) : (
                             <motion.span

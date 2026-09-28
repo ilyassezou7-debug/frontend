@@ -14,6 +14,7 @@ import { formatMAD } from "@/lib/money";
 import { generateEventId } from "@/lib/event-id";
 import { trackPurchase, getTrackingData } from "@/lib/tracking";
 import type { OrderPayload } from "@/types/order";
+import { orderErrorMessage, forgetLastOrder } from "@/lib/order-error";
 
 const UPSELL_PRICE = 99;
 const COUNTDOWN_SECONDS = 10;
@@ -38,6 +39,7 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
   const customer = useCheckoutStore((s) => s.customer);
   const setLastOrder = useCheckoutStore((s) => s.setLastOrder);
   const closeCheckout = useCheckoutStore((s) => s.closeCheckout);
+  const failSubmit = useCheckoutStore((s) => s.failSubmit);
 
   const upsellProduct = getProductById(
     productId as Parameters<typeof getProductById>[0]
@@ -118,6 +120,7 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
         },
       };
 
+      forgetLastOrder();
       try {
         const response = await submitOrder(payload);
         setLastOrder(response.order_id, response.public_id);
@@ -153,10 +156,9 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
         closeCheckout();
         router.push(`/thank-you?order_id=${response.public_id}`);
       } catch (err) {
+        // Never fake a success: back to the form (cart kept) with the reason and a retry.
         console.error("Order submission failed:", err);
-        clearCart();
-        closeCheckout();
-        router.push("/thank-you");
+        failSubmit(orderErrorMessage(err));
       }
     },
     [
@@ -166,6 +168,7 @@ export default function UpsellModal({ isOpen, productId }: UpsellModalProps) {
       upsellProduct,
       productId,
       setLastOrder,
+      failSubmit,
       clearCart,
       closeCheckout,
       router,

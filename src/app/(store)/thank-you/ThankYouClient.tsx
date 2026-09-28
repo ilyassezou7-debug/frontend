@@ -90,17 +90,20 @@ export default function ThankYouClient() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      // Only show the saved order if it IS this order (?order_id=...). A leftover from an earlier order on the same
+      // phone once greeted a new customer with the previous customer's name.
       const stored = localStorage.getItem("atlas_last_order");
-      if (stored) {
+      if (stored && orderId) {
         try {
-          setOrder(JSON.parse(stored));
+          const parsed = JSON.parse(stored) as StoredOrder & { publicId?: string };
+          if (parsed.publicId === orderId) setOrder(parsed);
         } catch {
           /* ignore */
         }
       }
       clearCart();
     }
-  }, [clearCart]);
+  }, [clearCart, orderId]);
 
   // Cross-sell — products NOT in the order
   const orderedProductIds = new Set(order?.items.map((i) => i.product_id) ?? []);

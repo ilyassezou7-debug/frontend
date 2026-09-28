@@ -10,6 +10,7 @@ import { trackPurchase, getTrackingData } from "@/lib/tracking";
 import CheckoutModal from "./CheckoutModal";
 import UpsellModal from "./UpsellModal";
 import type { OrderPayload } from "@/types/order";
+import { orderErrorMessage, forgetLastOrder } from "@/lib/order-error";
 
 export default function CheckoutFlow() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function CheckoutFlow() {
   const customer = useCheckoutStore((s) => s.customer);
   const closeCheckout = useCheckoutStore((s) => s.closeCheckout);
   const setLastOrder = useCheckoutStore((s) => s.setLastOrder);
+  const failSubmit = useCheckoutStore((s) => s.failSubmit);
 
   const items = useCartStore((s) => s.items);
   const getTotal = useCartStore((s) => s.getTotal);
@@ -69,6 +71,7 @@ export default function CheckoutFlow() {
         },
       };
 
+      forgetLastOrder();
       try {
         const response = await submitOrder(payload);
         setLastOrder(response.order_id, response.public_id);
@@ -97,20 +100,19 @@ export default function CheckoutFlow() {
         closeCheckout();
         router.push(`/thank-you?order_id=${response.public_id}`);
       } catch (err) {
+        // Never fake a success: keep the cart and reopen the form (details kept) with the reason and a retry.
         console.error("Order submission failed:", err);
-        clearCart();
-        closeCheckout();
-        router.push("/thank-you");
+        failSubmit(orderErrorMessage(err));
       }
     };
 
     doSubmit();
-  }, [step, customer, items, getTotal, setLastOrder, clearCart, closeCheckout, router]);
+  }, [step, customer, items, getTotal, setLastOrder, failSubmit, clearCart, closeCheckout, router]);
 
   return (
     <>
       <CheckoutModal
-        isOpen={isCheckoutOpen && (step === "checkout_form")}
+        isOpen={isCheckoutOpen && (step === "checkout_form" || step === "submitting")}
         onClose={closeCheckout}
       />
       {upsellProduct && (

@@ -5,6 +5,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, PhoneCall, Truck, Package } from "lucide-react";
+import { orderErrorMessage, forgetLastOrder } from "@/lib/order-error";
 import { submitOrder } from "@/lib/api";
 import { generateEventId } from "@/lib/event-id";
 import {
@@ -44,6 +45,7 @@ export default function KalafLandingClient() {
   const [phone, setPhone] = useState("");
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
   const [submitting, setSubmitting] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
 
   useEffect(() => {
     saveLandingUrl();
@@ -66,6 +68,8 @@ export default function KalafLandingClient() {
     if (Object.keys(next).length > 0) return;
 
     setSubmitting(true);
+    setSendError(null);
+    forgetLastOrder();
     const eventId = generateEventId();
     const tracking = getTrackingData() as unknown as OrderPayload["tracking"];
     const total = selected.price;
@@ -118,8 +122,10 @@ export default function KalafLandingClient() {
       );
       router.push(`/thank-you?order_id=${res.public_id}`);
     } catch (err) {
+      // Never fake a success: stay on the form (details kept) and say what to do.
       console.error("Order submission failed:", err);
-      router.push("/thank-you");
+      setSendError(orderErrorMessage(err));
+      setSubmitting(false);
     }
   };
 
@@ -253,6 +259,11 @@ export default function KalafLandingClient() {
                 </div>
               </div>
 
+              {sendError && (
+                <div role="alert" className="mb-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700 leading-relaxed">
+                  {sendError}
+                </div>
+              )}
               <button
                 type="submit"
                 disabled={submitting}
