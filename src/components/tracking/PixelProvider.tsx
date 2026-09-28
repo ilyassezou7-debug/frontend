@@ -17,7 +17,9 @@ const DEFERRED_PATHS = ["/lp/bestie-duell"];
 /** Store pages: runs in <head> before React. It creates the fbq/ttq queues at once (so the ViewContent that a product
  *  page fires during hydration can never be dropped), writes _fbp/_fbc like fbevents.js would (so an fbclid survives a
  *  client-side navigation), and downloads the two ~250 KB ad libraries only after the first interaction or 3.5 s after
- *  load - they no longer compete with the product photo for the phone's bandwidth and CPU. Queued events flush on load. */
+ *  load - they no longer compete with the product photo for the phone's bandwidth and CPU. Queued events flush on load.
+ *  autoConfig off: Meta's "automatic events" fired a SECOND Purchase on /thank-you (cs_est, no value, own event id -
+ *  never deduplicated) and a SubscribedButtonClick on every button. All events we need are sent explicitly. */
 export const PIXEL_BOOT = `!function(w,d){
 var now=Date.now();function ck(n){var m=d.cookie.match('(?:^|; )'+n+'=([^;]+)');return m?m[1]:null}
 function sc(n,v){d.cookie=n+'='+v+';path=/;max-age=7776000;SameSite=Lax'}
@@ -25,7 +27,7 @@ if(!ck('_fbp'))sc('_fbp','fb.1.'+now+'.'+Math.floor(Math.random()*2147483647));
 var cl=new URLSearchParams(location.search).get('fbclid'),fbc=ck('_fbc');
 if(cl&&(!fbc||fbc.split('.').pop()!==cl))sc('_fbc','fb.1.'+now+'.'+cl);
 if(!w.fbq){var n=w.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!w._fbq)w._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];n('init','${META_PIXEL_ID}')}
+if(!w._fbq)w._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];n('set','autoConfig',false,'${META_PIXEL_ID}');n('init','${META_PIXEL_ID}')}
 var tq=w.ttq=w.ttq||[];tq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];
 tq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
 for(var i=0;i<tq.methods.length;i++)tq.setAndDefer(tq,tq.methods[i]);
