@@ -1286,7 +1286,7 @@ export const PRODUCTS: Product[] = [
       {
         offerId: "one",
         quantity: 1,
-        price: 199,
+        price: 219,
         label: "تجربة أولى",
         title: "باقة التجربة",
         subtitle: "علبة واحدة — شهر من العناية",
@@ -1294,7 +1294,7 @@ export const PRODUCTS: Product[] = [
       {
         offerId: "two",
         quantity: 2,
-        price: 329,
+        price: 359,
         label: "الأكثر طلباً",
         badge: "الأكثر طلباً",
         ribbon: "الأكثر طلباً",
@@ -1304,7 +1304,7 @@ export const PRODUCTS: Product[] = [
       {
         offerId: "three",
         quantity: 3,
-        price: 449,
+        price: 479,
         label: "بروتوكول 3 أشهر الكامل",
         badge: "أفضل قيمة",
         ribbon: "أفضل قيمة",
