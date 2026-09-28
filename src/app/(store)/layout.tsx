@@ -47,6 +47,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  // Meta Business domain verification for atlaspure.shop
+  other: {
+    "facebook-domain-verification": "j1dr9vw0skp29k8xavuxlwd5w4tb9l",
+  },
 };
 
 export default function RootLayout({
