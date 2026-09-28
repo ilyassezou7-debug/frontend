@@ -30,8 +30,9 @@ export default function Header({ isSoftPage = false }: { isSoftPage?: boolean })
     setMounted(true);
   }, []);
 
-  // The cart drawer + checkout modals (animation library + catalogue) load on the first interaction or when the
-  // browser is idle - ready well before anyone taps "order", but out of the page's first seconds on a phone.
+  // The cart drawer + checkout modals (animation library + catalogue, ~35 KB) load on the visitor's first touch,
+  // scroll or key press - every buyer scrolls or taps before ordering, so they are ready in time, and the page's
+  // first seconds on a phone stay free of them (the old idle-timer fallback still fired inside that window).
   const isCheckoutOpen = useCheckoutStore((s) => s.isCheckoutOpen);
   const [modalsReady, setModalsReady] = useState(false);
   useEffect(() => {
@@ -39,12 +40,7 @@ export default function Header({ isSoftPage = false }: { isSoftPage?: boolean })
     const go = () => setModalsReady(true);
     const events = ["pointerdown", "touchstart", "scroll", "keydown"] as const;
     events.forEach((e) => window.addEventListener(e, go, { once: true, passive: true }));
-    const idle = window.requestIdleCallback ? window.requestIdleCallback(go, { timeout: 4000 }) : window.setTimeout(go, 2500);
-    return () => {
-      events.forEach((e) => window.removeEventListener(e, go));
-      if (window.cancelIdleCallback) window.cancelIdleCallback(idle as number);
-      else window.clearTimeout(idle as number);
-    };
+    return () => events.forEach((e) => window.removeEventListener(e, go));
   }, [modalsReady]);
   const showModals = modalsReady || isCartOpen || isCheckoutOpen;
 

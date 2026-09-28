@@ -1,0 +1,247 @@
+{
+ "/images/home/hero-new.webp": {
+  "h": "e0162909",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/home/ingredients-new.webp": {
+  "h": "49882283",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/breath-drops/hero.webp": {
+  "h": "e610ae06",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/breath-drops/ingredients.webp": {
+  "h": "9a14b16b",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/breath-drops/lifestyle.webp": {
+  "h": "e2b94a71",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/foot-spray/hero.webp": {
+  "h": "a7a3f996",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/foot-spray/ingredients.webp": {
+  "h": "77ee1c01",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/foot-spray/lifestyle.webp": {
+  "h": "a1064fcb",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/hair-serum/hero.png": {
+  "h": "af6b62e6",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/hair-serum/ingredients.png": {
+  "h": "82f08dd5",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/hair-serum/lifestyle.png": {
+  "h": "0dc657af",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/joint-capsules/hero.png": {
+  "h": "bd93ac65",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/joint-capsules/ingredients.png": {
+  "h": "c1cdbff2",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/joint-capsules/lifestyle.png": {
+  "h": "f86aef79",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/nail-serum/hero.webp": {
+  "h": "3abd1166",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/nail-serum/ingredients.webp": {
+  "h": "372bdf97",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/nail-serum/lifestyle.webp": {
+  "h": "f216422d",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/vitiligo-cream/hero.webp": {
+  "h": "3275288f",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/vitiligo-cream/ingredients.webp": {
+  "h": "fd78232b",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/products/vitiligo-cream/lifestyle.webp": {
+  "h": "04cf886b",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/images/lp/joint-product.png": {
+  "h": "d6aed806",
+  "w": [
+   96,
+   192,
+   384,
+   640,
+   828,
+   1024
+  ]
+ },
+ "/logo.png": {
+  "h": "f7480976",
+  "w": [
+   96,
+   141
+  ]
+ },
+ "/logo-light.png": {
+  "h": "e5d4022e",
+  "w": [
+   96,
+   141
+  ]
+ }
+}

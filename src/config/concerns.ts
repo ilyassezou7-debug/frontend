@@ -9,6 +9,7 @@ export const CONCERNS: { slug: string; label: string; question: string }[] = [
   { slug: "foot-spray", label: "رائحة القدمين", question: "كتقلقي فاش كتحيدي الصباط؟" },
   { slug: "nail-serum", label: "فطريات الأظافر", question: "ولّيتي كتخبي أظافرك؟" },
   { slug: "joint-capsules", label: "آلام المفاصل", question: "الركبة والظهر ما بقاوش كيعاونوك؟" },
+  { slug: "vitiligo-cream", label: "البرص والبهاق", question: "البقع البيضاء خلاتك تخبي وجهك؟" },
 ];
 
 export function concernFor(slug: string) {

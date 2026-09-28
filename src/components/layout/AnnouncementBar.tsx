@@ -94,8 +94,9 @@ export default function AnnouncementBar() {
             <span
               key={i}
               className={cn(
-                "h-[2px] rounded-full transition-all duration-300",
-                i === idx ? "w-3 bg-saffron" : "w-1 bg-white/30"
+                // fixed width + scaleX: transform/colour animate on the compositor (animating width forced layout)
+                "h-[2px] w-3 rounded-full origin-center transition-[transform,background-color] duration-300",
+                i === idx ? "scale-x-100 bg-saffron" : "scale-x-[0.34] bg-white/30"
               )}
             />
           ))}

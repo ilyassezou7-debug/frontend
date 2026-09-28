@@ -3,7 +3,8 @@ export type ProductId =
   | "foot_spray"
   | "nail_serum"
   | "hair_serum"
-  | "joint_capsules";
+  | "joint_capsules"
+  | "vitiligo_cream";
 export type OfferId = "one" | "two" | "three" | "upsell_99";
 
 export interface ProductOffer {

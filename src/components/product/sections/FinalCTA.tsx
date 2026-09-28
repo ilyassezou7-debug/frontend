@@ -29,10 +29,12 @@ export default function FinalCTA({
     <section className="section-padding bg-gradient-to-b from-ivory to-mist/40">
       <div className="container-max">
         <div className="bg-white rounded-3xl border border-saffron/30 shadow-lg max-w-3xl mx-auto p-6 md:p-10 text-center">
-          <div className="inline-flex items-center gap-2 bg-saffron/10 text-saffron text-xs font-bold tracking-wide px-3 py-1.5 rounded-full mb-4">
-            <span className="w-2 h-2 rounded-full bg-saffron animate-pulse" />
-            انضم إلى {ratingCount}+ عميل مغربي
-          </div>
+          {ratingCount > 0 && (
+            <div className="inline-flex items-center gap-2 bg-saffron/10 text-saffron text-xs font-bold tracking-wide px-3 py-1.5 rounded-full mb-4">
+              <span className="w-2 h-2 rounded-full bg-saffron animate-pulse" />
+              انضم إلى {ratingCount}+ عميل مغربي
+            </div>
+          )}
           <h2 className="font-display font-bold text-3xl md:text-4xl text-charcoal leading-tight mb-3">
             استعِد ثقتك مع {productShortName} اليوم
           </h2>

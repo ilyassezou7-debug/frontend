@@ -146,6 +146,7 @@ export default function ProductPageView({ product }: ProductPageClientProps) {
                 <h1 className="font-display font-bold text-[1.75rem] leading-[1.3] sm:text-4xl lg:text-5xl text-charcoal mb-3 lg:mb-4 text-balance">
                   {product.heroPromise}
                 </h1>
+                {product.ratingCount > 0 && (
                 <div className="flex items-center gap-2 mb-3 lg:mb-4">
                   <StarRating rating={4.8} />
                   <span className="text-sm md:text-base text-muted">
@@ -156,6 +157,7 @@ export default function ProductPageView({ product }: ProductPageClientProps) {
                     تقييم موثّق
                   </span>
                 </div>
+                )}
                 <p className="text-base lg:text-lg text-muted leading-relaxed">
                   {product.headline}
                 </p>
@@ -347,13 +349,15 @@ export default function ProductPageView({ product }: ProductPageClientProps) {
         <ComparisonTable rows={product.comparison} />
       </div>
 
-      {/* ───────── REVIEWS ───────── */}
-      <div className="content-auto">
-        <ReviewsBlock
-          reviews={product.reviews}
-          ratingCount={product.ratingCount}
-        />
-      </div>
+      {/* ───────── REVIEWS (only when the product has real ones) ───────── */}
+      {product.reviews.length > 0 && (
+        <div className="content-auto">
+          <ReviewsBlock
+            reviews={product.reviews}
+            ratingCount={product.ratingCount}
+          />
+        </div>
+      )}
 
       {/* ───────── GOLDEN GUARANTEE SEAL ───────── */}
       <div className="content-auto">

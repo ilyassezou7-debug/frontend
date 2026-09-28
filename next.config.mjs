@@ -9,11 +9,24 @@ const nextConfig = {
   poweredByHeader: false,
 
   images: {
-    remotePatterns: [],
-    // Serve AVIF first (smallest), then WebP — both vastly smaller than JPEG/PNG
-    formats: ["image/avif", "image/webp"],
-    // Cache optimised images for 30 days on CDN/browser (default is 60s)
-    minimumCacheTTL: 2592000,
+    // No request-time resizing: next/image points at static WebP sizes pre-built by tools/optimize-images.mjs
+    // (npm run images). The runtime optimizer was uncached by Cloudflare, slow (2-3 s/image) and emptied on every
+    // deploy, which made images stall or fail on a first visit.
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
+  },
+
+  // Next 14 bundles polyfills for Array.at/flat/flatMap, Object.fromEntries/hasOwn, trimStart/trimEnd into every page
+  // (Lighthouse "legacy JavaScript"). Every browser that can run this site already has them natively.
+  webpack(config, { isServer }) {
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        "../build/polyfills/polyfill-module": false,
+        "next/dist/build/polyfills/polyfill-module": false,
+      };
+    }
+    return config;
   },
 
   // Only framer-motion still needs CommonJS transpilation in Next.js 14
@@ -68,6 +81,11 @@ const nextConfig = {
             value: "public, max-age=2592000, stale-while-revalidate=86400",
           },
         ],
+      },
+      {
+        // Pre-built image sizes carry a content hash in the file name -> cache forever
+        source: "/images/_opt/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
       {
         // Fonts cached for 1 year

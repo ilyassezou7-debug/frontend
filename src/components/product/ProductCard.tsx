@@ -48,11 +48,13 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         </h3>
         <p className="hidden sm:block text-sm text-muted leading-relaxed line-clamp-2">{product.headline}</p>
 
-        <div className="flex items-center gap-1 text-xs text-muted">
-          <Star className="w-3.5 h-3.5 fill-saffron text-saffron" aria-hidden />
-          <span className="font-bold text-charcoal tabular-nums">4.8</span>
-          <span className="tabular-nums">({product.ratingCount})</span>
-        </div>
+        {product.ratingCount > 0 && (
+          <div className="flex items-center gap-1 text-xs text-muted">
+            <Star className="w-3.5 h-3.5 fill-saffron text-saffron" aria-hidden />
+            <span className="font-bold text-charcoal tabular-nums">4.8</span>
+            <span className="tabular-nums">({product.ratingCount})</span>
+          </div>
+        )}
 
         <div className="mt-auto pt-2 sm:pt-3 flex items-end justify-between gap-2">
           <p className="leading-none">

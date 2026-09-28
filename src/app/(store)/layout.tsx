@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import "./fonts.css";
 import "./globals.css";
 import { ConditionalHeader, ConditionalFooter, ConditionalAnnouncementBar } from "@/components/layout/ConditionalLayout";
 import PixelProvider, { PIXEL_BOOT } from "@/components/tracking/PixelProvider";
 import { SITE_CONFIG } from "@/config/site";
+import { FONT_FACES } from "./font-faces";
 
-// Fonts are self-hosted in public/fonts (see fonts.css): next/font/google downloads at build time, and that
+// Fonts are self-hosted in public/fonts (see font-faces.ts): next/font/google downloads at build time, and that
 // download failed a deploy on 2026-09-22.
 
 export const metadata: Metadata = {
@@ -57,6 +57,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <head>
+        <style dangerouslySetInnerHTML={{ __html: FONT_FACES }} />
         <link rel="preload" href="/fonts/plex-arabic-400.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/plex-arabic-700.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <script dangerouslySetInnerHTML={{ __html: PIXEL_BOOT }} />
