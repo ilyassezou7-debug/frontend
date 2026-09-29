@@ -27,9 +27,29 @@ img{display:block;width:100%;height:auto}
 .badges{display:flex;gap:6px;justify-content:center;padding:10px 10px 4px;flex-wrap:wrap}
 .badges span{background:#0E5C4A;color:#fff;border:1.5px solid #D4A24A;border-radius:999px;padding:6px 11px;font-size:13px;font-weight:700;white-space:nowrap}
 .badges span::before{content:"✓ ";color:#F2C35E}
-.cta{display:block;width:calc(100% - 28px);margin:12px 14px 18px;padding:16px 10px;border:0;border-radius:16px;background:linear-gradient(135deg,#0E5C4A,#0A3F33);color:#fff;font-size:20px;font-weight:800;text-align:center;text-decoration:none;cursor:pointer;box-shadow:0 8px 20px rgba(14,92,74,.3)}
-.cta small{display:block;font-size:13px;font-weight:600;color:#F2C35E}
-#order{margin:8px 12px 18px;background:#fff;border:3px solid #0E5C4A;border-radius:22px;padding:18px 14px}
+.cta{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 28px);margin:14px 14px 20px;padding:15px 12px;border:0;border-radius:14px;background:linear-gradient(135deg,#12a150,#0b7a3b);color:#fff;font:inherit;font-size:21px;font-weight:800;text-align:center;text-decoration:none;cursor:pointer;box-shadow:0 8px 22px rgba(11,122,59,.35);animation:pulse 1.9s ease-in-out infinite}
+.cta svg{width:26px;height:26px;flex:none}
+.cta span{display:flex;flex-direction:column;line-height:1.25}
+.cta small{display:block;font-size:13px;font-weight:700;color:#e8ffe9;opacity:.95}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@keyframes shake{0%,86%,100%{transform:translateX(0)}88%,92%,96%{transform:translateX(-4px)}90%,94%,98%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){.cta,#go{animation:none}}
+#order{margin:8px 12px 18px;background:#fff;border:3px solid #0E5C4A;border-radius:22px;padding:18px 14px;position:relative}
+#shade{display:none;position:fixed;inset:0;background:rgba(8,30,25,.55);z-index:20}
+body.pop{overflow:hidden}body.pop #shade{display:block}
+body.pop #order{position:fixed;z-index:21;left:0;right:0;bottom:0;margin:0 auto;max-width:540px;max-height:93vh;overflow:auto;border:0;border-radius:22px 22px 0 0;padding:14px 14px calc(16px + env(safe-area-inset-bottom));animation:up .25s ease-out}
+@keyframes up{from{transform:translateY(40%);opacity:.4}to{transform:none;opacity:1}}
+#x{display:none;position:absolute;top:10px;left:12px;width:34px;height:34px;border:0;border-radius:50%;background:#F7F5EF;font-size:20px;color:#5B6B65;cursor:pointer}
+body.pop #x{display:block}
+.prod{display:flex;align-items:center;gap:10px;background:#F7F5EF;border-radius:12px;padding:8px 10px;margin:4px 0 12px}
+.prod img{width:56px;height:50px;object-fit:contain;flex:none}
+.prod b{display:block;font-size:15px}.prod em{font-style:normal;font-size:12.5px;color:#0b7a3b;font-weight:700}
+.field{position:relative}.field i{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-style:normal;font-size:18px;opacity:.75}
+.field .in{padding-right:42px}
+body.pop #order h2{font-size:20px;margin:0 0 6px}body.pop #order .sub,body.pop .hurry,body.pop .trust{display:none}
+body.pop .prod{margin:0 0 8px;padding:6px 8px}body.pop .offer{padding:8px 11px;margin-bottom:8px}body.pop .offer .t em{font-size:11.5px}
+body.pop label.f{margin:6px 2px 3px;font-size:13px}body.pop .in{padding:11px 42px 11px 13px}body.pop .total{margin-top:8px;padding:7px 12px}
+body.pop #go{margin-top:10px;padding:13px 10px}
 #order h2{text-align:center;font-size:24px;color:#0E5C4A;margin-bottom:2px}
 #order .sub{text-align:center;color:#8C6420;font-weight:700;font-size:14px;margin-bottom:12px}
 .offer{display:flex;align-items:center;gap:10px;border:2px solid #E5DED1;border-radius:14px;padding:12px;margin-bottom:10px;cursor:pointer;position:relative;background:#FBFAF5}
@@ -46,12 +66,12 @@ img{display:block;width:100%;height:auto}
 label.f{display:block;font-weight:700;font-size:14px;margin:12px 2px 5px}
 .in{width:100%;padding:14px;border:2px solid #E5DED1;border-radius:12px;font-size:17px;background:#fff;color:#102622;font-family:inherit}
 .in:focus{outline:0;border-color:#0E5C4A}
-.in[dir=ltr]{text-align:right}
+.in[dir=ltr]{text-align:right;letter-spacing:.5px}
 .err{color:#b42318;font-size:13px;font-weight:700;margin:4px 2px 0;min-height:0}
 #sendErr{display:none;margin-top:12px;background:#fef3f2;border:1px solid #fecdca;color:#b42318;border-radius:10px;padding:10px;font-weight:700;font-size:14px}
 .total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:10px 12px;background:#F7F5EF;border-radius:12px;font-weight:800}
 .total b{color:#0E5C4A;font-size:20px}
-#go{width:100%;margin:14px 0 0}
+#go{width:100%;margin:14px 0 0;animation:shake 4s ease-in-out infinite}
 #go[disabled]{opacity:.7}
 .trust{display:flex;justify-content:space-around;margin-top:12px;font-size:12px;color:#5B6B65;font-weight:700;text-align:center}
 .hurry{text-align:center;color:#b54708;font-weight:800;font-size:14px;margin-top:10px}
@@ -93,36 +113,39 @@ tq.page()}(window,document);
 <div class="wrap">
   <img src="/images/lp/vitiligo/01_hero-750.webp" srcset="/images/lp/vitiligo/01_hero-480.webp 480w, /images/lp/vitiligo/01_hero-750.webp 750w, /images/lp/vitiligo/01_hero-1080.webp 1080w" sizes="(max-width:540px) 100vw, 540px" width="750" height="1153" fetchpriority="high" alt="كريم Atlas Pure للبرص والبهاق — قبل وبعد">
   <div class="badges"><span>الدفع عند الاستلام</span><span>التوصيل مجاني</span><span>ضمان 30 يوم</span></div>
-  <a class="cta" href="#order" data-cta>اطلب دابا<small>الدفع عند الاستلام · التوصيل مجاني</small></a>
+  <a class="cta" href="#order" data-cta><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L22 7H6.2"/></svg><span>اطلب دابا<small>الدفع عند الاستلام · التوصيل مجاني</small></span></a>
 
   <img loading="lazy" decoding="async" src="/images/lp/vitiligo/02_results-750.webp" srcset="/images/lp/vitiligo/02_results-480.webp 480w, /images/lp/vitiligo/02_results-750.webp 750w, /images/lp/vitiligo/02_results-1080.webp 1080w" sizes="(max-width:540px) 100vw, 540px" width="750" height="1000" alt="شوف الفرق بعينيك: الوجه، اليدين، العنق">
   <img loading="lazy" decoding="async" src="/images/lp/vitiligo/03_story-750.webp" srcset="/images/lp/vitiligo/03_story-480.webp 480w, /images/lp/vitiligo/03_story-750.webp 750w, /images/lp/vitiligo/03_story-1080.webp 1080w" sizes="(max-width:540px) 100vw, 540px" width="750" height="1000" alt="قصتي مع البرص">
-  <a class="cta" href="#order" data-cta>بغيت نجرب Atlas Pure<small>ضمان استرجاع الفلوس 30 يوم</small></a>
+  <a class="cta" href="#order" data-cta><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L22 7H6.2"/></svg><span>بغيت نجرب Atlas Pure<small>ضمان استرجاع الفلوس 30 يوم</small></span></a>
   <img loading="lazy" decoding="async" src="/images/lp/vitiligo/04_formula-750.webp" srcset="/images/lp/vitiligo/04_formula-480.webp 480w, /images/lp/vitiligo/04_formula-750.webp 750w, /images/lp/vitiligo/04_formula-1080.webp 1080w" sizes="(max-width:540px) 100vw, 540px" width="750" height="1000" alt="التركيبة الثلاثية وكيفاش كنستعملو">
   <img loading="lazy" decoding="async" src="/images/lp/vitiligo/05_trust-750.webp" srcset="/images/lp/vitiligo/05_trust-480.webp 480w, /images/lp/vitiligo/05_trust-750.webp 750w, /images/lp/vitiligo/05_trust-1080.webp 1080w" sizes="(max-width:540px) 100vw, 540px" width="750" height="1000" alt="طلب بلا خوف: الدفع عند الاستلام، توصيل مجاني، ضمان 30 يوم">
 
   <form id="order" novalidate>
+    <button type="button" id="x" aria-label="إغلاق">✕</button>
     <h2>اختار العرض ديالك</h2>
     <p class="sub">🔥 العرض محدود — الدفع غير فاش توصلك الطلبية</p>
+    <div class="prod"><img src="/images/lp/vitiligo/jar-160.webp" width="56" height="50" alt=""><span><b>كريم Atlas Pure للبرص والبهاق</b><em>✓ متوفر · التوصيل خلال 24-48 ساعة</em></span></div>
     <div id="offers"></div>
     <label class="f" for="nm">الاسم الكامل</label>
-    <input class="in" id="nm" name="full_name" autocomplete="name" placeholder="مثلاً: محمد العلوي">
+    <div class="field"><i>👤</i><input class="in" id="nm" name="full_name" autocomplete="name" enterkeyhint="next" placeholder="مثلاً: محمد العلوي"></div>
     <p class="err" id="nmErr"></p>
     <label class="f" for="ph">رقم الهاتف</label>
-    <input class="in" id="ph" name="phone" type="tel" inputmode="tel" dir="ltr" autocomplete="tel" placeholder="06XXXXXXXX">
+    <div class="field"><i>📞</i><input class="in" id="ph" name="phone" type="tel" inputmode="tel" dir="ltr" autocomplete="tel" enterkeyhint="send" maxlength="16" placeholder="06XXXXXXXX"></div>
     <p class="err" id="phErr"></p>
     <div class="total"><span>المجموع</span><b id="tot"></b></div>
     <div id="sendErr" role="alert"></div>
-    <button class="cta" id="go" type="submit">أكد الطلب — الدفع عند الاستلام</button>
+    <button class="cta" id="go" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L22 7H6.2"/></svg><span>اضغط هنا لتأكيد الطلب<small>الدفع عند الاستلام</small></span></button>
     <p class="hurry">⚡ كنعيطو ليك باش نأكدو الطلب قبل ما نصيفطوه</p>
     <div class="trust"><span>🚚<br>توصيل مجاني</span><span>💵<br>الدفع عند الاستلام</span><span>🛡️<br>ضمان 30 يوم</span></div>
   </form>
 
   <img loading="lazy" decoding="async" src="/images/lp/vitiligo/06_faq-750.webp" srcset="/images/lp/vitiligo/06_faq-480.webp 480w, /images/lp/vitiligo/06_faq-750.webp 750w, /images/lp/vitiligo/06_faq-1080.webp 1080w" sizes="(max-width:540px) 100vw, 540px" width="750" height="1000" alt="الأسئلة اللي كتسولو بزاف">
-  <a class="cta" href="#order" data-cta>اطلب دابا<small>الدفع عند الاستلام · التوصيل مجاني</small></a>
+  <a class="cta" href="#order" data-cta><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L22 7H6.2"/></svg><span>اطلب دابا<small>الدفع عند الاستلام · التوصيل مجاني</small></span></a>
   <footer>© أطلس بيور · <a href="/privacy">الخصوصية</a> · <a href="/returns">الإرجاع</a> · <a href="/terms">الشروط</a><br>النتائج كتختلف من شخص لآخر.</footer>
 </div>
-<div id="sticky"><a class="cta" href="#order" data-cta>اطلب دابا · الدفع عند الاستلام</a></div>
+<div id="sticky"><a class="cta" href="#order" data-cta><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L22 7H6.2"/></svg><span>اطلب دابا · الدفع عند الاستلام</span></a></div>
+<div id="shade"></div>
 <script>
 (function(){
 /* Offers: MUST match backend/app/services/pricing.py (the server recalculates every order). */
@@ -143,13 +166,16 @@ __send('ViewContent',{content_ids:[PID],content_type:'product',value:sel.price,c
 try{ttq.track('ViewContent',{contents:[{content_id:PID}],value:sel.price,currency:'MAD'})}catch(e){}
 var ic=0;function initCheckout(){if(ic)return;ic=1;var e=__eid();__send('InitiateCheckout',{value:sel.price,currency:'MAD'},e);
  try{ttq.track('InitiateCheckout',{value:sel.price,currency:'MAD'},{event_id:e})}catch(x){}}
-document.querySelectorAll('[data-cta]').forEach(function(a){a.addEventListener('click',function(ev){ev.preventDefault();
- document.getElementById('order').scrollIntoView({behavior:'smooth',block:'start'});initCheckout()})});
+function openForm(){document.body.classList.add('pop');upd();initCheckout();setTimeout(function(){document.getElementById('nm').focus({preventScroll:true})},260)}
+function closeForm(){document.body.classList.remove('pop');upd()}
+document.querySelectorAll('[data-cta]').forEach(function(a){a.addEventListener('click',function(ev){ev.preventDefault();openForm()})});
+document.getElementById('x').addEventListener('click',closeForm);document.getElementById('shade').addEventListener('click',closeForm);
+addEventListener('keydown',function(e){if(e.key==='Escape')closeForm()});
 document.getElementById('nm').addEventListener('focus',initCheckout);document.getElementById('ph').addEventListener('focus',initCheckout);
 /* sticky button: shown after the hero, hidden while the form is on screen */
 var st=document.getElementById('sticky'),form=document.getElementById('order'),formOn=false;
 if('IntersectionObserver'in window){new IntersectionObserver(function(es){formOn=es[0].isIntersecting;upd()}).observe(form)}
-function upd(){st.classList.toggle('show',scrollY>500&&!formOn)}addEventListener('scroll',upd,{passive:true});
+function upd(){st.classList.toggle('show',scrollY>500&&!formOn&&!document.body.classList.contains('pop'))}addEventListener('scroll',upd,{passive:true});
 function phone(raw){var c=raw.replace(/[\s\-().]/g,'');if(/^(\d)\1{8,}$/.test(c.replace(/^\+?212/,'0')))return null;var n='';
  if(c.indexOf('+212')===0)n=c;else if(c.indexOf('212')===0&&c.length===12)n='+'+c;else if((c.indexOf('06')===0||c.indexOf('07')===0)&&c.length===10)n='+212'+c.slice(1);else return null;
  return/^\+212[67]\d{8}$/.test(n)?n:null}
@@ -159,7 +185,7 @@ var busy=false;form.addEventListener('submit',function(ev){ev.preventDefault();i
  document.getElementById('nmErr').textContent=nm.length<3?(ok=false,'المرجو إدخال الاسم الكامل'):'';
  document.getElementById('phErr').textContent=!ph?(ok=false,'المرجو إدخال رقم هاتف مغربي صحيح (06/07)'):'';
  if(!ok)return;initCheckout();
- var btn=document.getElementById('go'),er=document.getElementById('sendErr');busy=true;btn.disabled=true;btn.textContent='جاري إرسال الطلب...';er.style.display='none';
+ var btn=document.getElementById('go'),er=document.getElementById('sendErr');busy=true;btn.disabled=true;var lbl=btn.innerHTML;btn.innerHTML='<span>جاري تأكيد الطلب...</span>';er.style.display='none';
  try{localStorage.removeItem('atlas_last_order')}catch(e){}
  var lu;try{lu=sessionStorage.getItem('_landing_url')}catch(e){}lu=lu||location.href;var lp=new URLSearchParams(new URL(lu).search);
  var eid=__eid(),items=[{product_id:PID,offer_id:sel.id,quantity:1,unit_count:sel.q,price:sel.price,source:'product_page'}];
@@ -174,8 +200,8 @@ var busy=false;form.addEventListener('submit',function(ev){ev.preventDefault();i
    __send('Purchase',{value:sel.price,currency:'MAD',content_ids:[PID],content_type:'product',num_items:sel.q},eid);
    try{ttq.track('PlaceAnOrder',{contents:[{content_id:PID,quantity:sel.q}],value:sel.price,currency:'MAD'},{event_id:eid})}catch(e){}
    try{localStorage.setItem('atlas_last_order',JSON.stringify({orderId:res.order_id,publicId:res.public_id,total:sel.price,customer:{full_name:nm,phone:ph},items:items}))}catch(e){}
-   setTimeout(function(){location.href='/thank-you?order_id='+encodeURIComponent(res.public_id)},350)})
- .catch(function(e){busy=false;btn.disabled=false;btn.textContent='أكد الطلب — الدفع عند الاستلام';
+   location.href='/thank-you?order_id='+encodeURIComponent(res.public_id)})
+ .catch(function(e){busy=false;btn.disabled=false;btn.innerHTML=lbl;
    er.textContent=/هاتف|رقم|phone/i.test(e.message)?e.message:'ما قدرناش نسجلو الطلب ديالك دابا. تأكد من الأنترنت وعاود جرب مرة أخرى.';er.style.display='block'});
 });
 })();
