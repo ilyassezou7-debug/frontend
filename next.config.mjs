@@ -51,7 +51,11 @@ const nextConfig = {
   // German Amazon bridge pages are served as fully static HTML (no framework JS) - see tools/export-bridge.mjs
   async rewrites() {
     return {
-      beforeFiles: [{ source: "/lp/bestie-duell", destination: "/lp/bestie-duell.html" }],
+      beforeFiles: [
+        { source: "/lp/bestie-duell", destination: "/lp/bestie-duell.html" },
+        // Moroccan vitiligo landing page: hand-written static HTML (public/lp/vitiligo.html), no framework JS
+        { source: "/lp/vitiligo", destination: "/lp/vitiligo.html" },
+      ],
     };
   },
 
