@@ -18,6 +18,10 @@ const DEFERRED_PATHS = ["/lp/bestie-duell"];
  *  page fires during hydration can never be dropped), writes _fbp/_fbc like fbevents.js would (so an fbclid survives a
  *  client-side navigation), and downloads the two ~250 KB ad libraries only after the first interaction or 3.5 s after
  *  load - they no longer compete with the product photo for the phone's bandwidth and CPU. Queued events flush on load.
+ *  The PageView itself is sent at once from here (1 small request, ~0 ms) instead of waiting in the queue for the
+ *  250 KB library: visitors who left before the library loaded were never counted, so Meta's "link click -> landing
+ *  page view" rate showed ~50% while many of them had arrived. It is the only Meta PageView (trackPageView skips it).
+ *  Bots/headless browsers are skipped here (fbevents' own BotBlocking would drop them; for them trackPageView falls back).
  *  autoConfig off: Meta's "automatic events" fired a SECOND Purchase on /thank-you (cs_est, no value, own event id -
  *  never deduplicated) and a SubscribedButtonClick on every button. All events we need are sent explicitly. */
 export const PIXEL_BOOT = `!function(w,d){
@@ -26,6 +30,11 @@ function sc(n,v){d.cookie=n+'='+v+';path=/;max-age=7776000;SameSite=Lax'}
 if(!ck('_fbp'))sc('_fbp','fb.1.'+now+'.'+Math.floor(Math.random()*2147483647));
 var cl=new URLSearchParams(location.search).get('fbclid'),fbc=ck('_fbc');
 if(cl&&(!fbc||fbc.split('.').pop()!==cl))sc('_fbc','fb.1.'+now+'.'+cl);
+var pq=new URLSearchParams({id:'${META_PIXEL_ID}',ev:'PageView',dl:location.href,rl:d.referrer,ts:String(now),fbp:ck('_fbp')||'',
+ eid:'pv.'+now+'.'+Math.random().toString(36).slice(2,10)});if(ck('_fbc'))pq.set('fbc',ck('_fbc'));
+var pu='https://www.facebook.com/tr?'+pq.toString();
+if(!navigator.webdriver&&!/bot|crawl|spider|slurp|headless|lighthouse|facebookexternalhit|preview/i.test(navigator.userAgent)){
+ try{fetch(pu,{mode:'no-cors',keepalive:true,credentials:'include'})}catch(e){(new Image).src=pu}w.__fbPV=1}
 if(!w.fbq){var n=w.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
 if(!w._fbq)w._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];n('set','autoConfig',false,'${META_PIXEL_ID}');n('init','${META_PIXEL_ID}')}
 var tq=w.ttq=w.ttq||[];tq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];
@@ -38,7 +47,7 @@ var go=0;function load(){if(go)return;go=1;
  tq.instance=function(t){for(var e=tq._i[t]||[],k=0;k<tq.methods.length;k++)tq.setAndDefer(e,tq.methods[k]);return e};
  var t=d.createElement('script');t.async=1;t.src='https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=${TIKTOK_PIXEL_ID}&lib=ttq';d.head.appendChild(t)}
 ['pointerdown','touchstart','scroll','keydown','mousemove'].forEach(function(e){w.addEventListener(e,load,{once:!0,passive:!0})});
-w.addEventListener('load',function(){setTimeout(load,3500)});
+w.addEventListener('load',function(){setTimeout(load,6000)});
 tq.page()}(window,document);`;
 
 interface PixelProviderProps {

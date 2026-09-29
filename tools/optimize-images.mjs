@@ -13,7 +13,7 @@ const ROOT = process.cwd();
 const PUB = join(ROOT, "public");
 const OUT = join(PUB, "images", "_opt");
 const SOURCES = ["images/home", "images/products", "images/lp/joint-product.png", "logo.png", "logo-light.png"];
-const WIDTHS = [96, 192, 384, 640, 828, 1080, 1200];
+const WIDTHS = [96, 192, 384, 640, 750, 828, 1080, 1200];
 const QUALITY = 74;
 
 function walk(p) {

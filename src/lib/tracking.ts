@@ -52,7 +52,8 @@ export function identifyUser(phone: string) {
 }
 
 export function trackPageView() {
-  safeMetaTrack("PageView");
+  // Meta PageView is already sent from <head> by PIXEL_BOOT (window.__fbPV); sending it again would double-count.
+  if (typeof window === "undefined" || !(window as Window & { __fbPV?: number }).__fbPV) safeMetaTrack("PageView");
   safeTikTokTrack("PageView");
   safeSnapTrack("PAGE_VIEW");
 }

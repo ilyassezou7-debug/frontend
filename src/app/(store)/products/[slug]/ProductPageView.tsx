@@ -295,7 +295,7 @@ export default function ProductPageView({ product }: ProductPageClientProps) {
                     <span className="absolute -right-[33px] top-1 w-5 h-5 rounded-full bg-white border-2 border-teal flex items-center justify-center group-hover/timeline-item:scale-125 transition-transform duration-200">
                       <span className="w-2 h-2 rounded-full bg-teal group-hover/timeline-item:bg-saffron transition-colors" />
                     </span>
-                    <p className="font-bold text-saffron text-sm mb-1 group-hover/timeline-item:text-teal transition-colors">
+                    <p className="font-bold text-saffron-dark text-sm mb-1 group-hover/timeline-item:text-teal transition-colors">
                       {item.when}
                     </p>
                     <p className="text-charcoal leading-relaxed group-hover/timeline-item:translate-x-1 transition-transform duration-200">
