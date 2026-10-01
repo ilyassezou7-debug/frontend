@@ -56,6 +56,7 @@ const nextConfig = {
         // Moroccan vitiligo landing page: hand-written static HTML (public/lp/vitiligo.html), no framework JS
         { source: "/lp/vitiligo", destination: "/lp/vitiligo.html" },
         { source: "/lp/vitiligo-2", destination: "/lp/vitiligo-2.html" },
+        { source: "/lp/vitiligo-3", destination: "/lp/vitiligo-3.html" },
       ],
     };
   },
