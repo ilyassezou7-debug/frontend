@@ -61,6 +61,7 @@ const nextConfig = {
         { source: "/lp/vitiligo-5", destination: "/lp/vitiligo-5.html" },
         { source: "/lp/vitiligo-6", destination: "/lp/vitiligo-6.html" },
         { source: "/lp/vitiligo-7", destination: "/lp/vitiligo-7.html" },
+        { source: "/lp/vitiligo-8", destination: "/lp/vitiligo-8.html" },
       ],
     };
   },
