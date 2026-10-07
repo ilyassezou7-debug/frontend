@@ -67,6 +67,7 @@ const nextConfig = {
         { source: "/lp/joint-3", destination: "/lp/joint-3.html" },
         { source: "/lp/joint-4", destination: "/lp/joint-4.html" },
         { source: "/lp/bouzloum", destination: "/lp/bouzloum.html" },
+        { source: "/lp/joint-info", destination: "/lp/joint-info.html" },
       ],
     };
   },
