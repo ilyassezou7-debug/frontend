@@ -65,6 +65,7 @@ const nextConfig = {
         { source: "/lp/joint", destination: "/lp/joint.html" },
         { source: "/lp/joint-2", destination: "/lp/joint-2.html" },
         { source: "/lp/joint-3", destination: "/lp/joint-3.html" },
+        { source: "/lp/joint-4", destination: "/lp/joint-4.html" },
       ],
     };
   },
