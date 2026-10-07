@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,10 +10,7 @@ import {
   Phone,
   ShoppingBag,
   ArrowLeft,
-  ClipboardList,
   Truck,
-  PackageCheck,
-  Clock,
   AlertCircle,
   Sparkles,
   ShieldCheck,
@@ -50,43 +47,11 @@ interface StoredOrder {
   }>;
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Call window helper — Casablanca is UTC+1 (no DST observed since 2018)
-// Confirmation hours: 09:00 → 21:00
-// ─────────────────────────────────────────────────────────────────
-function useCallWindow() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    setNow(new Date());
-    const t = setInterval(() => setNow(new Date()), 60_000);
-    return () => clearInterval(t);
-  }, []);
-
-  return useMemo(() => {
-    if (!now) return null;
-    const moroccoHour = (now.getUTCHours() + 1) % 24; // UTC+1
-    const isOpen = moroccoHour >= 9 && moroccoHour < 21;
-    return {
-      isOpen,
-      hour: moroccoHour,
-      title: isOpen
-        ? "غادي يتاصل بيك فريقنا فأقل من 10 دقائق"
-        : "غادي يتاصل بيك فريقنا بكري الصباح",
-      sub: isOpen
-        ? "خلي هاتفك قريب وردي على المكالمة باش نأكدو طلبيتك ونرسلوها فالحين"
-        : "كنخدمو من 9 صباحاً حتى 9 ليلاً. غدا الصباح من 9ص أول مكالمة هي ديالك إن شاء الله.",
-      etaLabel: isOpen ? "أقل من 10 دقائق" : "غداً من 9:00 ص",
-      pulseColor: isOpen ? "bg-emerald-500" : "bg-saffron",
-    };
-  }, [now]);
-}
-
 export default function ThankYouClient() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("order_id");
   const [order, setOrder] = useState<StoredOrder | null>(null);
   const clearCart = useCartStore((s) => s.clearCart);
-  const callWindow = useCallWindow();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -188,163 +153,142 @@ export default function ThankYouClient() {
         </div>
       </section>
 
-      {/* ───── 2. CALL WINDOW BANNER (highest priority) ───── */}
-      {callWindow && (
-        <section className="px-4 pt-12 relative z-10">
-          <div className="container-max max-w-3xl">
-            <div
-              className={`rounded-2xl p-5 sm:p-6 shadow-xl border-2 ${
-                callWindow.isOpen
-                  ? "bg-emerald-50 border-emerald-300"
-                  : "bg-saffron/10 border-saffron/40"
-              }`}
-            >
-              <div className="flex items-start gap-4">
-                <div className="relative flex-shrink-0">
-                  <div
-                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center ${
-                      callWindow.isOpen
-                        ? "bg-emerald-500 text-white"
-                        : "bg-saffron text-white"
-                    }`}
-                  >
-                    <Phone className="w-6 h-6 sm:w-7 sm:h-7" />
-                  </div>
-                  <span
-                    className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${callWindow.pulseColor} animate-ping`}
-                  />
-                  <span
-                    className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ${callWindow.pulseColor}`}
-                  />
-                </div>
+      {/* ───── 2. DESIGNED VISUALS: thanks → order summary → the call → next steps ───── */}
+      <section className="px-4 pt-8">
+        <div className="container-max max-w-3xl">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/thankyou/ty01_thanks-750.webp"
+            srcSet="/images/thankyou/ty01_thanks-480.webp 480w, /images/thankyou/ty01_thanks-750.webp 750w, /images/thankyou/ty01_thanks-1080.webp 1080w"
+            sizes="(max-width:768px) 100vw, 768px"
+            width={750}
+            height={1000}
+            fetchPriority="high"
+            decoding="async"
+            alt="شكراً على الثقة ديالك، الطلب ديالك وصلنا"
+            className="w-full h-auto rounded-3xl shadow-sm border border-border-soft"
+          />
+        </div>
+      </section>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span
-                      className={`inline-flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full ${
-                        callWindow.isOpen
-                          ? "bg-emerald-600 text-white"
-                          : "bg-saffron text-white"
-                      }`}
-                    >
-                      <Clock className="w-3 h-3" />
-                      {callWindow.etaLabel}
-                    </span>
-                  </div>
-                  <h2 className="font-display font-bold text-charcoal text-lg sm:text-xl leading-tight mb-2">
-                    {callWindow.title}
-                  </h2>
-                  <p className="text-charcoal/80 text-sm sm:text-base leading-relaxed">
-                    {callWindow.sub}
-                  </p>
-                  <div className="mt-3 flex items-center gap-2 text-xs text-charcoal/70 bg-white/60 rounded-lg px-3 py-2">
-                    <AlertCircle className="w-4 h-4 text-saffron flex-shrink-0" />
-                    <span>
-                      المكالمة كتجي من رقم مغربي يبدا بـ{" "}
-                      <span className="font-bold tabular-nums text-charcoal">
-                        05
-                      </span>{" "}
-                      أو{" "}
-                      <span className="font-bold tabular-nums text-charcoal">
-                        06
-                      </span>{" "}
-                      – ما تحشميش تردي حتى ولو ما عرفتيش الرقم.
-                    </span>
-                  </div>
+      {/* ───── 5. CLEAN ORDER SUMMARY ───── */}
+      {order && (
+        <section className="px-4 pt-6">
+          <div className="container-max max-w-3xl">
+            <div className="bg-white rounded-3xl border border-border-soft overflow-hidden shadow-sm">
+              <div className="px-5 py-4 border-b border-border-soft flex items-center justify-between">
+                <h2 className="font-display font-bold text-lg text-charcoal flex items-center gap-2">
+                  <ShoppingBag className="w-5 h-5 text-teal" />
+                  ملخص طلبيتك
+                </h2>
+                <span className="text-xs text-muted tabular-nums">
+                  {order.items.length} منتج
+                </span>
+              </div>
+
+              <ul className="divide-y divide-border-soft">
+                {order.items.map((item, i) => {
+                  const product = PRODUCTS.find((p) => p.id === item.product_id);
+                  const offerLabel =
+                    product?.offers.find((o) => o.offerId === item.offer_id)
+                      ?.label || "";
+                  return (
+                    <li key={i} className="flex items-center gap-3 sm:gap-4 px-5 py-4">
+                      <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-sand flex-shrink-0">
+                        {(product || LP_PRODUCTS[item.product_id]) && (
+                          <Image
+                            src={product?.images.hero ?? LP_PRODUCTS[item.product_id].image}
+                            alt={product?.shortName ?? LP_PRODUCTS[item.product_id].name}
+                            fill
+                            className="object-cover"
+                            sizes="64px"
+                          />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-charcoal text-sm sm:text-base truncate leading-tight">
+                          {product?.shortName ?? LP_PRODUCTS[item.product_id]?.name ?? item.product_id}
+                        </p>
+                        <p className="text-xs text-muted mt-1 leading-snug">
+                          {item.unit_count} {item.unit_count === 1 ? "علبة" : "علب"}
+                          {offerLabel ? ` · ${offerLabel}` : ""}
+                          {item.quantity > 1 ? ` × ${item.quantity}` : ""}
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0 text-left">
+                        <p className="font-bold text-teal text-base tabular-nums whitespace-nowrap">
+                          {formatMAD(item.price * item.quantity)}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className="bg-ivory px-5 py-4 border-t border-border-soft space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted">المجموع الفرعي</span>
+                  <span className="font-semibold text-charcoal tabular-nums">
+                    {formatMAD(order.total)}
+                  </span>
                 </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted flex items-center gap-1">
+                    <Truck className="w-3.5 h-3.5" />
+                    التوصيل
+                  </span>
+                  <span className="font-bold text-emerald-700 text-xs uppercase tracking-wide">
+                    مجاني
+                  </span>
+                </div>
+                <div className="flex items-center justify-between pt-3 border-t border-border-soft">
+                  <span className="font-bold text-charcoal text-sm">
+                    تخلصي عند الاستلام
+                  </span>
+                  <span className="font-extrabold text-teal text-xl tabular-nums">
+                    {formatMAD(order.total)}
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted text-center pt-1">
+                  💵 ما كتخلصي والو دابا – الدفع كاش يد بيد ملي توصلك الأمانة
+                </p>
               </div>
             </div>
           </div>
         </section>
       )}
 
-      {/* ───── 3. ORDER TIMELINE ───── */}
-      <section className="px-4 pt-10">
+      <section className="px-4 pt-8">
         <div className="container-max max-w-3xl">
-          <div className="bg-white rounded-3xl border border-border-soft p-6 md:p-8 shadow-sm">
-            <h2 className="font-display font-bold text-xl text-charcoal mb-6 flex items-center gap-2">
-              <ClipboardList className="w-5 h-5 text-teal" />
-              شنو غادي يوقع دابا؟
-            </h2>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/thankyou/ty03_call-750.webp"
+            srcSet="/images/thankyou/ty03_call-480.webp 480w, /images/thankyou/ty03_call-750.webp 750w, /images/thankyou/ty03_call-1080.webp 1080w"
+            sizes="(max-width:768px) 100vw, 768px"
+            width={750}
+            height={1000}
+            loading="lazy"
+            decoding="async"
+            alt="صوت مغربي غادي يعيط ليك… جاوبو، راه كيتسناك"
+            className="w-full h-auto rounded-3xl shadow-sm border border-border-soft"
+          />
+        </div>
+      </section>
 
-            <ol className="space-y-4">
-              {[
-                {
-                  icon: CheckCircle2,
-                  title: "طلبيتك مسجلة",
-                  desc: "تم تأكيد استلام طلبك بنجاح",
-                  done: true,
-                  time: "الآن",
-                },
-                {
-                  icon: Phone,
-                  title: "مكالمة التأكيد",
-                  desc: "نتاصلو بيك لتأكيد العنوان والمعلومات",
-                  done: false,
-                  time: callWindow?.etaLabel ?? "قريباً",
-                  active: true,
-                },
-                {
-                  icon: PackageCheck,
-                  title: "تجهيز وشحن طلبيتك",
-                  desc: "كنحضرو طلبيتك بعناية ونرسلوها",
-                  done: false,
-                  time: "خلال 24 ساعة",
-                },
-                {
-                  icon: Truck,
-                  title: "التوصيل ليديك",
-                  desc: "كتشدي الأمانة وكتخلصي كاش يد بيد",
-                  done: false,
-                  time: "2-5 أيام",
-                },
-              ].map((step, i) => (
-                <li key={i} className="flex items-start gap-4">
-                  <div className="relative flex-shrink-0">
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        step.done
-                          ? "bg-teal text-white"
-                          : step.active
-                          ? "bg-saffron text-white ring-4 ring-saffron/20 animate-pulse"
-                          : "bg-sand text-muted"
-                      }`}
-                    >
-                      <step.icon className="w-5 h-5" />
-                    </div>
-                    {i < 3 && (
-                      <div className="absolute right-1/2 top-10 w-0.5 h-6 bg-border-soft translate-x-1/2" />
-                    )}
-                  </div>
-                  <div className="flex-1 pb-2 min-w-0">
-                    <div className="flex items-baseline justify-between gap-2 flex-wrap">
-                      <h3
-                        className={`font-bold leading-tight ${
-                          step.done
-                            ? "text-charcoal"
-                            : step.active
-                            ? "text-charcoal"
-                            : "text-muted"
-                        }`}
-                      >
-                        {step.title}
-                      </h3>
-                      <span
-                        className={`text-[11px] font-semibold tabular-nums whitespace-nowrap ${
-                          step.active ? "text-saffron" : "text-muted"
-                        }`}
-                      >
-                        {step.time}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted mt-0.5 leading-snug">
-                      {step.desc}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
+      <section className="px-4 pt-8">
+        <div className="container-max max-w-3xl">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/thankyou/ty02_steps-750.webp"
+            srcSet="/images/thankyou/ty02_steps-480.webp 480w, /images/thankyou/ty02_steps-750.webp 750w, /images/thankyou/ty02_steps-1080.webp 1080w"
+            sizes="(max-width:768px) 100vw, 768px"
+            width={750}
+            height={1000}
+            loading="lazy"
+            decoding="async"
+            alt="شنو غادي يوقع دابا؟ غادي نعيطو ليك، كنوجدو الطلب، كيوصلك لباب الدار"
+            className="w-full h-auto rounded-3xl shadow-sm border border-border-soft"
+          />
         </div>
       </section>
 
@@ -396,94 +340,6 @@ export default function ThankYouClient() {
                 <MessageCircle className="w-4 h-4" />
                 صححي معلومة عبر واتساب
               </a>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ───── 5. CLEAN ORDER SUMMARY ───── */}
-      {order && (
-        <section className="px-4 pt-6">
-          <div className="container-max max-w-3xl">
-            <div className="bg-white rounded-3xl border border-border-soft overflow-hidden shadow-sm">
-              <div className="px-5 py-4 border-b border-border-soft flex items-center justify-between">
-                <h2 className="font-display font-bold text-lg text-charcoal flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5 text-teal" />
-                  ملخص طلبيتك
-                </h2>
-                <span className="text-xs text-muted tabular-nums">
-                  {order.items.length} منتج
-                </span>
-              </div>
-
-              <ul className="divide-y divide-border-soft">
-                {order.items.map((item, i) => {
-                  const product = PRODUCTS.find((p) => p.id === item.product_id);
-                  const offerLabel =
-                    product?.offers.find((o) => o.offerId === item.offer_id)
-                      ?.label || item.offer_id;
-                  return (
-                    <li key={i} className="flex items-center gap-3 sm:gap-4 px-5 py-4">
-                      <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-sand flex-shrink-0">
-                        {(product || LP_PRODUCTS[item.product_id]) && (
-                          <Image
-                            src={product?.images.hero ?? LP_PRODUCTS[item.product_id].image}
-                            alt={product?.shortName ?? LP_PRODUCTS[item.product_id].name}
-                            fill
-                            className="object-cover"
-                            sizes="64px"
-                          />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold text-charcoal text-sm sm:text-base truncate leading-tight">
-                          {product?.shortName ?? LP_PRODUCTS[item.product_id]?.name ?? item.product_id}
-                        </p>
-                        <p className="text-xs text-muted mt-1 leading-snug">
-                          {item.unit_count} {item.unit_count === 1 ? "علبة" : "علب"}
-                          {" · "}
-                          {offerLabel}
-                          {item.quantity > 1 ? ` × ${item.quantity}` : ""}
-                        </p>
-                      </div>
-                      <div className="flex-shrink-0 text-left">
-                        <p className="font-bold text-teal text-base tabular-nums whitespace-nowrap">
-                          {formatMAD(item.price * item.quantity)}
-                        </p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-
-              <div className="bg-ivory px-5 py-4 border-t border-border-soft space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted">المجموع الفرعي</span>
-                  <span className="font-semibold text-charcoal tabular-nums">
-                    {formatMAD(order.total)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted flex items-center gap-1">
-                    <Truck className="w-3.5 h-3.5" />
-                    التوصيل
-                  </span>
-                  <span className="font-bold text-emerald-700 text-xs uppercase tracking-wide">
-                    مجاني
-                  </span>
-                </div>
-                <div className="flex items-center justify-between pt-3 border-t border-border-soft">
-                  <span className="font-bold text-charcoal text-sm">
-                    تخلصي عند الاستلام
-                  </span>
-                  <span className="font-extrabold text-teal text-xl tabular-nums">
-                    {formatMAD(order.total)}
-                  </span>
-                </div>
-                <p className="text-[11px] text-muted text-center pt-1">
-                  💵 ما كتخلصي والو دابا – الدفع كاش يد بيد ملي توصلك الأمانة
-                </p>
-              </div>
             </div>
           </div>
         </section>
