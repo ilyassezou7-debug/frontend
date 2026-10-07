@@ -149,11 +149,11 @@ tq.page()}(window,document);
 <script>
 (function(){
 /* Offers: MUST match backend/app/services/pricing.py (the server recalculates every order). */
-var PID='joint_capsules', ONE=249;
+var PID='joint_capsules', ONE=199;
 var OFFERS=[
- {id:'one',  q:1, price:249, title:'علبة وحدة', sub:'باش تجرب · شهر كامل', rib:''},
- {id:'two',  q:2, price:299, title:'علبتين', sub:'شهرين · المدة اللي كتبان فيها النتيجة', rib:'⭐ الأكثر طلباً'},
- {id:'three',q:3, price:349, title:'3 علب · البرنامج الكامل', sub:'3 شهور للنتيجة الكاملة', rib:'أفضل قيمة'}];
+ {id:'lp_one',  q:1, price:199, title:'علبة وحدة', sub:'باش تجرب · شهر كامل', rib:''},
+ {id:'lp_two',  q:2, price:249, title:'علبتين', sub:'شهرين · المدة اللي كتبان فيها النتيجة', rib:'⭐ الأكثر طلباً'},
+ {id:'lp_three',q:3, price:329, title:'3 علب · البرنامج الكامل', sub:'3 شهور للنتيجة الكاملة', rib:'أفضل قيمة'}];
 var sel=OFFERS[1], box=document.getElementById('offers'), tot=document.getElementById('tot');
 function render(){box.innerHTML='';OFFERS.forEach(function(o){var l=document.createElement('label');l.className='offer'+(o===sel?' on':'');
  var anchor=ONE*o.q, save=anchor-o.price;
