@@ -177,7 +177,7 @@ document.getElementById('nm').addEventListener('focus',initCheckout);document.ge
 var st=document.getElementById('sticky'),form=document.getElementById('order'),formOn=false;
 if('IntersectionObserver'in window){new IntersectionObserver(function(es){formOn=es[0].isIntersecting;upd()}).observe(form)}
 function upd(){st.classList.toggle('show',scrollY>500&&!formOn&&!document.body.classList.contains('pop'))}addEventListener('scroll',upd,{passive:true});
-function phone(raw){var c=raw.replace(/[\s\-().]/g,'');if(/^(\d)\1{8,}$/.test(c.replace(/^\+?212/,'0')))return null;var n='';
+function phone(raw){raw=String(raw).replace(/[\u0660-\u0669]/g,function(d){return String(d.charCodeAt(0)-1632)}).replace(/[\u06F0-\u06F9]/g,function(d){return String(d.charCodeAt(0)-1776)});var c=raw.replace(/[\s\-().\u200e\u200f]/g,'');if(c.indexOf('00212')===0)c='+'+c.slice(2);if(/^[67]\d{8}$/.test(c))c='0'+c;if(/^(\d)\1{8,}$/.test(c.replace(/^\+?212/,'0')))return null;var n='';
  if(c.indexOf('+212')===0)n=c;else if(c.indexOf('212')===0&&c.length===12)n='+'+c;else if((c.indexOf('06')===0||c.indexOf('07')===0)&&c.length===10)n='+212'+c.slice(1);else return null;
  return/^\+212[67]\d{8}$/.test(n)?n:null}
 function cookie(n){var m=document.cookie.match('(?:^|; )'+n+'=([^;]+)');return m?m[1]:null}
