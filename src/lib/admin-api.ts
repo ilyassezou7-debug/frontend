@@ -153,6 +153,19 @@ export interface OrderDetail {
 
 // ── API calls ─────────────────────────────────────────────────────────
 
+// Own landing-page visitor funnel (/admin/visitors)
+export interface VisitorsPage {
+  steps: Record<string, number>;
+  details: Record<string, Record<string, number>>;
+  median_seconds_on_page: number | null;
+}
+
+export interface VisitorsResponse {
+  since: string;
+  pages: Record<string, VisitorsPage>;
+  live: { total: number; pages: Record<string, number>; window_seconds: number };
+}
+
 export const adminApi = {
   login: async (username: string, password: string) => {
     const data = await apiFetch<{ token: string; username: string }>(
@@ -167,6 +180,9 @@ export const adminApi = {
 
   getMetrics: (params: { start?: string; end?: string } = {}) =>
     apiFetch<MetricsResponse>(`/api/admin/metrics${qs(params)}`),
+
+  getVisitors: (hours: number) =>
+    apiFetch<VisitorsResponse>(`/api/admin/visitors${qs({ hours })}`),
 
   getOrders: (params: {
     page?: number;

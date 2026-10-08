@@ -25,6 +25,8 @@
       } catch (e) {}
     }
     setInterval(function () { flush(false); }, 5000);
+    // 'still here' every 30 s while the page is open and visible (admin page counts live visitors from this)
+    setInterval(function () { if (d.visibilityState === 'visible') { ev('hb'); flush(false); } }, 30000);
 
     ev('view', qs.get('fbclid') ? 'fb' : (qs.get('utm_source') || (d.referrer ? 'ref' : 'direct')));
 
