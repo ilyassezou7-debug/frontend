@@ -67,7 +67,7 @@ label.f{display:block;font-weight:700;font-size:14px;margin:12px 2px 5px}
 .in{width:100%;padding:14px;border:2px solid #E5DED1;border-radius:12px;font-size:17px;background:#fff;color:#102622;font-family:inherit}
 .in:focus{outline:0;border-color:#0E5C4A}
 .in[dir=ltr]{text-align:right;letter-spacing:.5px}
-.err{color:#b42318;font-size:13px;font-weight:700;margin:4px 2px 0;min-height:0}
+.hint{margin:2px 2px 8px;padding:8px 10px;background:#FBF6EA;border:1px solid #ead9b0;border-radius:10px;font-size:14px;font-weight:700;color:#0E5C4A}.in.bad{border-color:#d92d20;background:#fff5f4;box-shadow:0 0 0 3px rgba(217,45,32,.15)}.err{color:#b42318;font-size:13px;font-weight:700;margin:4px 2px 0;min-height:0}
 #sendErr{display:none;margin-top:12px;background:#fef3f2;border:1px solid #fecdca;color:#b42318;border-radius:10px;padding:10px;font-weight:700;font-size:14px}
 .total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:10px 12px;background:#F7F5EF;border-radius:12px;font-weight:800}
 .total b{color:#0E5C4A;font-size:20px}
@@ -127,11 +127,12 @@ tq.page()}(window,document);
     <p class="sub">🔥 العرض محدود — الدفع غير فاش توصلك الطلبية</p>
     <div class="prod"><img src="/images/lp/joint/bottle-160.webp" width="56" height="50" alt=""><span><b>كبسولات Atlas Pure لراحة المفاصل</b><em>✓ متوفر · التوصيل خلال 24-48 ساعة</em></span></div>
     <div id="offers"></div>
-    <label class="f" for="nm">الاسم الكامل</label>
+    <p class="hint">👇 كتب سميتك ورقم الهاتف ديالك باش نتاصلو بيك ونوصلو ليك الطلب</p>
+    <label class="f" for="nm">سميتك الكاملة (الاسم والنسب)</label>
     <div class="field"><i>👤</i><input class="in" id="nm" name="full_name" autocomplete="name" enterkeyhint="next" placeholder="مثلاً: محمد العلوي"></div>
     <p class="err" id="nmErr"></p>
-    <label class="f" for="ph">رقم الهاتف</label>
-    <div class="field"><i>📞</i><input class="in" id="ph" name="phone" type="tel" inputmode="tel" dir="ltr" autocomplete="tel" enterkeyhint="send" maxlength="16" placeholder="06XXXXXXXX"></div>
+    <label class="f" for="ph">رقم الهاتف ديالك (باش نعيطو ليك)</label>
+    <div class="field"><i>📞</i><input class="in" id="ph" name="phone" type="tel" inputmode="tel" dir="ltr" autocomplete="tel" enterkeyhint="send" maxlength="16" placeholder="مثلاً: 0612345678"></div>
     <p class="err" id="phErr"></p>
     <div class="total"><span>المجموع</span><b id="tot"></b></div>
     <div id="sendErr" role="alert"></div>
@@ -182,9 +183,9 @@ function phone(raw){raw=String(raw).replace(/[\u0660-\u0669]/g,function(d){retur
 function cookie(n){var m=document.cookie.match('(?:^|; )'+n+'=([^;]+)');return m?m[1]:null}
 var busy=false;form.addEventListener('submit',function(ev){ev.preventDefault();if(busy)return;
  var nm=document.getElementById('nm').value.trim(),ph=phone(document.getElementById('ph').value),ok=true;
- document.getElementById('nmErr').textContent=nm.length<3?(ok=false,'المرجو إدخال الاسم الكامل'):'';
- document.getElementById('phErr').textContent=!ph?(ok=false,'المرجو إدخال رقم هاتف مغربي صحيح (06/07)'):'';
- if(!ok)return;initCheckout();
+ document.getElementById('nmErr').textContent=nm.length<3?(ok=false,'كتب سميتك الكاملة هنا 👆'):'';
+ document.getElementById('phErr').textContent=!ph?(ok=false,'كتب رقم الهاتف ديالك هنا 👆 (مثلاً 0612345678)'):'';
+ var nmEl=document.getElementById('nm'),phEl=document.getElementById('ph');nmEl.classList.toggle('bad',nm.length<3);phEl.classList.toggle('bad',!ph);if(!ok){var first=nm.length<3?nmEl:phEl;first.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(function(){first.focus()},250);return}initCheckout();
  var btn=document.getElementById('go'),er=document.getElementById('sendErr');busy=true;btn.disabled=true;var lbl=btn.innerHTML;btn.innerHTML='<span>جاري تأكيد الطلب...</span>';er.style.display='none';
  try{localStorage.removeItem('atlas_last_order')}catch(e){}
  var lu;try{lu=sessionStorage.getItem('_landing_url')}catch(e){}lu=lu||location.href;var lp=new URLSearchParams(new URL(lu).search);
@@ -206,6 +207,7 @@ var busy=false;form.addEventListener('submit',function(ev){ev.preventDefault();i
 });
 })();
 </script>
+<script>['nm','ph'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',function(){e.classList.remove('bad');var m=document.getElementById(id+'Err');if(m)m.textContent=''})})</script>
 <script src="/t/lp.js?v=2" defer></script>
 </body>
 </html>
