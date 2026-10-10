@@ -26,6 +26,7 @@ import { PRODUCTS, getSinglePrice } from "@/config/products";
 /** Products sold only on an /lp/ page, not in the PRODUCTS catalogue. */
 const LP_PRODUCTS: Record<string, { name: string; image: string }> = {
   melasma_cream: { name: "كريم الكلف · Atlas Pure", image: "/images/lp/kalaf/12_close.webp" },
+  grohair_serum: { name: "Sérum de croissance pour cheveux", image: "/images/lp/serum-cheveux/bottle-160.webp" },
 };
 import { SITE_CONFIG } from "@/config/site";
 import { formatMAD } from "@/lib/money";

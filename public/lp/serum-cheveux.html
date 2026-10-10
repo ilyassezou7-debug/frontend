@@ -154,11 +154,11 @@ tq.page()}(window,document);
 <script>
 (function(){
 /* Offers: MUST match backend/app/services/pricing.py (the server recalculates every order). */
-var PID='hair_serum', ONE=249;
+var PID='grohair_serum', ONE=219;
 var OFFERS=[
- {id:'one',  q:1, price:249, title:'1 flacon', sub:'Pour essayer · 1 mois', rib:''},
- {id:'two',  q:2, price:299, title:'2 flacons', sub:'2 mois de routine', rib:'⭐ Le plus choisi'},
- {id:'three',q:3, price:349, title:'3 flacons · cure complète', sub:'3 mois · le temps d’un cycle', rib:'Meilleur prix'}];
+ {id:'one',  q:1, price:219, title:'1 flacon', sub:'Pour essayer · 1 mois', rib:''},
+ {id:'two',  q:2, price:359, title:'2 flacons', sub:'2 mois de routine', rib:'⭐ Le plus choisi'},
+ {id:'three',q:3, price:479, title:'3 flacons · cure complète', sub:'3 mois · le temps d’un cycle', rib:'Meilleur prix'}];
 var sel=OFFERS[1], box=document.getElementById('offers'), tot=document.getElementById('tot');
 function render(){box.innerHTML='';OFFERS.forEach(function(o){var l=document.createElement('label');l.className='offer'+(o===sel?' on':'');
  var anchor=ONE*o.q, save=anchor-o.price;
