@@ -63,6 +63,9 @@ const nextConfig = {
         { source: "/lp/vitiligo-7", destination: "/lp/vitiligo-7.html" },
         { source: "/lp/vitiligo-8", destination: "/lp/vitiligo-8.html" },
         { source: "/lp/vitiligo-9", destination: "/lp/vitiligo-9.html" },
+        // video-testimonial pages (Darija v1-v5 / French v6-v10), built by Desktop/Fille kids/ten/build_pages.py
+        { source: "/lp/vitiligo-10", destination: "/lp/vitiligo-10.html" },
+        { source: "/lp/vitiligo-fr", destination: "/lp/vitiligo-fr.html" },
         { source: "/lp/serum-cheveux", destination: "/lp/serum-cheveux.html" },
         { source: "/lp/lavabo", destination: "/lp/lavabo.html" },
         { source: "/lp/joint", destination: "/lp/joint.html" },
