@@ -74,6 +74,7 @@ const nextConfig = {
         { source: "/lp/joint-4", destination: "/lp/joint-4.html" },
         { source: "/lp/bouzloum", destination: "/lp/bouzloum.html" },
         { source: "/lp/joint-info", destination: "/lp/joint-info.html" },
+        { source: "/lp/dossier-menopause-articulations", destination: "/lp/dossier-menopause-articulations.html" },
       ],
     };
   },

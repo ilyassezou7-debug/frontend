@@ -4,7 +4,8 @@ export type ProductId =
   | "nail_serum"
   | "hair_serum"
   | "joint_capsules"
-  | "vitiligo_cream";
+  | "vitiligo_cream"
+  | "naylo_menopause";
 export type OfferId = "one" | "two" | "three" | "upsell_99";
 
 export interface ProductOffer {

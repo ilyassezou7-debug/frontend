@@ -1320,9 +1320,286 @@ export const PRODUCTS: Product[] = [
       joint_capsules: "اعتنِ بصحتك من الداخل مع دعم المفاصل.",
     },
   },
+
+  // ─────────────────────────────────────────────────────────────────
+  // NAYLO MENOPAUSE — Lactobacillus Gasseri + Moringa + Curcuma
+  // ─────────────────────────────────────────────────────────────────
+  {
+    id: "naylo_menopause",
+    slug: "complement-menopause-equilibre-confiance",
+    name: "Naylo — Ménopause Confort Articulaire & Hormonal",
+    displayName: "Naylo Ménopause — Confort Articulaire & Rééquilibrage Hormonal",
+    shortName: "Naylo Ménopause",
+    headline:
+      "Hanches, genoux, épaules, mains : retrouvez de la souplesse au quotidien sans hormones de synthèse.",
+    heroPromise: "Fini le corps « rouillé » du matin — bougez à nouveau sans douleur.",
+    subheading:
+      "Formule française 100% naturelle à base de Lactobacillus Gasseri SBT2055, Moringa bio, Curcuma BioPerine® et Hélichryse. Livraison offerte dès 2 boîtes & Garantie 60 jours.",
+    painSection:
+      "Quand les œstrogènes chutent à la ménopause, les tendons s'assèchent et perdent leur collagène. Résultat : nuits coupées par la hanche qui brûle, réveil douloureux, genoux raides et peur de monter les escaliers. Naylo s'attaque à la véritable cause : relancer le recyclage hormonal via l'estrobolome intestinal.",
+    painPoints: [
+      "Hanche qui brûle la nuit : impossible de dormir sur le côté sans se réveiller",
+      "Corps « rouillé » le matin : besoin de 15 à 25 minutes pour déverrouiller ses articulations",
+      "Genoux qui craquent et font mal dans chaque marche d'escalier",
+      "Mains raides : difficulté à ouvrir un bocal ou tenir une tasse de café",
+      "Renoncement aux activités : arrêt du jardinage, de la marche et du jeu avec les petits-enfants",
+    ],
+    benefits: [
+      {
+        title: "Rééquilibrage Hormonal Naturel",
+        desc: "La souche L. Gasseri SBT2055 aide l'estrobolome intestinal à réutiliser vos œstrogènes pour nourrir vos tissus.",
+      },
+      {
+        title: "Tendons Souples & Moins de Raideur",
+        desc: "La feuille de Moringa et l'Hélichryse soutiennent la production naturelle de collagène et calment les tensions articulaires.",
+      },
+      {
+        title: "Nuits Calmes & Mobilité Retrouvée",
+        desc: "Dormez à nouveau sur le côté sans réveils nocturnes et marchez librement sans gêne.",
+      },
+    ],
+    ingredientCopy:
+      "Une synergie d'actifs étudiés cliniquement pour le confort des tendons et de la flore intestinale.",
+    ingredients: [
+      "Lactobacillus Gasseri SBT2055 (400 mg)",
+      "Feuille de Moringa (350 mg)",
+      "Extrait de Curcuma (160 mg)",
+      "BioPerine® (3 mg)",
+      "Hélichryse italienne (150 mg)",
+      "Lécithine de tournesol (50 mg)",
+    ],
+    ingredientDetails: [
+      {
+        name: "Lactobacillus Gasseri SBT2055 (400 mg)",
+        benefit:
+          "Souche probiotique brevetée issue de la recherche japonaise pour réactiver le recyclage de l'œstrogène dans l'intestin.",
+        origin: "Japon",
+      },
+      {
+        name: "Feuille de Moringa (350 mg)",
+        benefit:
+          "Superaliment antioxydant exceptionnel, soutient la régénération du collagène et protège les tendons.",
+        origin: "Feuilles pures",
+      },
+      {
+        name: "Extrait de Curcuma (160 mg) + BioPerine® (3 mg)",
+        benefit:
+          "Anti-inflammatoire naturel puissant dont l'assimilation est multipliée par 39 grâce à la pipérine.",
+        origin: "Standardisé",
+      },
+      {
+        name: "Hélichryse italienne (150 mg)",
+        benefit:
+          "Plante noble méditerranéenne reconnue pour le confort des tissus et la microcirculation articulaire.",
+        origin: "Méditerranée",
+      },
+      {
+        name: "Lécithine de tournesol (50 mg)",
+        benefit:
+          "Améliore la biodisponibilité et le passage des actifs à travers la barrière intestinale.",
+        origin: "100% Vegan",
+      },
+    ],
+    antiClaims: [
+      "Sans hormones de synthèse",
+      "Sans gluten ni lactose",
+      "100% Vegan",
+      "Sans OGM",
+      "Gélules végétales gastro-résistantes",
+    ],
+    comparison: [
+      {
+        feature: "Cible la cause hormonale & intestinale",
+        us: true,
+        traditional: false,
+        pharmacy: false,
+      },
+      {
+        feature: "Probiotique breveté L. Gasseri",
+        us: true,
+        traditional: false,
+        pharmacy: false,
+      },
+      {
+        feature: "Moringa + Curcuma haute absorption",
+        us: true,
+        traditional: "Partiel",
+        pharmacy: "Rare",
+      },
+      {
+        feature: "Gélules gastro-résistantes",
+        us: true,
+        traditional: false,
+        pharmacy: "Variable",
+      },
+      {
+        feature: "Garantie 60 jours satisfait ou remboursé",
+        us: true,
+        traditional: false,
+        pharmacy: false,
+      },
+    ],
+    howToUse: "2 gélules chaque matin au cours du petit-déjeuner avec un grand verre d'eau.",
+    howToUseSteps: [
+      {
+        title: "2 gélules le matin",
+        description:
+          "Prendre avec le petit-déjeuner et un grand verre d'eau pour accompagner la digestion.",
+      },
+      {
+        title: "Régularité quotidienne",
+        description:
+          "La souche probiotique a besoin de 4 à 6 semaines pour coloniser l'intestin durablement.",
+      },
+      {
+        title: "Prise facile",
+        description:
+          "Si vous n'aimez pas avaler les gélules, vous pouvez ouvrir la capsule et mélanger la poudre dans un yaourt.",
+      },
+    ],
+    usageFrequency: "Quotidienne, cure de 3 mois recommandée pour ancrer les résultats.",
+    expectedTimeline: [
+      {
+        when: "Semaines 1-2",
+        result:
+          "Adaptation de la flore intestinale, réveils matinaux légèrement plus fluides.",
+      },
+      {
+        when: "Semaines 2-3",
+        result:
+          "Diminution nette de la raideur matinale, lever du lit sans grimace.",
+      },
+      {
+        when: "Semaines 4-6",
+        result:
+          "Mobilité retrouvée, nuits complètes sur le côté sans douleurs de hanche.",
+      },
+      {
+        when: "Mois 3+",
+        result:
+          "Stabilisation du terrain hormonal, confort articulaire pérenne au quotidien.",
+      },
+    ],
+    usageTips: [
+      "Conserver à l'abri de la chaleur et de l'humidité.",
+      "Si vous suivez un traitement hormonal ou anticoagulant, demandez l'avis de votre médecin.",
+      "Combinez avec une bonne hydratation (1,5 L d'eau par jour).",
+    ],
+    productFaqs: [
+      {
+        q: "Comment un produit pour l'intestin peut-il agir sur mes hanches ?",
+        a: "Votre intestin abrite l'estrobolome, des bactéries qui recyclent les œstrogènes naturels du corps. Ces hormones sont indispensables pour maintenir l'hydratation et la souplesse des tendons. En rééquilibrant cette flore avec L. Gasseri et le Moringa, Naylo permet aux tendons de retrouver leur élasticité.",
+      },
+      {
+        q: "J'ai déjà essayé le collagène et les anti-douleurs sans succès, pourquoi Naylo marcherait ?",
+        a: "Sans œstrogène pour le fixer, le collagène glisse sur des tendons asséchés sans pouvoir agir. Les anti-inflammatoires ne font que masquer temporairement le signal sans réparer la cause. Naylo agit à la racine hormonale et intestinale.",
+      },
+      {
+        q: "En combien de temps vais-je ressentir les effets ?",
+        a: "Les premiers ressentis (déverrouillage matinal plus facile) apparaissent souvent dès 10 à 15 jours. La restauration complète de la mobilité demande 4 à 6 semaines, c'est pourquoi nous recommandons une cure de 3 mois.",
+      },
+      {
+        q: "Y a-t-il un âge limite pour faire la cure ?",
+        a: "Non, il n'y a pas d'âge limite. Des femmes de 45 à plus de 75 ans utilisent Naylo avec d'excellents résultats sur leur souplesse.",
+      },
+      {
+        q: "Comment fonctionne la garantie 60 jours ?",
+        a: "Vous testez la formule pendant 60 jours. Si vous ne constatez aucune amélioration, vous nous écrivez et nous vous remboursons intégralement, même si les flacons sont vides.",
+      },
+    ],
+    guaranteeText:
+      "Garantie 60 jours « Je Revis » : essayez Naylo pendant 2 mois complets. Si vos articulations ne retrouvent pas leur souplesse, vous êtes remboursée jusqu'au dernier centime sans discussion, même boîtes vides.",
+    offerNudge:
+      "Livraison offerte dès le pack 3 mois + Guide '14 recettes anti-inflammatoires' offert",
+    images: {
+      hero: "/images/naylo/hero.png",
+      ingredients: "/images/naylo/ingredients.png",
+      lifestyle: "/images/naylo/lifestyle.png",
+    },
+    offers: [
+      {
+        offerId: "one",
+        quantity: 1,
+        price: 349,
+        label: "Pack Découverte — 1 Flacon (30 jours)",
+        title: "Pack Découverte — 30 jours",
+        subtitle: "1 flacon pour découvrir la formule",
+      },
+      {
+        offerId: "two",
+        quantity: 2,
+        price: 499,
+        label: "Pack Mobilité — 2 Flacons + 1 OFFERT (90 jours)",
+        badge: "Le plus choisi ⭐",
+        ribbon: "Le plus choisi",
+        title: "Cure Mobilité — 3 Mois (2+1 OFFERT)",
+        subtitle: "La durée recommandée par les experts + Guide recettes offert",
+      },
+      {
+        offerId: "three",
+        quantity: 3,
+        price: 699,
+        label: "Pack Transformation — 3 Flacons + 2 OFFERTS (6 mois)",
+        badge: "Meilleure Offre",
+        ribbon: "Meilleure Offre",
+        title: "Transformation — 6 Mois (3+2 OFFERTS)",
+        subtitle: "Pour ancrer durablement la souplesse articulaire",
+      },
+    ],
+    reviews: [
+      {
+        author: "Catherine D.",
+        age: 57,
+        city: "Toulouse",
+        rating: 5,
+        verified: true,
+        text: "8 compléments avant Naylo. Aucun n'a marché. Semaine 3 avec Naylo, mes genoux moins raides le matin. Semaine 7, je refais du vélo ! Mon mari a même remarqué que je me plains moins maintenant.",
+      },
+      {
+        author: "Isabelle M.",
+        age: 60,
+        city: "Bordeaux",
+        rating: 5,
+        verified: true,
+        text: "Kiné 4x/mois = 100€ pour 2-3 jours de soulagement. Avec Naylo, mes hanches vont mieux ET ça dure. Je redors sur le côté sans me réveiller la nuit !",
+      },
+      {
+        author: "Nathalie L.",
+        age: 55,
+        city: "Lyon",
+        rating: 5,
+        verified: true,
+        text: "Marque inconnue, j'ai hésité. Garantie 60 jours = je risquais rien. Mes douleurs aux mains et aux hanches ont nettement diminué !",
+      },
+      {
+        author: "Monique P.",
+        age: 58,
+        city: "Nantes",
+        rating: 5,
+        verified: true,
+        text: "10 premiers jours : rien. Je me suis dit encore raté. Semaine 2-3 : moins rouillée le matin. Semaine 8 : mes genoux vont VRAIMENT mieux. Faut être patiente mais ça marche.",
+      },
+      {
+        author: "Martine B.",
+        age: 61,
+        city: "Paris",
+        rating: 5,
+        verified: true,
+        text: "Je joue par terre avec mes petits-enfants ! Ça faisait tellement longtemps... 6 semaines avec Naylo et je peux rester 2h au parc avec eux sans souffrir. Mon fils a remarqué que j'étais plus souriante.",
+      },
+    ],
+    ratingCount: 3425,
+    crossSellPriority: ["joint_capsules"],
+    crossSellText: {
+      joint_capsules: "Soutien complémentaire intensif pour le cartilage.",
+    },
+  },
 ];
 
 export function getProductBySlug(slug: string): Product | undefined {
+  if (slug === "naylo-menopause" || slug === "naylo") {
+    return PRODUCTS.find((p) => p.id === "naylo_menopause");
+  }
   return PRODUCTS.find((p) => p.slug === slug);
 }
 
@@ -1349,6 +1626,7 @@ export function getUpsellProduct(cartProductIds: ProductId[]): ProductId | null 
     "hair_serum",
     "joint_capsules",
     "vitiligo_cream",
+    "naylo_menopause",
   ];
   if (allIds.every((id) => cartProductIds.includes(id))) return null;
   if (cartProductIds.length >= 2) {

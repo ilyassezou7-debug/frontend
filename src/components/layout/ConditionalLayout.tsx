@@ -6,7 +6,9 @@ import Footer from "./Footer";
 import AnnouncementBar from "./AnnouncementBar";
 
 // Bare landing pages that render with no site chrome (header/footer/bar).
-const isBareLanding = (pathname: string) => pathname.startsWith("/lp/");
+const isBareLanding = (pathname: string) =>
+  pathname.startsWith("/lp/") ||
+  pathname.includes("dossier-menopause-articulations");
 
 export function ConditionalHeader() {
   const pathname = usePathname();
