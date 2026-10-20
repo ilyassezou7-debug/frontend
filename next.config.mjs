@@ -67,6 +67,7 @@ const nextConfig = {
         { source: "/lp/vitiligo-10", destination: "/lp/vitiligo-10.html" },
         { source: "/lp/vitiligo-fr", destination: "/lp/vitiligo-fr.html" },
         { source: "/lp/serum-cheveux", destination: "/lp/serum-cheveux.html" },
+        { source: "/lp/moringa", destination: "/lp/moringa.html" },
         { source: "/lp/lavabo", destination: "/lp/lavabo.html" },
         { source: "/lp/joint", destination: "/lp/joint.html" },
         { source: "/lp/joint-2", destination: "/lp/joint-2.html" },
