@@ -28,6 +28,7 @@ const LP_PRODUCTS: Record<string, { name: string; image: string }> = {
   melasma_cream: { name: "كريم الكلف · Atlas Pure", image: "/images/lp/kalaf/12_close.webp" },
   grohair_serum: { name: "Sérum de croissance pour cheveux", image: "/images/lp/serum-cheveux/bottle-160.webp" },
   moringa_capsules: { name: "Atlas Pure Moringa", image: "/images/lp/moringa/bottle-160.webp" },
+  kids_gummies: { name: "علكات Atlas Pure بالفيتامينات", image: "/images/lp/gummies/bottle-160.webp" },
   sink_black: { name: "لافابو إينوكس أسود 65×45 – باك كامل", image: "/images/lp/lavabo/sink-160.webp" },
 };
 import { SITE_CONFIG } from "@/config/site";
