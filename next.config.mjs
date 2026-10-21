@@ -69,6 +69,7 @@ const nextConfig = {
         { source: "/lp/serum-cheveux", destination: "/lp/serum-cheveux.html" },
         { source: "/lp/moringa", destination: "/lp/moringa.html" },
         { source: "/lp/gummies", destination: "/lp/gummies.html" },
+        { source: "/lp/vitamines", destination: "/lp/gummies.html" },
         { source: "/lp/lavabo", destination: "/lp/lavabo.html" },
         { source: "/lp/joint", destination: "/lp/joint.html" },
         { source: "/lp/joint-2", destination: "/lp/joint-2.html" },
@@ -87,6 +88,12 @@ const nextConfig = {
         // Static bridge pages: short browser cache so edits show up quickly
         source: "/lp/:page*.html",
         headers: [{ key: "Cache-Control", value: "public, max-age=300, stale-while-revalidate=3600" }],
+      },
+      {
+        // The same pages under their clean /lp/<name> URL (the rewrite target above is not what the browser asks for):
+        // without this, Cloudflare kept edited pages for 4 hours.
+        source: "/lp/:page",
+        headers: [{ key: "Cache-Control", value: "public, max-age=300, stale-while-revalidate=600" }],
       },
       {
         // Immutable cache for all Next.js hashed static chunks (_next/static)
