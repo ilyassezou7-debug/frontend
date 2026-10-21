@@ -156,7 +156,7 @@ var PID='kids_gummies', ONE=239;
 var OFFERS=[
  {id:'one',  q:1, price:239, title:'علبة وحدة', sub:'25 علكة · باش تجربو', rib:''},
  {id:'two',  q:2, price:299, title:'2 علب', sub:'50 علكة · الخطة كاملة', rib:'⭐ الأكثر طلباً'},
- {id:'three',q:3, price:349, title:'3 علب', sub:'75 علكة · للخوت ولا باش ما يتقطعش', rib:'أفضل قيمة'}];
+ {id:'three',q:3, price:349, title:'3 علب', sub:'75 علكة · كتوفر أكثر', rib:'أفضل قيمة'}];
 var sel=OFFERS[1], box=document.getElementById('offers'), tot=document.getElementById('tot');
 function render(){box.innerHTML='';OFFERS.forEach(function(o){var l=document.createElement('label');l.className='offer'+(o===sel?' on':'');
  var anchor=ONE*o.q, save=anchor-o.price;
