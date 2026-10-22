@@ -70,6 +70,7 @@ const nextConfig = {
         { source: "/lp/moringa", destination: "/lp/moringa.html" },
         { source: "/lp/gummies", destination: "/lp/gummies.html" },
         { source: "/lp/vitamines", destination: "/lp/gummies.html" },
+        { source: "/lp/collagen", destination: "/lp/collagen.html" },
         { source: "/lp/lavabo", destination: "/lp/lavabo.html" },
         { source: "/lp/joint", destination: "/lp/joint.html" },
         { source: "/lp/joint-2", destination: "/lp/joint-2.html" },
