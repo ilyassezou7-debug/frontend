@@ -148,9 +148,9 @@ tq.page()}(window,document);
 /* Offers: MUST match backend/app/services/pricing.py (the server recalculates every order). */
 var PID='esorepair_drops', ONE=219;
 var OFFERS=[
- {id:'one',  q:1, price:219, title:'قنينة وحدة', sub:'60 مل', rib:'⭐ الموصى به'},
- {id:'two',  q:2, price:299, title:'2 قنينات', sub:'2 × 60 مل', rib:''},
- {id:'three',q:3, price:349, title:'3 قنينات', sub:'3 × 60 مل · أعلى توفير', rib:'أفضل قيمة'}];
+ {id:'one',  q:1, price:219, title:'قنينة وحدة', sub:'50 مل', rib:'⭐ الموصى به'},
+ {id:'two',  q:2, price:299, title:'2 قنينات', sub:'2 × 50 مل', rib:''},
+ {id:'three',q:3, price:349, title:'3 قنينات', sub:'3 × 50 مل · أعلى توفير', rib:'أفضل قيمة'}];
 var sel=OFFERS[0], box=document.getElementById('offers'), tot=document.getElementById('tot');
 function render(){box.innerHTML='';OFFERS.forEach(function(o){var l=document.createElement('label');l.className='offer'+(o===sel?' on':'');
  var anchor=ONE*o.q, save=anchor-o.price;
